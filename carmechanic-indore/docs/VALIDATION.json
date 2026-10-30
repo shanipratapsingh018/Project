@@ -1,5 +1,5 @@
 {
-  "version": "1.7.0",
+  "version": "1.7.1",
   "date_ist": "2026-10-31",
   "brand": "Garagewala \u00b7 Nice Car Mechanic",
   "hours": "Every day, 7:00 AM\u201311:30 PM IST",
@@ -10,5 +10,12 @@
     "visual review": "passed: homepage, About image and review form at 390px and 1366px"
   },
   "google_status": "Owner-supplied sharing URL connected as Garagewala on Google. Redirect destination could not be checked because share.google is blocked by cloud egress policy. No direct review editor, Google rating or profile verification is inferred.",
-  "reviews_status": "Website form prepares a WhatsApp message; customer must press Send. Public display requires garage approval and customer permission. No automatic storage/publication. No borrowed reviews."
+  "reviews_status": "Website form prepares a WhatsApp message; customer must press Send. Public display requires garage approval and customer permission. No automatic storage/publication. No borrowed reviews.",
+  "previous_full_suite_version": "1.7.0",
+  "validation_v1.7.1": {
+    "npm run build": "passed: 22 pages rebuilt",
+    "node tests/photos.test.js": "passed: 3 asset/provenance/font checks",
+    "focused browser checks": "passed: 67 checks at 320, 390, 768, 1024, 1366 and 1920 pixels and no-JavaScript mode; seven Call Now links, phone target, retained actions, image loading, caption removal, no overflow and no script errors",
+    "visual review": "passed: mobile package card and desktop hero"
+  }
 }

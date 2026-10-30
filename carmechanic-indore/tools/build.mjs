@@ -18,7 +18,7 @@ const AREAS = require(join(ROOT, "assets/js/service-areas.js"));
 const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "1.7.0";
+const VERSION = "1.7.1";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -39,7 +39,7 @@ function photo(id, { cls = "", sizes = "(max-width: 900px) 100vw, 50vw", eager =
   const p = PH_BY[id];
   if (!p) throw new Error("Unknown photo " + id);
   if (p.generated) {
-    return `<figure class="photo ${cls}" data-photo-id="${id}"><img src="assets/img/photos/garagewala-workshop-800.webp" srcset="assets/img/photos/garagewala-workshop-800.webp 800w, assets/img/photos/garagewala-workshop-1600.webp 1600w" sizes="${sizes}" alt="${esc(p.alt)}" width="1672" height="941" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"><figcaption class="photo-credit">AI-generated illustration — not a photo of our workshop.</figcaption></figure>`;
+    return `<figure class="photo ${cls}" data-photo-id="${id}"><img src="assets/img/photos/garagewala-workshop-800.webp" srcset="assets/img/photos/garagewala-workshop-800.webp 800w, assets/img/photos/garagewala-workshop-1600.webp 1600w" sizes="${sizes}" alt="${esc(p.alt)}" width="1672" height="941" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"></figure>`;
   }
   const local = (w) => `assets/img/photos/${p.id}-${w}.jpg`;
   if (!existsSync(join(ROOT, local(800))) || !existsSync(join(ROOT, local(1600)))) {
@@ -433,7 +433,7 @@ function homepage() {
       <h3>${esc(k.title)}</h3>
       <p>${esc(k.blurb)}</p>
       <p class="price" data-pkg="${k.id}"><small>Hatchback · indicative</small>${(() => { const q = PR.quickRange(C, k.services[0], "hatchback"); return q.status === "priced" ? PR.formatRange(q.range) : "Quote after inspection"; })()}</p>
-      <div class="actions"><a class="btn btn--sm" href="#estimate" data-pkg-btn="${k.id}">Get estimate</a><a class="btn btn--wa btn--sm" data-wa="${esc(k.title)}" href="https://wa.me/${B.whatsapp}">${ic("wa")}WhatsApp</a></div>
+      <div class="actions package-actions"><a class="btn btn--sm" href="#estimate" data-pkg-btn="${k.id}">Get estimate</a><a class="btn btn--wa btn--sm" data-wa="${esc(k.title)}" href="https://wa.me/${B.whatsapp}">${ic("wa")}WhatsApp</a><a class="btn btn--outline btn--sm" href="tel:${B.phoneE164}" data-tel data-call-now>${ic("phone")}Call Now</a></div>
     </article>`;
   }).join("");
   const why = [
@@ -465,7 +465,7 @@ function homepage() {
         <a class="btn" href="#estimate">${ic("receipt")}<span data-i18n="cta.calc">Calculate Service Cost</span></a>
         <a class="btn btn--ghost" href="booking.html">${ic("calendar")}<span data-i18n="cta.book">Book Your Car Service</span></a>
       </div>
-      <a class="btn btn--wa" style="justify-self:start" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}<span data-i18n="cta.wa">Chat on WhatsApp</span></a>
+      <div class="hero-ctas"><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}<span data-i18n="cta.wa">Chat on WhatsApp</span></a><a class="btn btn--ghost" href="tel:${B.phoneE164}" data-tel data-call-now>${ic("phone")}Call Now</a></div>
       <ul class="hero-facts">
         <li>${ic("check")}All major brands</li><li>${ic("receipt")}Itemised bills</li><li>${ic("shield")}Approval before extra work</li>
       </ul>
@@ -773,7 +773,7 @@ function aboutPage() {
     <p>Tell us about your car and the problem you’re facing. We’ll confirm whether we can help, explain the next steps and share a quotation before work starts.</p>
     <h2>Workshop services</h2>
     ${photo("workshop-cars", { sizes: "(max-width: 900px) 100vw, 60vw" })}
-    <p>Images on this page are labelled examples. For our workshop location, current opening hours and appointment availability, <a href="contact.html">contact us before visiting</a>.</p>
+    <p>For our workshop location, current opening hours and appointment availability, <a href="contact.html">contact us before visiting</a>.</p>
   </div>
   <div style="display:grid;gap:18px;align-content:start">
     <div class="why" style="grid-template-columns:minmax(0,1fr)">

@@ -3,7 +3,8 @@
 The homepage (`workshop-hero`) and About page (`workshop-cars`) use the same
 AI-generated Indian garage scene selected by the owner. It depicts shelves of spare parts,
 engine servicing and suspension work. It is an illustration, not a photograph of the actual
-Garagewala premises or staff. Both placements have a visible AI illustration caption.
+Garagewala premises or staff. At the owner’s request, visible AI captions are removed in v1.7.1. Source information
+remains in the image alt text, manifest and this document.
 
 Responsive WebP assets are bundled locally at 800 and 1600 pixels wide:
 `public/assets/img/photos/garagewala-workshop-{800,1600}.webp`.

@@ -1,16 +1,16 @@
-# Garagewala — Nice Car Mechanic · v1.7.0
+# Garagewala — Nice Car Mechanic · v1.7.1
 
 Live website: https://shanipratapsingh018.github.io/Project/
 
-Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=1.7.0
+Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=1.7.1
 
 The updated website is in **carmechanic-indore/**.
 The original Arduino temp.txt is preserved separately.
 
 ## Download
 
-- [Hosting-ready ZIP](downloads/garagewala-v1.7.0-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
-- [Complete source ZIP](downloads/garagewala-v1.7.0-source.zip) — on GitHub, click **Download raw**.
+- [Hosting-ready ZIP](downloads/garagewala-v1.7.1-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
+- [Complete source ZIP](downloads/garagewala-v1.7.1-source.zip) — on GitHub, click **Download raw**.
 - [Six AI-generated garage photos](downloads/garagewala-ai-garage-photos.zip) — original PNGs in one ZIP; illustrative scenes, not photos of the actual workshop.
 - Or choose **Code → Download ZIP** to download this whole branch.
 

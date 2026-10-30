@@ -1,4 +1,4 @@
-# Garagewala — Nice Car Mechanic · v1.7.0
+# Garagewala — Nice Car Mechanic · v1.7.1
 
 A ready-to-run static garage website branded **Garagewala · Nice Car Mechanic**: 22 responsive pages, 69-service price list,
 vehicle-specific estimates, pickup-area checks, before/after gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
@@ -58,7 +58,8 @@ warns that a request may already have arrived. Tests use intercepted API respons
 ## Customer reviews and workshop hours
 
 The homepage and About page use the owner-selected, locally bundled AI workshop illustration,
-with responsive images (about 99 KB / 271 KB) and a visible caption. It also displays on phones.
+with responsive images (about 99 KB / 271 KB). It also displays on phones.
+Visible AI captions were removed at the owner’s request; source information remains in alt text and documentation.
 Opening hours are **every day, 7:00 AM–11:30 PM IST**, confirmed by the owner.
 
 The homepage and About page link to `reviews.html#write-review`. Customers enter a display

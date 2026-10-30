@@ -1,5 +1,5 @@
 {
-  "_readme": "Mixed illustrative assets. workshop-hero and workshop-cars use the same locally bundled AI-generated Indian workshop image, clearly captioned. Other slots retain stock source metadata and fall back to locally bundled illustrations when stock files are absent. No generated image depicts the actual Garagewala premises.",
+  "_readme": "Mixed illustrative assets. workshop-hero and workshop-cars use the same locally bundled AI-generated Indian workshop image, with source recorded in alt text and documentation. Other slots retain stock source metadata and fall back to locally bundled illustrations when stock files are absent. No generated image depicts the actual Garagewala premises.",
   "verified": "2026-10-29",
   "photos": [
     {

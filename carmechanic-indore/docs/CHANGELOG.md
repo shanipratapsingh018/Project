@@ -1,3 +1,9 @@
+# v1.7.1 — Call Now actions
+
+- Added a Call Now action beside WhatsApp in the homepage hero and to each of the six homepage package cards.
+- All actions use the configured garage number and work without JavaScript.
+- Removed the visible AI caption from the selected homepage/About workshop photo at the owner's request; retained accurate alt text and source documentation.
+
 # v1.7.0 — Workshop photo, review form and daily opening hours
 
 - Owner-selected AI workshop illustration on homepage and About, locally bundled in two responsive sizes; visible on phones.

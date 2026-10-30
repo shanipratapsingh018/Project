@@ -270,7 +270,7 @@ with sync_playwright() as p:
     import io
     pg.goto(BASE + "index.html"); pg.wait_for_load_state("networkidle")
     check(pg.locator(".hero-art img").evaluate("e => e.complete && e.naturalWidth > 0"), "Bundled hero illustration loads")
-    check("AI-generated illustration" in pg.inner_text(".hero-art .photo-credit"), "Illustrations are labelled honestly")
+    check(pg.locator(".hero-art .photo-credit").count() == 0 and "AI-generated" in pg.get_attribute(".hero-art img", "alt"), "Workshop image has accurate alt text without a visible caption")
     # (b) available: serve a test JPEG for every local photo path
     from PIL import Image
     buf = io.BytesIO(); Image.new("RGB", (1600, 1067), (90, 110, 130)).save(buf, "JPEG"); JPG = buf.getvalue()
@@ -283,7 +283,7 @@ with sync_playwright() as p:
     loaded = pp.eval_on_selector_all("figure.photo img", "els => els.filter(e => e.complete && e.naturalWidth > 0 && !e.closest('figure').hidden).length")
     total = pp.locator("figure.photo img").count()
     check(total >= 10 and loaded == total, f"Photos available → all {total} homepage photos display ({loaded} loaded)")
-    check("AI-generated illustration" in pp.inner_text(".hero-art .photo-credit"), "Hero illustration has an example caption")
+    check(pp.locator(".hero-art .photo-credit").count() == 0, "Hero photo caption is removed as requested")
     pp.screenshot(path=f"{SHOTS}/photos-home-desktop.png", full_page=False)
     pp.goto(BASE + "car-detailing-indore.html"); pp.wait_for_load_state("networkidle")
     check(pp.locator(".page-hero-photo img").is_visible() and pp.locator(".photo-row img").count() == 2, "Detailing page shows hero photo + 2 extra photos")
