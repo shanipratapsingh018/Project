@@ -687,3 +687,6 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
   .service-promises { font-size: .79rem; gap: 11px 16px; }
   .ticket-copy { padding: 22px; }
 }
+
+/* Keep the package contact action easy to tap beneath estimate and WhatsApp. */
+.card .package-actions [data-call-now] { flex-basis: 100%; }
