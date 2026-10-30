@@ -42,6 +42,20 @@
       <h2>${esc(g.cat.replace(/^\d+\.\s*/, ""))}</h2>${rateTable(C, PR, g.ids)}</section>`).join("") + footnote(C);
   }
 
+  /** Individual service cards: the same engine and ranges as the comparison tables. */
+  function serviceCards(C, PR) {
+    return C.services.map((s) => {
+      const q = PR.quickRange(C, s.id, "hatchback");
+      const status = q.status === "priced" ? "Published estimate" : q.status === "inspection" ? "Inspection first" : "Let’s talk";
+      return `<article class="service-menu-card" data-service-card="${esc(s.id)}" data-service-group="${esc(s.group)}">
+        <div class="service-card-top"><span class="service-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${esc(s.icon || "service")}"/></svg></span><span class="service-card-group">${esc(s.group)}</span></div>
+        <h3>${esc(s.name)}</h3><p class="service-card-description">${esc((s.includes || [])[0] || "Tell us about your car and we’ll confirm the work needed.")}</p>
+        <div class="service-card-cost"><span class="service-price-status" data-service-price-status>${status}</span><strong data-service-range>${esc(q.text)}</strong><span class="service-unit">${esc(s.unit || "per job")}</span></div>
+        <div class="service-card-footer"><span>${esc(PR.formatHours(s.hours))}<small>typical time</small></span><a href="booking.html?service=${encodeURIComponent(s.id)}" aria-label="Request ${esc(s.name)}">${q.status === "priced" ? "Book service" : "Request quote"}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+      </article>`;
+    }).join("");
+  }
+
   /** "From ₹x" teaser for a list of services (cheapest priced hatchback low). */
   function fromPrice(C, PR, ids) {
     let min = null;
@@ -49,7 +63,7 @@
     return min == null ? null : PR.formatINR(min);
   }
 
-  const API = { rateTable, priceList, footnote, fromPrice };
+  const API = { rateTable, priceList, footnote, fromPrice, serviceCards };
   if (typeof module !== "undefined" && module.exports) module.exports = API;
   else root.CMI_PRICE_TABLE = API;
 })(typeof window !== "undefined" ? window : this);

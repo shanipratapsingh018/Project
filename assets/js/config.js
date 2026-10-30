@@ -10,9 +10,9 @@
   const RATE_CARD = (typeof module !== "undefined" && module.exports) ? require("./rate-card.js") : root.CMI_RATE_CARD;
   const CONFIG = {
     business: {
-      name: "CarMechanic Indore",
-      shortName: "CarMechanic",
-      tagline: "Multi-brand car service & repair",
+      name: "Garagewala",
+      shortName: "Garagewala",
+      tagline: "Nice Car Mechanic · Indore",
       city: "Indore",
       timeZone: "Asia/Kolkata",
       state: "Madhya Pradesh",
@@ -24,7 +24,7 @@
       address: null,           // DO NOT invent. Fill when confirmed: { street, locality, pincode }
       geo: null,               // { lat, lng } — only real workshop coordinates
       hours: null,             // e.g. [{ days: "Mon–Sat", open: "09:30", close: "19:30" }]
-      siteUrl: "https://www.example.com", // replace with your domain (used for canonical URLs & sitemap)
+      siteUrl: "https://shanipratapsingh018.github.io/Project", // replace with your domain (used for canonical URLs & sitemap)
       googleBusinessProfileUrl: null,
       googleAnalyticsId: null,  // e.g. "G-XXXXXXX"
       bookingTimeoutMs: 15000,  // stop waiting after 15s; WhatsApp fallback remains available
