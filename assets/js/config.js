@@ -23,7 +23,7 @@
       email: null,             // e.g. "hello@yourdomain.in" — leave null to hide
       address: { street: "Front of Regional Park", locality: null, pincode: null }, // landmark supplied by the owner; exact PIN not supplied
       geo: null,               // { lat, lng } — only real workshop coordinates
-      hours: null,             // e.g. [{ days: "Mon–Sat", open: "09:30", close: "19:30" }]
+      hours: [{ days: "Mo-Su", label: "Every day (Monday–Sunday)", open: "07:00", close: "23:30" }], // owner-confirmed, India time
       siteUrl: "https://shanipratapsingh018.github.io/Project", // replace with your domain (used for canonical URLs & sitemap)
       googleBusinessProfileUrl: null, // actual existing Google listing URL only
       googleMapsSearchUrl: "https://www.google.com/maps/search/?api=1&query=Front%20of%20Regional%20Park%2C%20Indore", // landmark search, not a verified business listing

@@ -480,11 +480,46 @@
           </figcaption>
         </figure>`).join("");
     });
-    $$("[data-share-review]").forEach((a) => {
-      a.href = RV.googleReviewUrl || feedbackWa();
-      a.target = "_blank"; a.rel = "noopener";
+    $$("[data-google-review]").forEach((a) => {
+      const googleUrl = RV.googleReviewUrl || RV.googleProfileUrl;
+      if (googleUrl && /^https:\/\//i.test(googleUrl)) {
+        a.href = googleUrl;
+        a.textContent = RV.googleReviewUrl ? "Review on Google" : "Garagewala on Google";
+        a.target = "_blank"; a.rel = "noopener";
+        a.hidden = false;
+      }
     });
     $$("[data-feedback-wa]").forEach((a) => { a.href = feedbackWa(); a.target = "_blank"; a.rel = "noopener"; });
+  }
+
+  function mountReviewForm(f) {
+    f.closest("[data-review-enhanced]").hidden = false;
+    const out = $("[data-review-result]", f);
+    const clear = () => {
+      out.replaceChildren(); out.hidden = true;
+      $$("input, textarea", f).forEach(el => el.setCustomValidity(""));
+    };
+    f.addEventListener("input", clear);
+    f.addEventListener("change", clear);
+    f.addEventListener("reset", clear);
+    f.addEventListener("submit", e => {
+      e.preventDefault();
+      const name = f.elements.name.value.trim();
+      const text = f.elements.experience.value.trim();
+      f.elements.name.setCustomValidity(name ? "" : "Please enter your display name.");
+      f.elements.experience.setCustomValidity(text.length >= 20 ? "" : "Please write at least 20 characters about your experience.");
+      if (!f.reportValidity()) return;
+      const permission = f.elements.consent.checked;
+      const message = [`Hello ${B.name}, here is my website feedback.`,
+        `Display name: ${name}`, `Rating: ${f.elements.rating.value}/5`,
+        `Car: ${f.elements.car.value.trim() || "Not specified"}`,
+        `Service: ${f.elements.service.value || "Not specified"}`,
+        `My experience: ${text}`,
+        `Permission to publish display name, rating, car model, service and feedback on the Garagewala website: ${permission ? "YES" : "NO — private feedback only"}`].join("\n");
+      out.innerHTML = `<div class="notice"><strong>Ready to send — your feedback has not been sent yet.</strong><p>Open WhatsApp and press Send to deliver it to the garage. ${permission ? "Your review can be published after the garage checks it." : "You chose private feedback. It will not be published on the website."}</p><a class="btn btn--wa" data-review-send target="_blank" rel="noopener" href="${esc(waUrl(message))}">Open WhatsApp to send ${ICON.wa}</a></div>`;
+      out.hidden = false;
+      out.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
   }
 
   /* ---------- Before & After gallery (data in gallery.js) ---------- */
@@ -808,6 +843,7 @@
     $$("[data-estimator]").forEach(mountEstimator);
     $$("[data-booking]").forEach(mountBooking);
     renderPackages(); renderRateTables(); renderReviews(); renderAreas(); renderGallery();
+    $$("form[data-review-form]").forEach(mountReviewForm);
     $$("[data-service-explorer]").forEach(mountServiceExplorer);
     $$("form[data-quick-book]").forEach(mountQuickBook);
     wireWhatsApp();
