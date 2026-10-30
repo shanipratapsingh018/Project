@@ -18,7 +18,7 @@ const AREAS = require(join(ROOT, "assets/js/service-areas.js"));
 const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "1.6.0";
+const VERSION = "1.6.1";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -116,13 +116,21 @@ const NAV = [
   ["about.html", "About Us", "nav.about"],
   ["contact.html", "Contact", "nav.contact"]
 ];
+// A landmark search is kept separate from an actual Google Business Profile.
+const addressText = () => B.address ? [B.address.street, B.address.locality, B.city, B.address.pincode].filter(Boolean).join(", ") : "";
+function mapLink(compact = false) {
+  const href = B.googleBusinessProfileUrl || B.googleMapsSearchUrl;
+  if (!href) return "";
+  const label = B.googleBusinessProfileUrl ? "View workshop on Google Maps" : "Search address on Google Maps";
+  return `<a class="${compact ? "" : "btn btn--outline btn--block"}" data-map-link href="${esc(href)}" target="_blank" rel="noopener noreferrer">${compact ? "" : ic("pin")}${label}</a>`;
+}
 const BACK_HOME = `<a class="back-home" href="index.html">${'<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg>'}<span data-i18n="back.home">Back to Home</span></a>`;
 function businessLd() {
   const ld = {
     "@context": "https://schema.org", "@type": "AutoRepair", name: B.name, url: url("index.html"),
     telephone: B.phoneE164, areaServed: { "@type": "City", name: B.city },
     address: B.address
-      ? { "@type": "PostalAddress", streetAddress: B.address.street, addressLocality: B.city, addressRegion: B.state, postalCode: B.address.pincode, addressCountry: B.country }
+      ? { "@type": "PostalAddress", streetAddress: B.address.street, addressLocality: B.city, addressRegion: B.state, ...(B.address.pincode ? { postalCode: B.address.pincode } : {}), addressCountry: B.country }
       : { "@type": "PostalAddress", addressLocality: B.city, addressRegion: B.state, addressCountry: B.country },
     description: "Multi-brand car servicing, maintenance, diagnostics and repairs in Indore with transparent estimates."
   };
@@ -184,7 +192,7 @@ ${body}
       <a class="brand" href="index.html">${LOGO}${WORDMARK}</a>
       <p>Multi-brand car servicing, diagnostics and repairs in ${esc(B.city)}, ${esc(B.state)}. Estimates are indicative until inspection; extra work only with your approval.</p>
       <p>Call / WhatsApp<br><span class="phone-line" data-phone>${esc(B.phoneDisplay)}</span></p>
-      ${B.address ? `<p>${esc(B.address.street)}, ${esc(B.address.locality || "")} ${esc(B.city)} ${esc(B.address.pincode || "")}</p>` : ""}
+      ${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${mapLink(true)}` : ""}
       ${B.hours ? `<p>${B.hours.map((h) => `${esc(h.days)}: ${esc(h.open)}–${esc(h.close)}`).join("<br>")}</p>` : `<p class="small">Working hours: please call or WhatsApp to confirm.</p>`}
     </div>
     <div><h4>Services</h4><ul>${SERVICE_PAGES.map((p) => `<li><a href="${p.file}">${esc(p.nav)}</a></li>`).join("")}</ul></div>
@@ -480,7 +488,7 @@ ${faqBlock(C.faqs)}
 <section class="band band--white" id="contact"><div class="wrap two-col">
   <div class="prose"><span class="eyebrow">Contact</span><h2 style="margin-top:0">Talk to a mechanic</h2>
     <p>Call or WhatsApp <span class="phone-line" style="color:var(--ink)" data-phone>${esc(B.phoneDisplay)}</span></p>
-    ${B.address ? `<p>${esc(B.address.street)}, ${esc(B.city)}</p>` : `<p class="muted">Workshop address will be shown here once confirmed. Ask on WhatsApp for directions.</p>`}
+    ${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${mapLink()}` : `<p class="muted">Workshop address will be shown here once confirmed. Ask on WhatsApp for directions.</p>`}
     ${B.hours ? "" : `<p class="muted">Working hours: please call or WhatsApp to confirm.</p>`}
   </div>
   <div class="side-card" style="position:static"><a class="btn btn--block" href="tel:${B.phoneE164}" data-tel>${ic("phone")}Call ${esc(B.phoneDisplay)}</a><a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a><a class="btn btn--outline btn--block" href="booking.html">${ic("calendar")}Booking form</a></div>
@@ -630,11 +638,11 @@ function contactPage() {
 <section class="band band--white"><div class="wrap two-col">
   <div class="prose">
     <h2 style="margin-top:0">Phone &amp; WhatsApp</h2><p class="phone-line" style="color:var(--ink);font-size:1.4rem" data-phone>${esc(B.phoneDisplay)}</p>
-    <h2>Workshop</h2>${B.address ? `<p>${esc(B.address.street)}, ${esc(B.city)} ${esc(B.address.pincode || "")}</p>` : `<p class="placeholder">Please call or WhatsApp for the workshop address and directions before visiting.</p>`}
+    <h2>Workshop</h2>${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${!B.googleBusinessProfileUrl && B.googleMapsSearchUrl ? '<p class="small muted">The map link searches the landmark area. Please call for the exact workshop entrance before visiting.</p>' : ""}` : `<p class="placeholder">Please call or WhatsApp for the workshop address and directions before visiting.</p>`}
     <h2>Working hours</h2>${B.hours ? `<p>${B.hours.map((h) => `${esc(h.days)}: ${esc(h.open)}–${esc(h.close)}`).join("<br>")}</p>` : `<p class="placeholder">Please call or WhatsApp to confirm today’s hours and appointment availability.</p>`}
     ${B.email ? `<h2>Email</h2><p>${esc(B.email)}</p>` : ""}
   </div>
-  <div class="side-card"><a class="btn btn--block" href="tel:${B.phoneE164}" data-tel>${ic("phone")}Call now</a><a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a><a class="btn btn--outline btn--block" href="booking.html">${ic("calendar")}Booking form</a>${B.googleBusinessProfileUrl ? `<a class="btn btn--outline btn--block" href="${esc(B.googleBusinessProfileUrl)}" target="_blank" rel="noopener">${ic("pin")}Google Maps</a>` : ""}</div>
+  <div class="side-card"><a class="btn btn--block" href="tel:${B.phoneE164}" data-tel>${ic("phone")}Call now</a><a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a><a class="btn btn--outline btn--block" href="booking.html">${ic("calendar")}Booking form</a>${mapLink()}</div>
 </div></section>`;
   return layout({ file: "contact.html", title: "Contact | Garagewala — Car Mechanic in Indore", desc: "Call or WhatsApp Garagewala for car service, repair quotes and pickup and drop bookings.", body, navKey: "contact.html" });
 }
@@ -709,14 +717,14 @@ ${ctaBand("Want a result like this for your car?")}`;
 
 function reviewsPage() {
   const body = `
-<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Reviews</p><span class="eyebrow">Reviews</span><h1>Customer reviews</h1><p>We publish only genuine reviews from customers who agreed to share them. Until those are in, sample reviews show how this page will look.</p></div></section>
+<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Reviews</p><span class="eyebrow">Reviews</span><h1>Customer reviews</h1><p>Had your car serviced at Garagewala? Share your experience. We’ll publish genuine customer feedback here with permission.</p></div></section>
 ${reviewsSection(true)}
 <section class="band"><div class="wrap prose">
   <h2 style="margin-top:0">Our review policy</h2>
   <ul>
-    <li>Every published review comes from a real customer and is shown only with their permission.</li>
+    <li>Reviews are approved by the garage owner and credited to their source. Customer-submitted feedback is published with permission.</li>
     <li>We don't edit what customers say, apart from removing phone numbers or other personal details.</li>
-    <li>Sample reviews are clearly marked and are removed as soon as genuine reviews are added.</li>
+    <li>We do not publish customer phone numbers, addresses or other private contact details.</li>
   </ul>
 </div></section>`;
   return layout({ file: "reviews.html", title: "Customer Reviews | Garagewala", desc: "Reviews from Garagewala customers and how to share your own feedback on car servicing and repairs.", body, navKey: "reviews.html" });

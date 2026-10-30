@@ -1,4 +1,4 @@
-> v1.5: run `npm run build` after content edits. Stock downloads are optional; missing photos use bundled labelled illustrations at build time. Reviews may use explicit customer consent or an owner-authorized public review screenshot, recorded separately with its source. Never publish another garage’s reviews as your own.
+> v1.6.1: run `npm run build` after content edits. Add only genuine Garagewala customer reviews with owner approval and customer permission. Reviews and ratings from other garages are removed. The Maps address search is separate from an actual Google Business Profile.
 
 # How to update prices, PIN codes, gallery photos and reviews
 

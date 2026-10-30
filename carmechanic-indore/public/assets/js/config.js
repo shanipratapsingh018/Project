@@ -21,11 +21,12 @@
       phoneE164: "+918965957978",
       whatsapp: "918965957978",
       email: null,             // e.g. "hello@yourdomain.in" — leave null to hide
-      address: null,           // DO NOT invent. Fill when confirmed: { street, locality, pincode }
+      address: { street: "Front of Regional Park", locality: null, pincode: null }, // landmark supplied by the owner; exact PIN not supplied
       geo: null,               // { lat, lng } — only real workshop coordinates
       hours: null,             // e.g. [{ days: "Mon–Sat", open: "09:30", close: "19:30" }]
       siteUrl: "https://shanipratapsingh018.github.io/Project", // replace with your domain (used for canonical URLs & sitemap)
-      googleBusinessProfileUrl: null,
+      googleBusinessProfileUrl: null, // actual existing Google listing URL only
+      googleMapsSearchUrl: "https://www.google.com/maps/search/?api=1&query=Front%20of%20Regional%20Park%2C%20Indore", // landmark search, not a verified business listing
       googleAnalyticsId: null,  // e.g. "G-XXXXXXX"
       bookingTimeoutMs: 15000,  // stop waiting after 15s; WhatsApp fallback remains available
       bookingEndpoint: null     // e.g. "https://api.yourdomain.in/bookings" — null = WhatsApp fallback

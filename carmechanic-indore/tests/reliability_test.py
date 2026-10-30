@@ -102,11 +102,27 @@ try:
         check(pg.locator('#qb-date').get_attribute('aria-invalid')=='true' and pg.locator('[data-qb-wa]').count()==0,'Quick booking also rejects past dates');pg.close()
 
         pg=ctx.new_page();pg.goto(base+'reviews.html');pg.wait_for_load_state('networkidle')
-        check(pg.locator('.review').count()==2 and 'Harshita Sharma' in pg.inner_text('main') and 'Taher M. Alot' in pg.inner_text('main'),'Both owner-provided Google reviews render with original names')
-        check('The Car Junction' in pg.inner_text('[data-review-summary]') and 'not a live Google feed' in pg.inner_text('[data-review-summary]'),'Rating snapshot names the source garage and does not claim live sync')
-        check('aggregateRating' not in pg.content(),'Screenshot rating is not falsely injected as a live aggregate in structured data')
+        check(pg.locator('.review').count()==0 and pg.locator('.review-empty').is_visible(),'Invite Garagewala customers without publishing another garage’s reviews')
+        check(pg.locator('[data-review-summary]').is_hidden() and 'The Car Junction' not in pg.inner_text('main'),'Another garage’s name and aggregate rating are removed')
+        check('aggregateRating' not in pg.content(),'No unsupported aggregate rating is injected into structured data')
         pg.locator('.menu-btn').click();pg.keyboard.press('Escape')
         check(pg.locator('.menu-btn').get_attribute('aria-expanded')=='false','Escape closes the mobile menu accessibly')
+        pg.close()
+        for consent in [False,True]:
+            review_page=ctx.new_page()
+            fixture={'name':'Test Customer','rating':5,'text':'Local regression fixture, never published.','source':'Customer','isSample':False,'approved':True,'consent':consent,'ownerApprovedScreenshot':True}
+            body=(ROOT/'public/assets/js/reviews.js').read_text()+'\nwindow.CMI_REVIEWS.items='+json.dumps([fixture])+';'
+            review_page.route('**/assets/js/reviews.js*',lambda route:route.fulfill(status=200,content_type='text/javascript',body=body))
+            review_page.goto(base+'reviews.html');review_page.wait_for_load_state('networkidle')
+            check(review_page.locator('.review').count()==(1 if consent else 0),'Approved feedback publishes only with customer permission: '+str(consent))
+            review_page.close()
+        pg=ctx.new_page();pg.goto(base+'contact.html');pg.wait_for_load_state('networkidle')
+        check(pg.locator('[data-workshop-address]').first.text_content()=='Front of Regional Park, Indore','Contact page shows the owner-supplied landmark address')
+        from urllib.parse import urlsplit,parse_qs
+        maps=pg.locator('.side-card [data-map-link]')
+        check(urlsplit(maps.get_attribute('href')).hostname=='www.google.com' and parse_qs(urlsplit(maps.get_attribute('href')).query)['query']==['Front of Regional Park, Indore'] and 'Search address' in maps.text_content(),'Google Maps link is explicitly an address search, not an invented profile')
+        ld=json.loads(pg.locator('script[type="application/ld+json"]').first.text_content())
+        check(ld['address']['streetAddress']=='Front of Regional Park' and 'postalCode' not in ld['address'] and 'geo' not in ld and 'sameAs' not in ld,'Structured data does not invent a postal code, coordinates or Google Business Profile')
         pg.close()
         check(not errors,'No uncaught JavaScript errors in regression scenarios: '+repr(errors))
         browser.close()

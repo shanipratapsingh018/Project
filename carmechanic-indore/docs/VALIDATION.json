@@ -1,16 +1,13 @@
 {
-  "version": "1.6.0",
+  "version": "1.6.1",
   "brand": "Garagewala \u00b7 Nice Car Mechanic",
-  "site_url": "https://shanipratapsingh018.github.io/Project/",
+  "address": "Front of Regional Park, Indore",
   "validation": {
-    "npm test": "passed: 276 approved rate-card figures and 41 calculator/area/asset/form/server/build tests",
-    "npm run test:browser": "passed: all 22 pages on mobile and desktop plus interactions",
-    "npm run test:reliability": "passed: 22 booking and review checks",
-    "npm run test:services": "passed: 35 responsive service-menu checks"
+    "npm test": "passed: 276 approved price figures and 41 unit/server/build checks",
+    "npm run test:browser": "passed: all 22 pages mobile/desktop and existing interactions",
+    "npm run test:reliability": "passed: 27 checks including removal of unrelated reviews, publication permission, landmark address and Maps links",
+    "static_address_audit": "passed: supplied address on all 22 pages, no invented PIN/coordinates/profile sameAs"
   },
-  "limits": [
-    "API tests use intercepted responses; no live booking backend is configured.",
-    "No WhatsApp messages are sent by the tests.",
-    "Google review rating is an owner-provided screenshot snapshot."
-  ]
+  "google_status": "Only a labelled address/landmark search exists. Google Business Profile creation and ownership verification remain for the owner.",
+  "reviews_status": "No genuine Garagewala reviews supplied. Unrelated reviews and aggregate rating removed; customer permission required for publication."
 }

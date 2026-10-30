@@ -29,12 +29,11 @@ self-contained delivery, honest customer content and basic deployment behavior.
 
 ## Reviews and source limits
 
-The owner supplied screenshots of reviews by Harshita Sharma and Taher M. Alot, and explicitly confirmed
-that The Car Junction is their garage. Those excerpts are published with that source name preserved.
-The owner-authorized public screenshot basis is recorded separately from explicit customer consent;
-no customer-consent claim is invented. The screenshot's 4.8 rating / 34 reviews is labelled as a snapshot.
-No live Google API, original review URL or independently verified capture date was supplied.
-Sample testimonials and competitor reviews were not added as customers of this garage.
+The owner clarified that the earlier Google review screenshots belonged to another garage.
+Both excerpts, the aggregate rating and the screenshot-permission bypass have been removed.
+The website now invites genuine Garagewala feedback. No Garagewala Google listing has been
+created or verified; the owner must complete Google Business Profile signup and verification.
+The supplied Regional Park address is shown as a landmark; the Maps search is not a verified listing.
 
 ## Validation
 

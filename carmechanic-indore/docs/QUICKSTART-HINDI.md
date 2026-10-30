@@ -30,7 +30,13 @@ Customer form bharta hai; website WhatsApp message taiyar karti hai. Customer ko
 WhatsApp mein Send dabana hota hai. Uske baad garage slot aur final quote confirm karta hai.
 Website mein abhi payment, database ya admin dashboard nahi hai.
 
-## Reviews
+## Reviews aur Google listing
 
-Tumhare diye hue dono reviews add hain. The Car Junction ka source naam preserved hai.
-4.8 rating / 34 reviews screenshot ka snapshot hai; live update nahi hota.
+Doosre garage ke reviews aur unki rating hata di gayi hai. Abhi website genuine Garagewala
+customers se feedback maangti hai; Share Your Experience WhatsApp kholta hai.
+
+Address: Front of Regional Park, Indore. Maps button landmark-address search hai, verified
+Garagewala Google listing nahi. Apne Google account se https://business.google.com/create
+par Garagewala ki apni listing create/claim aur verify karo. Kisi aur garage ka profile claim
+ya rename mat karo. Exact entrance pin, postal code aur hours owner ko fill karne hain.
+Verification ke baad Maps sharing aur Ask for reviews links website mein connect kiye ja sakte hain.

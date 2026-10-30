@@ -1,4 +1,4 @@
-> v1.5 update: sample testimonials are removed. Two owner-provided Google review excerpts and a labelled screenshot rating snapshot are now in reviews.js. The default build uses local labelled illustrations and bundled fonts; no remote asset download is required. The detailed v1.5 report is RELIABILITY_REVIEW.md.
+> v1.6.1: reviews belonging to another garage and their rating have been removed. There are no published Garagewala reviews yet. The Regional Park address is owner-supplied; the Maps search is not a verified Google listing. Older notes below describe historical placeholder assumptions.
 
 # Placeholder content & pricing assumptions
 

@@ -452,7 +452,7 @@
   }
   function feedbackWa() { return waUrl(`Hello ${B.name}, I'd like to share feedback about my car service.\nName: \nCar: \nService: \nMy feedback: `); }
   function renderReviews() {
-    const genuine = RV.items.filter((r) => r.isSample === false && r.approved === true && (r.consent === true || r.ownerApprovedScreenshot === true));
+    const genuine = RV.items.filter((r) => r.isSample === false && r.approved === true && r.consent === true);
     const samples = RV.items.filter((r) => r.isSample);
     const list = genuine.length ? genuine : RV.showSamples ? samples : [];
     const isSample = !genuine.length;

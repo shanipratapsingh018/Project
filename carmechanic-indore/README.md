@@ -1,8 +1,7 @@
-# Garagewala — Nice Car Mechanic · v1.6
+# Garagewala — Nice Car Mechanic · v1.6.1
 
 A ready-to-run static garage website branded **Garagewala · Nice Car Mechanic**: 22 responsive pages, 69-service price list,
-vehicle-specific estimates, pickup-area checks, before/after gallery, owner-supplied
-Google review excerpts and WhatsApp booking. Node.js 18+ is needed for local serving
+vehicle-specific estimates, pickup-area checks, before/after gallery, customer-feedback invitation and WhatsApp booking. Node.js 18+ is needed for local serving
 and rebuilding; a static hosting provider needs only the included `public/` files.
 
 ## Live website
@@ -88,10 +87,9 @@ adds timeout, duplicate submit, stale estimate, quantity handoff and review-sour
 
 - Business contact details, vehicle models, timezone and pricing adjustments: `public/assets/js/config.js`.
 - Prices: `public/assets/js/rate-card.js`, with reference CSV in `docs/rate-card/`. Run tests and rebuild after edits.
-- Reviews: `public/assets/js/reviews.js`. Two excerpts were transcribed from screenshots supplied by the owner,
-  who confirmed that **The Car Junction** is the same garage branded here as CarMechanic Indore.
-  The 4.8/34 summary is labelled as an owner-provided screenshot snapshot, not a live Google feed.
-  No review date, original Google URL or additional testimonial has been invented.
+- Address: Front of Regional Park, Indore, as supplied by the owner. No PIN or coordinates were supplied.
+- Maps: `googleMapsSearchUrl` searches that landmark address. It is deliberately separate from `googleBusinessProfileUrl`; no Garagewala Google listing or review editor has been created or verified.
+- Reviews: `public/assets/js/reviews.js` is empty. Earlier screenshots were confirmed to belong to another garage and were removed, including their rating. Add only genuine Garagewala customer feedback with approval and publication consent.
 - Photos: included sample illustrations are explicitly labelled. Add your own workshop photos or optionally run
   `npm run photos`, then rebuild. Stock photo credits and open-font licences remain included.
   The default delivered build makes no third-party asset requests.

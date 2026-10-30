@@ -1,18 +1,20 @@
-v1.6 Garagewala branding and Services & Prices refresh
+v1.6.1: Regional Park address, Maps search, unrelated reviews removed
 
 carmechanic-indore/README.md
 carmechanic-indore/docs/CHANGELOG.md
+carmechanic-indore/docs/DEMO_CONTENT.md
+carmechanic-indore/docs/HOW_TO_UPDATE.md
 carmechanic-indore/docs/LAUNCH_CHECKLIST.md
 carmechanic-indore/docs/QUICKSTART-HINDI.md
+carmechanic-indore/docs/RELIABILITY_REVIEW.md
 carmechanic-indore/docs/VALIDATION.json
 carmechanic-indore/package.json
 carmechanic-indore/public/404.html
 carmechanic-indore/public/about.html
 carmechanic-indore/public/accident-repair-indore.html
-carmechanic-indore/public/assets/css/style.css
 carmechanic-indore/public/assets/js/app.js
 carmechanic-indore/public/assets/js/config.js
-carmechanic-indore/public/assets/js/price-table.js
+carmechanic-indore/public/assets/js/reviews.js
 carmechanic-indore/public/booking.html
 carmechanic-indore/public/brake-clutch-repair-indore.html
 carmechanic-indore/public/car-ac-repair-indore.html
@@ -29,11 +31,9 @@ carmechanic-indore/public/pickup-drop.html
 carmechanic-indore/public/policies.html
 carmechanic-indore/public/privacy.html
 carmechanic-indore/public/reviews.html
-carmechanic-indore/public/robots.txt
 carmechanic-indore/public/services.html
 carmechanic-indore/public/suspension-steering-repair-indore.html
 carmechanic-indore/public/terms.html
 carmechanic-indore/tests/browser_test.py
-carmechanic-indore/tests/photos.test.js
+carmechanic-indore/tests/reliability_test.py
 carmechanic-indore/tools/build.mjs
-New files: garagewala-logo.png, sitemap.xml, .nojekyll, tests/services_test.py

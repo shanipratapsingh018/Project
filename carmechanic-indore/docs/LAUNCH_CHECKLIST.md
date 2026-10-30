@@ -6,12 +6,13 @@
 - [ ] Add prices for the 20 "Price on request" services when ready (see `docs/DEMO_CONTENT.md`)
 - [ ] Review the fuel / parts-grade / older-car adjustments in `config.js → pricing`
 - [ ] Confirm the 16 covered pickup PIN codes in `service-areas.js`, especially the outlying villages in 452016 / 452020, and decide on 452004 / 452008
-- [ ] Workshop address, Google Maps coordinates, working hours → `business.address / geo / hours`
+- [x] Landmark address supplied: Front of Regional Park, Indore
+- [ ] Owner to confirm exact Google Maps entrance pin, postal code and working hours
 - [ ] Logo approval (current mark is a concept: hex nut + gauge needle)
 - [ ] Workshop photos (owner's own or licensed) in `assets/img/`
 - [ ] Warranty, payment, cancellation and liability text → terms.html / policies.html placeholders
 - [ ] Confirm whether emergency/breakdown repair is offered (page not created yet)
-- [x] Two owner-supplied Google review screenshots added, with The Car Junction attribution and a labelled rating snapshot
+- [ ] Collect genuine Garagewala customer reviews with permission; borrowed reviews and their rating were removed
 - [ ] Google review link → `reviews.js → googleReviewUrl`
 - [ ] Before/after photos of real jobs (same car, owner consent, plates blurred) → `gallery.js`
 - [ ] Confirm accident repair is offered (page is live) and whether emergency repair is offered (page is off)

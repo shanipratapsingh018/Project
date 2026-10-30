@@ -182,10 +182,10 @@ with sync_playwright() as p:
     check("booking confirmed" not in pg.inner_text("[data-b-result]").lower() and "only when you press send" in pg.inner_text("[data-b-result]").lower(), "Booking is clearly a request until the WhatsApp message is sent")
     pg.screenshot(path=f"{SHOTS}/booking-mobile.png", full_page=False)
 
-    # Reviews: six labelled samples, share buttons
+    # Reviews: genuine customer invitation, no borrowed testimonials
     pg.goto(BASE + "index.html"); pg.wait_for_load_state("networkidle")
-    check(pg.locator("#reviews .review").count() == 2 and pg.locator("#reviews .tag--demo").count() == 0, "Two owner-provided genuine reviews; no sample testimonials")
-    check("4.8 / 5" in pg.inner_text("#reviews [data-review-summary]") and "not a live Google feed" in pg.inner_text("#reviews [data-review-summary]"), "Google rating snapshot is clearly sourced and labelled")
+    check(pg.locator("#reviews .review").count() == 0 and pg.locator("#reviews .tag--demo").count() == 0, "No reviews from another garage or sample testimonials")
+    check(pg.locator("#reviews [data-review-summary]").is_hidden() and pg.locator("#reviews .review-empty").is_visible(), "No borrowed Google rating; invite genuine Garagewala customers instead")
     check("wa.me/918965957978" in pg.get_attribute("#reviews [data-share-review]", "href"), "'Share Your Experience' falls back to WhatsApp (no Google URL set)")
     check(pg.locator("#before-after .ba-card").count() == 4, "Homepage shows 4-card Before & After preview")
 

@@ -1,3 +1,11 @@
+# v1.6.1 — Regional Park address
+
+- Owner-supplied address: Front of Regional Park, Indore; no postal code or coordinates invented.
+- Added labelled Google Maps landmark-search links to Contact, homepage and footer.
+- Kept map search separate from an actual Google Business Profile and Google review editor.
+- Removed reviews and rating after the owner clarified they belonged to a different business.
+- Removed the screenshot-permission bypass; customer permission is required for publication.
+
 # v1.6 — Garagewala service menu
 
 - Garagewala branding, Nice Car Mechanic tagline and a generated car/garage/wrench logo in the header, footer and favicon.
