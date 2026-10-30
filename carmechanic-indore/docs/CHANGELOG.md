@@ -1,3 +1,12 @@
+# v1.6 — Garagewala service menu
+
+- Garagewala branding, Nice Car Mechanic tagline and a generated car/garage/wrench logo in the header, footer and favicon.
+- Services & Prices rebuilt with a warm editorial hero, three maintenance packages, and 69 individual service cards.
+- Search, category filters, car-category estimates and matching comparison tables.
+- Static prices and booking links remain available without JavaScript; approved price data is unchanged.
+- 35 new service-menu browser checks and refreshed asset versions.
+- The configured site URL now matches the live GitHub Pages location.
+
 # v1.5 — reliability and self-contained delivery
 
 Booking validation, quantity handoff, stale-estimate invalidation, API timeout/duplicate protection, local fonts/images, zero-dependency serving, SEO configuration, source-labelled owner reviews and regression tests. See RELIABILITY_REVIEW.md.

@@ -1,17 +1,16 @@
 {
-  "version": "1.5.0",
-  "node": "24.19.0",
-  "browser": "system Chromium via Playwright 1.62.0",
+  "version": "1.6.0",
+  "brand": "Garagewala \u00b7 Nice Car Mechanic",
+  "site_url": "https://shanipratapsingh018.github.io/Project/",
   "validation": {
-    "npm test": "passed: 276 price figures and 41 test cases",
-    "npm run test:browser": "passed: all 22 pages in mobile and desktop, plus interaction checks",
-    "npm run test:reliability": "passed: 22 checks"
+    "npm test": "passed: 276 approved rate-card figures and 41 calculator/area/asset/form/server/build tests",
+    "npm run test:browser": "passed: all 22 pages on mobile and desktop plus interactions",
+    "npm run test:reliability": "passed: 22 booking and review checks",
+    "npm run test:services": "passed: 35 responsive service-menu checks"
   },
-  "reviews": "Two owner-supplied screenshot excerpts; same-garage identity confirmed by user. 4.8/34 is explicitly a snapshot.",
   "limits": [
-    "No live booking API configured or tested; API tests use intercepted responses.",
-    "No WhatsApp messages sent by the tests.",
-    "No external hosting deployment performed.",
-    "Set the actual domain and rebuild to enable indexing and sitemap."
+    "API tests use intercepted responses; no live booking backend is configured.",
+    "No WhatsApp messages are sent by the tests.",
+    "Google review rating is an owner-provided screenshot snapshot."
   ]
 }

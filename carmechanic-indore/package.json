@@ -1,8 +1,8 @@
 {
   "name": "carmechanic-indore",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
-  "description": "CarMechanic Indore \u2014 static car service website with cost estimator and WhatsApp booking",
+  "description": "Garagewala \u2014 Nice Car Mechanic in Indore. Car service prices, estimates and WhatsApp booking.",
   "scripts": {
     "build": "node tools/build.mjs",
     "test": "node tests/ratecard.test.js && node tests/estimate.test.js && node tests/area.test.js && node tests/photos.test.js && node tests/forms.test.js && node --test tests/server.test.mjs && node --test tests/build.test.mjs",
@@ -12,7 +12,8 @@
     "import-rates": "node tools/import-rates.mjs",
     "photos": "node tools/fetch-photos.mjs",
     "start": "node tools/serve.mjs",
-    "test:reliability": "python3 tests/reliability_test.py"
+    "test:reliability": "python3 tests/reliability_test.py",
+    "test:services": "python3 tests/services_test.py"
   },
   "engines": {
     "node": ">=18"

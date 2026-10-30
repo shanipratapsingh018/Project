@@ -1,9 +1,17 @@
-# CarMechanic Indore — v1.5
+# Garagewala — Nice Car Mechanic · v1.6
 
-A ready-to-run static garage website: 22 responsive pages, 69-service price list,
+A ready-to-run static garage website branded **Garagewala · Nice Car Mechanic**: 22 responsive pages, 69-service price list,
 vehicle-specific estimates, pickup-area checks, before/after gallery, owner-supplied
 Google review excerpts and WhatsApp booking. Node.js 18+ is needed for local serving
 and rebuilding; a static hosting provider needs only the included `public/` files.
+
+## Live website
+
+https://shanipratapsingh018.github.io/Project/
+
+The Services & Prices page has three service packages, 69 service cards, search, category filters,
+vehicle-specific estimates and an expandable comparison table. The generated logo is bundled locally.
+Car types change indicative prices; the approved rate card remains unchanged.
 
 ## Start locally
 
@@ -54,7 +62,10 @@ warns that a request may already have arrived. Tests use intercepted API respons
 npm test
 npm run test:browser
 npm run test:reliability
+npm run test:services
 ```
+
+The service-menu suite adds 35 desktop/mobile checks, including no-JavaScript prices and filters.
 
 The browser suites need Python 3 with Playwright and Pillow, plus Chromium:
 

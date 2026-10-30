@@ -406,6 +406,44 @@
   }
 
 
+  /* ---------- Services menu: progressive search and car-specific prices ---------- */
+  function mountServiceExplorer(root) {
+    const search = $("[data-services-search]", root), car = $("[data-services-car]", root);
+    const cards = $$("[data-service-card]", root), filters = $$("[data-service-filter]", root);
+    let group = "all";
+    const searchable = Object.fromEntries(C.services.map((s) => [s.id, [s.name, s.group, ...(s.includes || [])].join(" ").toLowerCase()]));
+    function update() {
+      const query = search.value.trim().toLowerCase(), category = car.value;
+      const visible = new Set();
+      cards.forEach((card) => {
+        const id = card.dataset.serviceCard;
+        card.hidden = (group !== "all" && card.dataset.serviceGroup !== group) || !searchable[id].includes(query);
+        if (!card.hidden) visible.add(id);
+        const price = PR.quickRange(C, id, category);
+        $("[data-service-range]", card).textContent = price.text;
+        $("[data-service-price-status]", card).textContent = price.status === "priced" ? "Published estimate" : price.status === "inspection" ? "Inspection first" : "Let’s talk";
+        $(".service-card-footer a", card).firstChild.textContent = price.status === "priced" ? "Book service" : "Request quote";
+      });
+      $$("[data-svc-row]", root).forEach((row) => { row.hidden = !visible.has(row.dataset.svcRow); });
+      $$(".pl-group", root).forEach((section) => { section.hidden = !$$("[data-svc-row]", section).some((row) => !row.hidden); });
+      const categoryLabel = (C.categories.find((c) => c.id === category) || {}).label || category;
+      $("[data-service-count]", root).textContent = `${visible.size} of ${C.services.length} services · ${categoryLabel} prices`;
+      $("[data-services-empty]", root).hidden = visible.size !== 0;
+      $("[data-compare-prices]", root).hidden = visible.size === 0;
+      $$("[data-package-range]", root).forEach((el) => { el.textContent = PR.quickRange(C, el.dataset.packageRange, category).text; });
+      $$("[data-package-car]", root).forEach((el) => { el.textContent = categoryLabel + " · standard parts"; });
+    }
+    filters.forEach((button) => button.addEventListener("click", () => {
+      group = button.dataset.serviceFilter;
+      filters.forEach((b) => { b.classList.toggle("on", b === button); b.setAttribute("aria-pressed", String(b === button)); });
+      update();
+    }));
+    search.addEventListener("input", update); car.addEventListener("change", update);
+    $("[data-clear-services]", root).addEventListener("click", () => { search.value = ""; filters[0].click(); search.focus(); });
+    $("[data-explorer-tools]", root).hidden = false;
+    update();
+  }
+
   /* ---------- Reviews (data in reviews.js) ---------- */
   const RV = window.CMI_REVIEWS || { items: [], showSamples: false };
   function stars(n) {
@@ -770,6 +808,7 @@
     $$("[data-estimator]").forEach(mountEstimator);
     $$("[data-booking]").forEach(mountBooking);
     renderPackages(); renderRateTables(); renderReviews(); renderAreas(); renderGallery();
+    $$("[data-service-explorer]").forEach(mountServiceExplorer);
     $$("form[data-quick-book]").forEach(mountQuickBook);
     wireWhatsApp();
     $$("[data-phone]").forEach((el) => { el.textContent = B.phoneDisplay; });

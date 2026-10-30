@@ -1,60 +1,39 @@
-Updated: public/gallery.html
-Updated: public/reviews.html
-Updated: public/brake-clutch-repair-indore.html
-Updated: public/about.html
-Updated: public/estimate.html
-Updated: public/contact.html
-Updated: public/assets/js/pricing.js
-Updated: public/assets/js/app.js
-Updated: public/assets/js/reviews.js
-Updated: public/assets/js/config.js
-Updated: public/404.html
-Updated: public/index.html
-Removed: public/sitemap.xml
-Updated: public/policies.html
-Updated: public/car-detailing-indore.html
-Updated: public/car-service-indore.html
-Updated: public/accident-repair-indore.html
-Updated: public/engine-diagnostics-indore.html
-Updated: public/services.html
-Updated: public/pickup-drop.html
-Updated: public/booking.html
-Updated: public/privacy.html
-Updated: public/terms.html
-Updated: public/car-battery-electrical-indore.html
-Updated: public/suspension-steering-repair-indore.html
-Updated: public/car-ac-repair-indore.html
-Updated: public/robots.txt
-Updated: public/denting-painting-indore.html
-Updated: README.md
-Updated: tests/photos.test.js
-Updated: tests/browser_test.py
-Updated: package.json
-Updated: tools/build.mjs
-Updated: docs/DEMO_CONTENT.md
-Updated: docs/LAUNCH_CHECKLIST.md
-Updated: docs/HOW_TO_UPDATE.md
-Updated: docs/CHANGELOG.md
-Added: docs/RELIABILITY_REVIEW.md
-Added: docs/QUICKSTART-HINDI.md
-Added: public/.htaccess
-Added: public/_headers
-Added: tools/serve.mjs
-Added: tests/forms.test.js
-Added: tests/server.test.mjs
-Added: tests/requirements.txt
-Added: tests/reliability_test.py
-Added: tests/build.test.mjs
-Added: public/assets/fonts/barlow-condensed-latin-600-normal.woff2
-Added: public/assets/fonts/barlow-latin-400-normal.woff2
-Added: public/assets/fonts/barlow-latin-500-normal.woff2
-Added: public/assets/fonts/barlow-latin-600-normal.woff2
-Added: public/assets/fonts/ibm-plex-mono-LICENSE.txt
-Added: public/assets/fonts/ibm-plex-mono-latin-600-normal.woff2
-Added: public/assets/fonts/barlow-latin-700-normal.woff2
-Added: public/assets/fonts/ibm-plex-mono-latin-500-normal.woff2
-Added: public/assets/fonts/barlow-condensed-latin-700-normal.woff2
-Added: public/assets/fonts/barlow-LICENSE.txt
-Added: public/assets/fonts/barlow-condensed-LICENSE.txt
-Added: public/assets/js/forms.js
-Added: public/assets/css/fonts.css
+v1.6 Garagewala branding and Services & Prices refresh
+
+carmechanic-indore/README.md
+carmechanic-indore/docs/CHANGELOG.md
+carmechanic-indore/docs/LAUNCH_CHECKLIST.md
+carmechanic-indore/docs/QUICKSTART-HINDI.md
+carmechanic-indore/docs/VALIDATION.json
+carmechanic-indore/package.json
+carmechanic-indore/public/404.html
+carmechanic-indore/public/about.html
+carmechanic-indore/public/accident-repair-indore.html
+carmechanic-indore/public/assets/css/style.css
+carmechanic-indore/public/assets/js/app.js
+carmechanic-indore/public/assets/js/config.js
+carmechanic-indore/public/assets/js/price-table.js
+carmechanic-indore/public/booking.html
+carmechanic-indore/public/brake-clutch-repair-indore.html
+carmechanic-indore/public/car-ac-repair-indore.html
+carmechanic-indore/public/car-battery-electrical-indore.html
+carmechanic-indore/public/car-detailing-indore.html
+carmechanic-indore/public/car-service-indore.html
+carmechanic-indore/public/contact.html
+carmechanic-indore/public/denting-painting-indore.html
+carmechanic-indore/public/engine-diagnostics-indore.html
+carmechanic-indore/public/estimate.html
+carmechanic-indore/public/gallery.html
+carmechanic-indore/public/index.html
+carmechanic-indore/public/pickup-drop.html
+carmechanic-indore/public/policies.html
+carmechanic-indore/public/privacy.html
+carmechanic-indore/public/reviews.html
+carmechanic-indore/public/robots.txt
+carmechanic-indore/public/services.html
+carmechanic-indore/public/suspension-steering-repair-indore.html
+carmechanic-indore/public/terms.html
+carmechanic-indore/tests/browser_test.py
+carmechanic-indore/tests/photos.test.js
+carmechanic-indore/tools/build.mjs
+New files: garagewala-logo.png, sitemap.xml, .nojekyll, tests/services_test.py

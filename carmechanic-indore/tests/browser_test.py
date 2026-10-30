@@ -8,6 +8,16 @@ SHOTS = os.environ.get("SHOTS", os.path.join(os.path.dirname(__file__), "screens
 os.makedirs(SHOTS, exist_ok=True)
 class Quiet(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *a): pass
+    def do_GET(self):
+        if self.path.split("?")[0] == "/404.html":
+            # The deployed absolute base points at the public site. Use the
+            # local origin while exercising the same root-relative asset paths.
+            import re
+            with open(os.path.join(ROOT, "404.html"), encoding="utf-8") as file:
+                body = re.sub(r'<base href="[^"]+">', '<base href="/">', file.read()).encode()
+            self.send_response(200); self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
+        else: super().do_GET()
 handler = functools.partial(Quiet, directory=ROOT)
 srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
 threading.Thread(target=srv.serve_forever, daemon=True).start()
@@ -214,6 +224,7 @@ with sync_playwright() as p:
 
     # Services & prices page: full list, static HTML matches live render
     pg.goto(BASE + "services.html"); pg.wait_for_load_state("networkidle")
+    pg.locator("[data-compare-prices] summary").click()
     rows = pg.locator(".price-list tbody tr").count()
     check(rows == 69, f"Price list shows all 69 services (got {rows})")
     txt = pg.inner_text(".price-list")

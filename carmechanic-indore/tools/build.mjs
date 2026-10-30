@@ -18,7 +18,7 @@ const AREAS = require(join(ROOT, "assets/js/service-areas.js"));
 const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "1.5.0";
+const VERSION = "1.6.0";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -102,8 +102,9 @@ ${Object.entries(P).map(([k, d]) => `<symbol id="i-${k}" viewBox="0 0 24 24" fil
 <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8Z"/></symbol></defs></svg>`;
 const ic = (n, cls = "") => `<svg viewBox="0 0 24 24" ${cls ? `class="${cls}" ` : ""}aria-hidden="true"><use href="#i-${n}"/></svg>`;
 
-const LOGO = `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3.5 41.8 13.8v20.4L24 44.5 6.2 34.2V13.8Z" fill="#1d2024" stroke="#ff6b1a" stroke-width="3" stroke-linejoin="round"/><path d="M13.5 30a11 11 0 1 1 21 0" fill="none" stroke="#e9ecef" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="2.4 3.3"/><path d="M24 29 31.5 19.5" stroke="#ff6b1a" stroke-width="3.2" stroke-linecap="round"/><circle cx="24" cy="29" r="3.2" fill="#ff6b1a"/></svg>`;
-const FAVICON = "data:image/svg+xml," + encodeURIComponent(LOGO.replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" '));
+const LOGO = `<img class="brand-logo" src="assets/img/garagewala-logo.png?v=${VERSION}" alt="" width="48" height="48" aria-hidden="true">`;
+const WORDMARK = `<span class="brand-copy"><span class="brand-name">Garage<span>wala</span></span><span class="brand-sub">${esc(B.tagline)}</span></span>`;
+const FAVICON = `assets/img/garagewala-logo.png?v=${VERSION}`;
 
 /* ------------------------------ Layout ------------------------------ */
 const NAV = [
@@ -163,7 +164,7 @@ ${sprite}
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="index.html" aria-label="${esc(B.name)} home">${LOGO}<span><span class="brand-name">CarMechanic <span>Indore</span></span><span class="brand-sub">${esc(B.tagline)}</span></span></a>
+    <a class="brand" href="index.html" aria-label="${esc(B.name)} home">${LOGO}${WORDMARK}</a>
     <button class="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">${ic("menu")}</button>
     <nav class="nav" id="site-nav" aria-label="Main">${NAV.map(([h, l, k]) => `<a href="${h}" data-i18n="${k}"${navKey === h ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>
     <div class="header-actions">
@@ -180,7 +181,7 @@ ${body}
 <footer class="site-footer">
   <div class="wrap">
     <div style="display:grid;gap:14px;align-content:start">
-      <a class="brand" href="index.html">${LOGO}<span class="brand-name">CarMechanic <span>Indore</span></span></a>
+      <a class="brand" href="index.html">${LOGO}${WORDMARK}</a>
       <p>Multi-brand car servicing, diagnostics and repairs in ${esc(B.city)}, ${esc(B.state)}. Estimates are indicative until inspection; extra work only with your approval.</p>
       <p>Call / WhatsApp<br><span class="phone-line" data-phone>${esc(B.phoneDisplay)}</span></p>
       ${B.address ? `<p>${esc(B.address.street)}, ${esc(B.address.locality || "")} ${esc(B.city)} ${esc(B.address.pincode || "")}</p>` : ""}
@@ -451,7 +452,7 @@ function homepage() {
 </div></section>
 
 <section class="band band--dark"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">Why us</span><h2 data-i18n="sec.why">Why choose CarMechanic Indore</h2><p>No surprise bills. You see the estimate first, approve the quote, and get every line itemised.</p></div>
+  <div class="section-head"><span class="eyebrow">Why us</span><h2 data-i18n="sec.why">Why choose Garagewala</h2><p>No surprise bills. You see the estimate first, approve the quote, and get every line itemised.</p></div>
   <div class="why">${why}</div>
 </div></section>
 
@@ -486,7 +487,7 @@ ${faqBlock(C.faqs)}
 </div></section>
 ${ctaBand()}`;
   return layout({
-    file: "index.html", title: "Car Service & Repair in Indore | CarMechanic Indore",
+    file: "index.html", title: "Car Service & Repair in Indore | Garagewala",
     desc: "Multi-brand car mechanic in Indore. Get an instant car service cost estimate, book on WhatsApp, and pickup & drop in listed areas.",
     body, ld: [faqLd(C.faqs)], navKey: "index.html"
   });
@@ -495,24 +496,56 @@ ${ctaBand()}`;
 /* ------------------------------ Other pages ------------------------------ */
 function servicesHub() {
   const groups = [];
-  C.services.forEach((x) => { let g = groups.find((y) => y.group === x.group); if (!g) groups.push((g = { group: x.group, cat: x.category, ids: [] })); g.ids.push(x.id); });
-  const pageFor = (g) => (SERVICE_PAGES.find((p) => g.ids.includes(p.ids[0])) || {}).file;
-  const anchor = (g) => g.group.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  const offerLd = { "@context": "https://schema.org", "@type": "OfferCatalog", name: "CarMechanic Indore price list",
+  C.services.forEach((x) => { let g = groups.find((y) => y.group === x.group); if (!g) groups.push((g = { group: x.group, cat: x.category, ids: [], icon: x.icon })); g.ids.push(x.id); });
+  const offerLd = { "@context": "https://schema.org", "@type": "OfferCatalog", name: `${B.name} price list`,
     itemListElement: C.services.filter((x) => PR.quickRange(C, x.id, "hatchback").status === "priced").map((x) => {
       const q = PR.quickRange(C, x.id, "hatchback");
       return { "@type": "Offer", itemOffered: { "@type": "Service", name: x.name }, priceSpecification: { "@type": "PriceSpecification", priceCurrency: "INR", minPrice: q.range[0], maxPrice: q.range[1] } };
     }) };
+  const bundles = C.packages.slice(0, 3).map((p, i) => {
+    const id = p.services[0], service = svc[id];
+    return `<article class="care-package${i === 1 ? " care-package--featured" : ""}">
+      <div class="care-package-top"><span class="package-number">0${i + 1}</span><span class="package-kicker">${i === 1 ? "Recommended" : i === 0 ? "The essentials" : "The full refresh"}</span>${ic(i === 2 ? "shield" : "service")}</div>
+      <h3>${esc(p.title.replace("Car ", ""))}</h3><p>${esc(p.blurb)}</p>
+      <div class="care-package-price" data-package-range="${id}">${esc(PR.quickRange(C, id, "hatchback").text)}</div>
+      <span class="package-car-label" data-package-car>Hatchback · standard parts</span>
+      <div class="package-includes">${(service.includes || []).slice(0, 1).map((t) => `<span>${ic("check")}${esc(t)}</span>`).join("")}</div>
+      <a class="btn ${i === 1 ? "" : "btn--outline"} btn--block" href="booking.html?service=${id}">Choose this service ${ic("arrow")}</a>
+    </article>`;
+  }).join("");
   const body = `
-<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Services &amp; prices</p><span class="eyebrow">Rate card · updated ${esc(RC_DATE)}</span><h1>Car service prices in Indore</h1><p>Our full price list for ${C.services.length} services. Prices are ranges for hatchback, sedan, SUV and luxury cars — your final quotation comes after inspection, and nothing extra is done without your approval.</p>
-  <div class="hero-ctas"><a class="btn" href="estimate.html">${ic("receipt")}Calculate for my car</a><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Ask for a quote</a></div></div></section>
-<section class="band band--white"><div class="wrap">
-  <nav class="pl-jump" aria-label="Jump to category">${groups.map((g) => `<a href="#${anchor(g)}">${esc(g.group)}</a>`).join("")}</nav>
-  <div class="pl-legend small muted"><span><b>₹ range</b> labour + parts</span><span><b>+ parts</b> labour shown; parts quoted by model</span><span><b>Quote after inspection</b> we price it once we've seen the car</span><span><b>Price on request</b> ask us on WhatsApp</span></div>
-  <div class="price-list" data-price-list>${PT.priceList(C, PR)}</div>
-  <div class="pl-links">${groups.filter(pageFor).map((g) => `<a class="btn btn--outline btn--sm" href="${pageFor(g)}">${esc(g.group)} details</a>`).join("")}</div>
-</div></section>${ctaBand()}`;
-  return layout({ file: "services.html", title: "Car Service Price List Indore | CarMechanic Indore", desc: "Car service and repair prices in Indore: periodic service, AC, brakes, clutch, suspension, battery, denting, painting and detailing for hatchback, sedan, SUV and luxury cars.", body, ld: [offerLd], navKey: "services.html" });
+<div data-service-explorer>
+<section class="services-hero"><div class="wrap services-hero-layout">
+  <div class="services-hero-copy"><p class="crumbs"><a href="index.html">Home</a> / Services &amp; prices</p>
+    <span class="eyebrow">Garagewala service menu · Indore</span>
+    <h1>Good care.<br><span>Clear prices.</span></h1>
+    <p>From an oil change to a fresh coat of paint. Find the right care for your car, see the estimate, and approve the quote before we pick up a spanner.</p>
+    <div class="hero-ctas"><a class="btn" href="#service-menu">Explore services ${ic("arrow")}</a><a class="services-hero-link" href="estimate.html">Build my estimate ${ic("receipt")}</a></div>
+    <div class="service-promises"><span>${ic("check")}Itemised quotes</span><span>${ic("shield")}Your approval first</span><a href="pickup-drop.html">${ic("truck")}Pickup area check</a></div>
+  </div>
+  <aside class="service-hero-ticket" aria-label="How our pricing works">
+    <div class="ticket-top"><span>GOOD TO GO.</span>${ic("wrench")}</div>
+    <div class="ticket-art"><img src="assets/img/gallery/samples/engine-oil-change-after.jpg" width="800" height="600" alt="Illustrative example of a clean car engine after an oil service"><span>Illustrative example</span></div>
+    <div class="ticket-copy"><span class="eyebrow">A better garage experience</span><h2>Your car.<br>Our kind of work.</h2><div class="ticket-stats"><div><strong>${C.services.length}</strong><span>service options</span></div><div><strong>${C.categories.length}</strong><span>car categories</span></div><div>${ic("receipt")}<span>A quote<br>before repairs</span></div></div></div>
+    <div class="ticket-bottom">NICE CAR MECHANIC <span>·</span> GARAGEWALA</div>
+  </aside>
+</div></section>
+<section class="care-section"><div class="wrap"><div class="service-section-heading"><div><span class="eyebrow">Start with the essentials</span><h2>Make maintenance<br>a good habit.</h2></div><p>Three levels of everyday care. Choose your car category below to compare estimates for these packages and every service.</p></div><div class="care-packages">${bundles}</div><p class="package-price-note">Indicative ranges for petrol cars with standard parts. Taxes as per final bill. Final quote after inspection.</p></div></section>
+<section class="service-menu-section" id="service-menu"><div class="wrap">
+  <div class="service-section-heading"><div><span class="eyebrow">The Garagewala service menu</span><h2>What does your car need?</h2></div><a class="service-inline-link" href="estimate.html">Not sure? Build an estimate ${ic("arrow")}</a></div>
+  <div class="service-explorer-tools" data-explorer-tools hidden>
+    <div class="service-controls"><div class="service-search-field"><label for="service-search">Find a service</label><div>${ic("scan")}<input id="service-search" type="search" data-services-search placeholder="Try AC, battery, brakes…" maxlength="120" autocomplete="off"></div></div><div class="service-car-field"><label for="service-car">Prices for your car</label><select id="service-car" data-services-car>${C.categories.map((c) => `<option value="${c.id}">${esc(c.label)}</option>`).join("")}</select></div></div>
+    <div class="service-filters" role="group" aria-label="Filter services by category"><button class="on" type="button" data-service-filter="all" aria-pressed="true">All services <span>${C.services.length}</span></button>${groups.map((g) => `<button type="button" data-service-filter="${esc(g.group)}" aria-pressed="false">${ic(g.icon)}${esc(g.group)}</button>`).join("")}</div>
+    <p class="service-results" data-service-count role="status" aria-live="polite">Showing all ${C.services.length} services · Hatchback prices</p>
+  </div>
+  <div class="service-card-grid" data-service-cards>${PT.serviceCards(C, PR)}</div>
+  <div class="service-empty" data-services-empty hidden>${ic("wrench")}<h3>No matching service yet.</h3><p>Try another search, clear your filters, or ask us about a custom repair.</p><button class="btn btn--outline btn--sm" type="button" data-clear-services>Show all services</button><a class="service-inline-link" data-wa="Custom car repair" href="https://wa.me/${B.whatsapp}">Ask on WhatsApp ${ic("arrow")}</a></div>
+  ${PT.footnote(C)}
+  <details class="price-comparison" data-compare-prices><summary><span>${ic("list")}Compare prices across all car categories</span><span class="comparison-plus" aria-hidden="true">+</span></summary><div class="comparison-content"><p class="small muted">Swipe the tables on a small screen. Search and category filters also apply here.</p><div class="price-list" data-price-list>${PT.priceList(C, PR)}</div></div></details>
+  <div class="services-quote-band"><div>${ic("chat")}<h3>A strange noise? A warning light?</h3><p>You don’t need to know the repair name. Tell us what’s happening and we’ll help with the next step.</p></div><a class="btn btn--wa" data-wa="Help choosing a car service" href="https://wa.me/${B.whatsapp}">${ic("wa")}Talk to a mechanic</a></div>
+</div></section>
+</div>${ctaBand()}`;
+  return layout({ file: "services.html", title: `Car Services & Prices in Indore | ${B.name}`, desc: "Explore Garagewala car services, compare transparent price ranges, and find the right maintenance or repair for your car in Indore. Nice Car Mechanic.", body, ld: [offerLd], navKey: "services.html" });
 }
 
 function bookingPage() {
@@ -568,7 +601,7 @@ function bookingPage() {
     </div>
   </div>
 </div></section>`;
-  return layout({ file: "booking.html", title: "Book a Car Service in Indore | CarMechanic Indore", desc: "Book car servicing or repair in Indore online or on WhatsApp. Choose services, pickup and drop, and a preferred time.", body, navKey: "booking.html" });
+  return layout({ file: "booking.html", title: "Book a Car Service in Indore | Garagewala", desc: "Book car servicing or repair in Indore online or on WhatsApp. Choose services, pickup and drop, and a preferred time.", body, navKey: "booking.html" });
 }
 
 function pickupPage() {
@@ -588,12 +621,12 @@ function pickupPage() {
   </ol>
   <p>Read the full <a href="policies.html">pickup, drop and cancellation policy</a>.</p>
 </div></section>${ctaBand("Book a pickup")}`;
-  return layout({ file: "pickup-drop.html", title: "Car Pickup & Drop Service in Indore | CarMechanic Indore", desc: "Free car pickup and drop for servicing in listed Indore areas. Check your locality or PIN code before you book.", body, navKey: "pickup-drop.html" });
+  return layout({ file: "pickup-drop.html", title: "Car Pickup & Drop Service in Indore | Garagewala", desc: "Free car pickup and drop for servicing in listed Indore areas. Check your locality or PIN code before you book.", body, navKey: "pickup-drop.html" });
 }
 
 function contactPage() {
   const body = `
-<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Contact</p><span class="eyebrow">Contact</span><h1>Contact CarMechanic Indore</h1><p>The fastest way to reach us is WhatsApp. Send your car model and the problem, and we'll reply with next steps.</p></div></section>
+<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Contact</p><span class="eyebrow">Contact</span><h1>Contact Garagewala</h1><p>The fastest way to reach us is WhatsApp. Send your car model and the problem, and we'll reply with next steps.</p></div></section>
 <section class="band band--white"><div class="wrap two-col">
   <div class="prose">
     <h2 style="margin-top:0">Phone &amp; WhatsApp</h2><p class="phone-line" style="color:var(--ink);font-size:1.4rem" data-phone>${esc(B.phoneDisplay)}</p>
@@ -603,7 +636,7 @@ function contactPage() {
   </div>
   <div class="side-card"><a class="btn btn--block" href="tel:${B.phoneE164}" data-tel>${ic("phone")}Call now</a><a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a><a class="btn btn--outline btn--block" href="booking.html">${ic("calendar")}Booking form</a>${B.googleBusinessProfileUrl ? `<a class="btn btn--outline btn--block" href="${esc(B.googleBusinessProfileUrl)}" target="_blank" rel="noopener">${ic("pin")}Google Maps</a>` : ""}</div>
 </div></section>`;
-  return layout({ file: "contact.html", title: "Contact | CarMechanic Indore — Car Mechanic in Indore", desc: "Call or WhatsApp CarMechanic Indore for car service, repair quotes and pickup and drop bookings.", body, navKey: "contact.html" });
+  return layout({ file: "contact.html", title: "Contact | Garagewala — Car Mechanic in Indore", desc: "Call or WhatsApp Garagewala for car service, repair quotes and pickup and drop bookings.", body, navKey: "contact.html" });
 }
 
 function legalPage(file, title, h1, sections, desc) {
@@ -612,7 +645,7 @@ function legalPage(file, title, h1, sections, desc) {
   return layout({ file, title, desc, body });
 }
 const PH = (t) => `<p>${t}</p>`;
-const terms = legalPage("terms.html", "Terms & Conditions | CarMechanic Indore", "Terms & conditions", [
+const terms = legalPage("terms.html", "Terms & Conditions | Garagewala", "Terms & conditions", [
   ["Estimates", `<p>Prices shown on this website are indicative ranges for planning only. The final price is given in a quotation after the vehicle is inspected.</p>`],
   ["Approval before work", `<p>We start work only after you approve the quotation. If additional repairs are found, we contact you with the reason and cost, and proceed only with your approval.</p>`],
   ["Bills and parts", `<p>You receive an itemised bill listing labour and each part separately, including the parts grade used. Replaced parts can be shown to you on request.</p>`],
@@ -620,16 +653,16 @@ const terms = legalPage("terms.html", "Terms & Conditions | CarMechanic Indore",
   ["Warranty", PH("Any applicable parts or workmanship warranty, exclusions and claim procedure will be stated in your quotation or invoice. Please ask before approving work; this website does not promise a fixed warranty period.")],
   ["Payment", PH("Confirm accepted payment methods and when payment is due with the garage before approving work. This website does not collect payments.")],
   ["Liability", PH("Before handover, remove valuables and record the vehicle condition and belongings with the garage. Agree any road-test, custody and handover arrangements before work. Nothing here limits rights available under applicable law.")]
-], "Terms and conditions for car service and repair bookings with CarMechanic Indore.");
-const privacy = legalPage("privacy.html", "Privacy Policy | CarMechanic Indore", "Privacy policy", [
+], "Terms and conditions for car service and repair bookings with Garagewala.");
+const privacy = legalPage("privacy.html", "Privacy Policy | Garagewala", "Privacy policy", [
   ["What we collect", `<p>When you request an estimate or booking we may collect your name, mobile number, car details, optional registration number, service needs, and pickup address and PIN code if you request pickup. We do not ask for payment card details, ID documents or other sensitive information on this website.</p>`],
   ["How it's used", `<p>Only to contact you about your enquiry, arrange pickup and service, and send your quotation and bill.</p>`],
   ["WhatsApp", `<p>If you use the WhatsApp buttons, your message is sent through WhatsApp and is subject to WhatsApp's own privacy policy.</p>`],
   ["Images", `<p>Images and fonts are served with this website. Stock photos, where used, are credited. External services such as WhatsApp or Google receive connection information when you follow their links.</p>`],
   ["Storage", `<p>The cost estimator runs in your browser. Booking details you send are kept only as long as needed for your service and records.</p>${PH("The estimator temporarily keeps its booking handoff in session storage in this browser tab; closing the tab clears that session. Language preference is saved locally. In the default WhatsApp mode, no booking API is called. If a booking API is enabled, your submitted details are sent to that service; ask the garage about its storage and retention policy.")}`],
   ["Your choices", `<p>Ask us at any time to see or delete the details we hold about you by contacting <span data-phone>${esc(B.phoneDisplay)}</span>.</p>`]
-], "How CarMechanic Indore handles customer data from estimates and bookings.");
-const policies = legalPage("policies.html", "Cancellation, Pickup & Billing Policy | CarMechanic Indore", "Cancellation, pickup & billing", [
+], "How Garagewala handles customer data from estimates and bookings.");
+const policies = legalPage("policies.html", "Cancellation, Pickup & Billing Policy | Garagewala", "Cancellation, pickup & billing", [
   ["Indicative estimates", `<p><strong>All estimates are indicative until the car is inspected.</strong> The quotation after inspection is the price you approve.</p>`],
   ["Additional repairs", `<p>If more work is needed, we send the details and cost first. Nothing extra is done without your confirmation.</p>`],
   ["Itemised final bill", `<p>The final bill lists labour, each part, consumables and any taxes separately.</p>`],
@@ -637,7 +670,7 @@ const policies = legalPage("policies.html", "Cancellation, Pickup & Billing Poli
   ["Cancellation", PH("To cancel or reschedule, call or WhatsApp the garage as early as possible. Confirm any charges for work, diagnosis or transport already authorised before approving that work.")]
 ], "Cancellation, pickup and drop, additional repair approval and billing policy.");
 
-const notFound = layout({ file: "404.html", title: "Page not found | CarMechanic Indore", desc: "Page not found.", body: `<section class="page-hero"><div class="wrap"><h1>Page not found</h1><p>The page you're looking for doesn't exist. Try the cost estimator or message us on WhatsApp.</p><div class="hero-ctas"><a class="btn" href="index.html">Go to homepage</a><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">WhatsApp us</a></div></div></section>` });
+const notFound = layout({ file: "404.html", title: "Page not found | Garagewala", desc: "Page not found.", body: `<section class="page-hero"><div class="wrap"><h1>Page not found</h1><p>The page you're looking for doesn't exist. Try the cost estimator or message us on WhatsApp.</p><div class="hero-ctas"><a class="btn" href="index.html">Go to homepage</a><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">WhatsApp us</a></div></div></section>` });
 
 /* ------------------------------ New pages (v1.1) ------------------------------ */
 function estimatePage() {
@@ -659,7 +692,7 @@ function estimatePage() {
   </aside>
 </div></section>
 ${ctaBand()}`;
-  return layout({ file: "estimate.html", title: "Car Service Cost Calculator Indore | CarMechanic Indore", desc: "Estimate your car service or repair cost in Indore. Pick your car and services to see labour, parts and time ranges, then book on WhatsApp.", body, navKey: "estimate.html" });
+  return layout({ file: "estimate.html", title: "Car Service Cost Calculator Indore | Garagewala", desc: "Estimate your car service or repair cost in Indore. Pick your car and services to see labour, parts and time ranges, then book on WhatsApp.", body, navKey: "estimate.html" });
 }
 
 function galleryPage() {
@@ -671,7 +704,7 @@ function galleryPage() {
   <div class="ba-grid" id="ba-all" data-gallery></div>
 </div></section>
 ${ctaBand("Want a result like this for your car?")}`;
-  return layout({ file: "gallery.html", title: "Car Repair Before & After Gallery | CarMechanic Indore", desc: "Before and after examples of car dent repair, painting, interior cleaning, headlight restoration, AC service and accident repair in Indore.", body, navKey: "gallery.html" });
+  return layout({ file: "gallery.html", title: "Car Repair Before & After Gallery | Garagewala", desc: "Before and after examples of car dent repair, painting, interior cleaning, headlight restoration, AC service and accident repair in Indore.", body, navKey: "gallery.html" });
 }
 
 function reviewsPage() {
@@ -686,12 +719,12 @@ ${reviewsSection(true)}
     <li>Sample reviews are clearly marked and are removed as soon as genuine reviews are added.</li>
   </ul>
 </div></section>`;
-  return layout({ file: "reviews.html", title: "Customer Reviews | CarMechanic Indore", desc: "Reviews from CarMechanic Indore customers and how to share your own feedback on car servicing and repairs.", body, navKey: "reviews.html" });
+  return layout({ file: "reviews.html", title: "Customer Reviews | Garagewala", desc: "Reviews from Garagewala customers and how to share your own feedback on car servicing and repairs.", body, navKey: "reviews.html" });
 }
 
 function aboutPage() {
   const body = `
-<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / About us</p><span class="eyebrow">About us</span><h1>About CarMechanic Indore</h1><p>A local multi-brand garage in ${esc(B.city)} for servicing, maintenance and repairs, built around clear estimates and your approval at every step.</p></div></section>
+<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / About us</p><span class="eyebrow">About us</span><h1>About Garagewala</h1><p>A local multi-brand garage in ${esc(B.city)} for servicing, maintenance and repairs, built around clear estimates and your approval at every step.</p></div></section>
 <section class="band band--white"><div class="wrap two-col">
   <div class="prose">
     <h2 style="margin-top:0">How we work</h2>
@@ -715,7 +748,7 @@ function aboutPage() {
     <a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a>
   </div>
 </div></section>`;
-  return layout({ file: "about.html", title: "About Us | CarMechanic Indore — Multi-brand Car Garage", desc: "About CarMechanic Indore, a multi-brand car service and repair garage in Indore focused on transparent estimates and customer approval.", body, navKey: "about.html" });
+  return layout({ file: "about.html", title: "About Us | Garagewala — Multi-brand Car Garage", desc: "About Garagewala, a multi-brand car service and repair garage in Indore focused on transparent estimates and customer approval.", body, navKey: "about.html" });
 }
 
 /* ------------------------------ Write ------------------------------ */

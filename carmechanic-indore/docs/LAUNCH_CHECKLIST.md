@@ -19,8 +19,8 @@
 
 ## 2. Technical
 - [x] Self-contained local fonts and labelled illustrations; stock-photo downloads are optional
-- [ ] Buy/point domain; set `business.siteUrl`; run `npm run build`
-- [ ] Upload `public/` to hosting; enable HTTPS
+- [x] GitHub Pages URL configured in `business.siteUrl`; production build uses that URL
+- [x] GitHub Pages enabled on `gh-pages` / root with HTTPS
 - [ ] Test on a real Android phone: estimator, Book This Service (opens WhatsApp with text), Call, booking form
 - [ ] Optional: connect `business.bookingEndpoint` (Formspree/Sheet or the phase-2 API)
 - [ ] `npm test` passes after price edits

@@ -1,3 +1,11 @@
+# Garagewala — Nice Car Mechanic
+
+Live website: https://shanipratapsingh018.github.io/Project/
+Services page: https://shanipratapsingh018.github.io/Project/services.html
+
+Naya version kholne ke liye URL ke end mein `?v=garagewala-1.6` laga sakte ho.
+GitHub Pages static website hai; live update `gh-pages` branch par push hone ke baad automatically deploy hota hai.
+
 # Website kaise chalayein
 
 1. Source ZIP extract karein.

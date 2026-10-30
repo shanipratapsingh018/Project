@@ -11,7 +11,8 @@ test('Every static image, script, stylesheet and font resolves locally',()=>{
   for(const m of html.matchAll(/srcset="([^"]+)"/g))for(const item of m[1].split(',')){
    const src=item.trim().split(/\s+/)[0];if(src.startsWith('assets/'))assert(fs.existsSync(path.join(root,src)),`${file}: ${src}`);
   }
-  assert(!/<(?:img|script|link)[^>]+(?:src|href)="https?:/.test(html),`${file}: external asset dependency`);
+  assert(!/<(?:img|script)[^>]+src="https?:/.test(html),`${file}: external image/script dependency`);
+  assert(!/<link(?=[^>]*rel="(?:stylesheet|preload|preconnect)")[^>]+href="https?:/.test(html),`${file}: external stylesheet dependency`);
  }
  for(const css of ['fonts.css','style.css'])for(const m of fs.readFileSync(path.join(root,'assets/css',css),'utf8').matchAll(/url\("([^"#]+)"\)/g))assert(fs.existsSync(path.resolve(root,'assets/css',m[1])));
 });
