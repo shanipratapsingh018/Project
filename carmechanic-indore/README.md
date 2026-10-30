@@ -1,7 +1,7 @@
-# Garagewala — Nice Car Mechanic · v1.7.1
+# Garagewala — Nice Car Mechanic · v1.8.0
 
 A ready-to-run static garage website branded **Garagewala · Nice Car Mechanic**: 22 responsive pages, 69-service price list,
-vehicle-specific estimates, pickup-area checks, before/after gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
+vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
 and rebuilding; a static hosting provider needs only the included `public/` files.
 
 ## Live website
@@ -55,11 +55,26 @@ requests; a client-side estimate is not an authoritative price. HTTP 2xx means r
 request, not confirmation of a service slot. API failure/timeout offers WhatsApp recovery and
 warns that a request may already have arrived. Tests use intercepted API responses, not a live backend.
 
+## Service gallery and homepage photos
+
+The navigation, footer and gallery page are called **Service Gallery**. Gallery cards retain
+service categories and image comparisons, with Call Now, booking and WhatsApp actions.
+Visible image example/disclaimer labels are removed at the owner's request. Source metadata
+remains accurate in the data files and documentation; sample jobs are not relabelled as real jobs.
+
+A ten-photo service carousel fills the space beneath the homepage calculator. It includes car
+washing, engine work, suspension repair, denting, painting, AC service, periodic servicing,
+workshop bays, engine inspection and parts inventory. Previous/Next, keyboard navigation,
+wraparound and native touch scrolling work without autoplay. Without JavaScript it stays a
+swipeable photo strip. Images use locally bundled 800/1600px WebP assets with lazy loading.
+Edit `tools/workshop-photos.json` and rebuild to update the carousel; image files are in
+`public/assets/img/workshop/`.
+
 ## Customer reviews and workshop hours
 
 The homepage and About page use the owner-selected, locally bundled AI workshop illustration,
 with responsive images (about 99 KB / 271 KB). It also displays on phones.
-Visible AI captions were removed at the owner’s request; source information remains in alt text and documentation.
+Visible image captions identifying examples were removed at the owner’s request; source information remains in alt text and documentation.
 Opening hours are **every day, 7:00 AM–11:30 PM IST**, confirmed by the owner.
 
 The homepage and About page link to `reviews.html#write-review`. Customers enter a display
@@ -82,6 +97,7 @@ npm test
 npm run test:browser
 npm run test:reliability
 npm run test:services
+npm run test:gallery
 ```
 
 The service-menu suite adds 35 desktop/mobile checks, including no-JavaScript prices and filters.

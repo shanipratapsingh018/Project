@@ -17,8 +17,9 @@ const RC_DATE = new Date(RC.version + "T00:00:00Z").toLocaleDateString("en-IN", 
 const AREAS = require(join(ROOT, "assets/js/service-areas.js"));
 const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
+const WORKSHOP_PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "workshop-photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "1.7.1";
+const VERSION = "1.8.0";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -50,15 +51,13 @@ function photo(id, { cls = "", sizes = "(max-width: 900px) 100vw, 50vw", eager =
       "foam-wash": "engine-cleaning-service", "accident-damage": "dent-repair"
     };
     const src = samples[id] ? `assets/img/gallery/samples/${samples[id]}-after.jpg` : "assets/img/hero-workshop.svg";
-    return `<figure class="photo ${cls}" data-photo-id="${id}"><img src="${src}" alt="Illustrative example: ${esc(p.alt)}" width="1600" height="1067" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"><figcaption class="photo-credit">Illustrative example — not our workshop or a customer vehicle.</figcaption></figure>`;
+    return `<figure class="photo ${cls}" data-photo-id="${id}"><img src="${src}" alt="Illustrative example: ${esc(p.alt)}" width="1600" height="1067" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"></figure>`;
   }
   const img = `<img src="${local(800)}" srcset="${local(800)} 800w, ${local(1600)} 1600w" sizes="${sizes}" alt="${esc(alt || p.alt)}" width="1600" height="1067"` +
     `${eager ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async"` +
     
     (fallback ? ` data-fallback="${fallback}"` : "") + ` onerror="cmiImg(this)">`;
-  const cap = !credit ? "" : p.own ? "" :
-    `<figcaption class="photo-credit">Stock photo · <a href="${p.page}" target="_blank" rel="noopener">${esc(p.photographer)} / Unsplash</a></figcaption>`;
-  return `<figure class="photo ${cls}" data-photo-id="${id}">${img}${cap}</figure>`;
+  return `<figure class="photo ${cls}" data-photo-id="${id}">${img}</figure>`;
 }
 const IMG_FALLBACK_JS = `<script>function cmiImg(i){var d=i.dataset;if(d.remoteSrc&&!d.r){d.r=1;i.srcset=d.remoteSrcset;i.src=d.remoteSrc;return}if(d.fallback&&!d.f){d.f=1;i.removeAttribute("srcset");i.src=d.fallback;var c=i.closest("figure");if(c){c.classList.add("photo--fallback");var k=c.querySelector(".photo-credit");if(k)k.hidden=true}return}var g=i.closest("figure");if(g)g.hidden=true}</script>`;
 
@@ -114,7 +113,7 @@ const NAV = [
   ["index.html", "Home", "nav.home"],
   ["services.html", "Services & Prices", "nav.services"],
   ["estimate.html", "Cost Calculator", "nav.calc"],
-  ["gallery.html", "Before & After", "nav.gallery"],
+  ["gallery.html", "Service Gallery", "nav.gallery"],
   ["reviews.html", "Reviews", "nav.reviews"],
   ["about.html", "About Us", "nav.about"],
   ["contact.html", "Contact", "nav.contact"]
@@ -199,7 +198,7 @@ ${body}
       ${B.hours ? `<p>${hoursText()}</p>` : `<p class="small">Working hours: please call or WhatsApp to confirm.</p>`}
     </div>
     <div><h4>Services</h4><ul>${SERVICE_PAGES.map((p) => `<li><a href="${p.file}">${esc(p.nav)}</a></li>`).join("")}</ul></div>
-    <div><h4>Customers</h4><ul><li><a href="index.html">Home</a></li><li><a href="estimate.html">Cost calculator</a></li><li><a href="booking.html">Book a service</a></li><li><a href="gallery.html">Before &amp; after</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="pickup-drop.html">Pickup &amp; drop areas</a></li><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact</a></li><li><a href="index.html#faq">FAQs</a></li></ul></div>
+    <div><h4>Customers</h4><ul><li><a href="index.html">Home</a></li><li><a href="estimate.html">Cost calculator</a></li><li><a href="booking.html">Book a service</a></li><li><a href="gallery.html">Service Gallery</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="pickup-drop.html">Pickup &amp; drop areas</a></li><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact</a></li><li><a href="index.html#faq">FAQs</a></li></ul></div>
     <div><h4>Policies</h4><ul><li><a href="terms.html">Terms & conditions</a></li><li><a href="privacy.html">Privacy policy</a></li><li><a href="policies.html">Cancellation, pickup & billing</a></li></ul></div>
     <p class="fine">© <span data-year>${new Date().getFullYear()}</span> ${esc(B.name)}. Independent multi-brand garage; not affiliated with any car manufacturer. Brand names are used only to identify vehicles we service.</p>
   </div>
@@ -354,7 +353,7 @@ function servicePage(p) {
   <div class="prose">
     ${p.body.map((t) => `<p>${esc(t)}</p>`).join("")}
     ${p.stockMore ? `<div class="photo-row">${p.stockMore.map((id) => photo(id, { sizes: "(max-width: 900px) 50vw, 30vw" })).join("")}</div>` : ""}
-    ${photos.length ? `<figure class="page-photo">${baStatic(photos[0], true)}<figcaption>Before and after: ${esc(photos[0].category.toLowerCase())}. Illustrative example — not an actual customer vehicle. <a href="gallery.html#ba-${photos[0].id}">See the gallery</a>.</figcaption></figure>` : ""}
+    ${photos.length ? `<figure class="page-photo">${baStatic(photos[0], true)}<figcaption>${esc(photos[0].category)}. <a href="gallery.html#ba-${photos[0].id}">See the gallery</a>.</figcaption></figure>` : ""}
     <h2>Typical problems &amp; symptoms</h2>
     <ul>${p.symptoms.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
     <h2>What's included in ${esc(svc[p.ids[0]].name.toLowerCase())}</h2>
@@ -362,7 +361,7 @@ function servicePage(p) {
     <h2>Price list</h2>
     <div data-rate-table="${p.ids.join(",")}">${PT.rateTable(C, PR, p.ids)}${PT.footnote(C)}</div>
     <p><a href="services.html#${svc[p.ids[0]].group.toLowerCase().replace(/[^a-z0-9]+/g, "-")}">See the full price list</a></p>
-    ${photos.length > 1 ? `<h2>More before &amp; after examples</h2>${photos.slice(1).map((ph) => `<figure class="page-photo">${baStatic(ph)}<figcaption>${esc(ph.category)} — illustrative example, not an actual customer vehicle.</figcaption></figure>`).join("")}` : ""}
+    ${photos.length > 1 ? `<h2>More service photos</h2>${photos.slice(1).map((ph) => `<figure class="page-photo">${baStatic(ph)}<figcaption>${esc(ph.category)}</figcaption></figure>`).join("")}` : ""}
     <h2>How it works</h2>
     <ol class="steps" style="grid-template-columns:repeat(2,minmax(0,1fr))">
       <li><h3>Get an estimate</h3><p>Choose your car and service to see a price range.</p></li>
@@ -425,6 +424,15 @@ function reviewsSection(full = false) {
 }
 
 /* ------------------------------ Homepage ------------------------------ */
+function workshopSlider() {
+  return `<section class="service-carousel" data-workshop-slider role="region" aria-roledescription="carousel" aria-label="Car service photos">
+    <div class="service-carousel-heading"><span class="eyebrow">Service spotlight</span><p>Explore our car care services</p></div>
+    <div class="service-slides" id="workshop-slides" data-slide-track tabindex="0" aria-label="Service photos; swipe or use arrow keys">${WORKSHOP_PHOTOS.map((p, i) => `<figure class="service-slide" data-slide role="group" aria-roledescription="slide" aria-label="${i+1} of ${WORKSHOP_PHOTOS.length}: ${esc(p.title)}"><img src="assets/img/workshop/${p.id}-800.webp" srcset="assets/img/workshop/${p.id}-800.webp 800w, assets/img/workshop/${p.id}-1600.webp 1600w" sizes="(max-width: 960px) calc(100vw - 32px), 560px" alt="${esc(p.alt)}" width="${p.width}" height="${p.height}" loading="lazy" decoding="async"><figcaption>${esc(p.title)}</figcaption></figure>`).join("")}</div>
+    <div class="service-slider-controls" data-slider-controls hidden><button type="button" data-slide-prev aria-label="Previous service photo" aria-controls="workshop-slides">${ic("arrow")} Previous</button><span data-slide-count aria-live="polite" aria-atomic="true">1 / ${WORKSHOP_PHOTOS.length}</span><button type="button" data-slide-next aria-label="Next service photo" aria-controls="workshop-slides">Next ${ic("arrow")}</button></div>
+    <noscript><p class="service-swipe-hint">Swipe across the photos to explore services.</p></noscript>
+  </section>`;
+}
+
 function homepage() {
   const pk = C.packages.map((k) => {
     const s = svc[k.services[0]];
@@ -472,7 +480,7 @@ function homepage() {
       <p class="pickup-terms"><strong style="color:#fff">Free pickup &amp; drop</strong> across our ${AREAS.coveredPins.length} confirmed Indore PIN codes, subject to booking confirmation. <a href="pickup-drop.html">Check your PIN</a>.</p>
       ${photo("workshop-hero", { cls: "hero-art", eager: true, sizes: "(max-width: 960px) calc(100vw - 40px), 520px" })}
     </div>
-    <div class="jobcard reveal" id="estimate" data-estimator><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
+    <div class="hero-service-column"><div class="jobcard reveal" id="estimate" data-estimator><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>${workshopSlider()}</div>
   </div>
 </section>
 
@@ -482,9 +490,9 @@ function homepage() {
 </div></section>
 
 <section class="band band--white" id="before-after"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">Before &amp; after</span><h2 data-i18n="sec.gallery">${esc(GALLERY.title)}</h2><p>${esc(GALLERY.subtitle)} The examples below are sample images, not photos of our customers' cars.</p></div>
+  <div class="section-head"><span class="eyebrow">Service Gallery</span><h2 data-i18n="sec.gallery">${esc(GALLERY.title)}</h2><p>${esc(GALLERY.subtitle)}</p></div>
   <div class="ba-grid" data-gallery data-featured data-limit="4"></div>
-  <p style="margin-top:24px"><a class="btn btn--outline" href="gallery.html">${ic("image")}See all ${GALLERY.items.filter((g) => g.show !== false).length} transformations</a></p>
+  <p style="margin-top:24px"><a class="btn btn--outline" href="gallery.html">${ic("image")}Explore the service gallery</a></p>
 </div></section>
 
 <section class="band band--dark"><div class="wrap">
@@ -561,7 +569,7 @@ function servicesHub() {
   </div>
   <aside class="service-hero-ticket" aria-label="How our pricing works">
     <div class="ticket-top"><span>GOOD TO GO.</span>${ic("wrench")}</div>
-    <div class="ticket-art"><img src="assets/img/gallery/samples/engine-oil-change-after.jpg" width="800" height="600" alt="Illustrative example of a clean car engine after an oil service"><span>Illustrative example</span></div>
+    <div class="ticket-art"><img src="assets/img/gallery/samples/engine-oil-change-after.jpg" width="800" height="600" alt="Illustrative example of a clean car engine after an oil service"></div>
     <div class="ticket-copy"><span class="eyebrow">A better garage experience</span><h2>Your car.<br>Our kind of work.</h2><div class="ticket-stats"><div><strong>${C.services.length}</strong><span>service options</span></div><div><strong>${C.categories.length}</strong><span>car categories</span></div><div>${ic("receipt")}<span>A quote<br>before repairs</span></div></div></div>
     <div class="ticket-bottom">NICE CAR MECHANIC <span>·</span> GARAGEWALA</div>
   </aside>
@@ -733,14 +741,13 @@ ${ctaBand()}`;
 
 function galleryPage() {
   const body = `
-<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Before &amp; After</p><span class="eyebrow">Gallery</span><h1>${esc(GALLERY.title)}</h1><p>${esc(GALLERY.subtitle)}</p></div></section>
+<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Service Gallery</p><span class="eyebrow">Gallery</span><h1>${esc(GALLERY.title)}</h1><p>${esc(GALLERY.subtitle)}</p><div class="hero-ctas"><a class="btn" href="tel:${B.phoneE164}" data-tel data-call-now>${ic("phone")}Call Now</a><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}WhatsApp us</a></div></div></section>
 <section class="band"><div class="wrap">
-  <p class="notice"><strong>About these images:</strong> every pair below is an illustrative example — not an actual customer vehicle. Photos of real jobs from our workshop will be added here, clearly marked, once available.</p>
   <div class="filters" data-gallery-filters="#ba-all" role="toolbar" aria-label="Filter by category"></div>
   <div class="ba-grid" id="ba-all" data-gallery></div>
 </div></section>
 ${ctaBand("Want a result like this for your car?")}`;
-  return layout({ file: "gallery.html", title: "Car Repair Before & After Gallery | Garagewala", desc: "Before and after examples of car dent repair, painting, interior cleaning, headlight restoration, AC service and accident repair in Indore.", body, navKey: "gallery.html" });
+  return layout({ file: "gallery.html", title: "Service Gallery | Garagewala", desc: "Explore car servicing, denting, painting, cleaning, suspension and mechanical repairs in the Garagewala service gallery.", body, navKey: "gallery.html" });
 }
 
 function reviewsPage() {

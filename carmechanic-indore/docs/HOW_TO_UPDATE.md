@@ -80,3 +80,13 @@ Do not add unsupported ratings or counts to structured data.
 
 `business.hours` uses `days: "Mo-Su"`, `open: "07:00"`, `close: "23:30"` and a readable label.
 Run `npm run build` after changing hours so Contact, homepage, footer and structured data agree.
+
+## 5. Homepage service slider
+
+Edit `tools/workshop-photos.json` (ten service scenes), place the corresponding `-800.webp`
+and `-1600.webp` files under `public/assets/img/workshop/`, and run `npm run build`. Titles
+are shown below each picture; source information remains in the manifest and alt text.
+Use `npm run test:gallery` to check navigation, wrapping, mobile widths and gallery actions.
+The gallery page keeps its `gallery.html` URL and comparison filters under its new name.
+Visible image example labels are removed by owner request; do not change source kinds or
+claim the pictured sample jobs were actually performed at Garagewala.

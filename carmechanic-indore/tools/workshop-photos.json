@@ -1,0 +1,92 @@
+[
+  {
+    "id": "car-washing",
+    "title": "Car washing",
+    "alt": "AI-generated garage scene: Worker pressure-washing a blue hatchback in a garage wash bay",
+    "width": 1448,
+    "height": 1086,
+    "generated": true,
+    "sourceFile": "exec-b33583d8-2b78-4de1-944c-a897dca20986.png"
+  },
+  {
+    "id": "engine-overhaul",
+    "title": "Engine work",
+    "alt": "AI-generated garage scene: Mechanic working on a disassembled engine on an engine stand",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-e3a2434e-61b2-427e-88c1-a79b53d85df0.png"
+  },
+  {
+    "id": "suspension-repair",
+    "title": "Suspension repair",
+    "alt": "AI-generated garage scene: Mechanic inspecting the front suspension with the wheel removed",
+    "width": 1448,
+    "height": 1086,
+    "generated": true,
+    "sourceFile": "exec-fc6dcd01-01a0-46a1-a568-d766ff447065.png"
+  },
+  {
+    "id": "denting",
+    "title": "Denting & bodywork",
+    "alt": "AI-generated garage scene: Bodywork technician repairing a car side panel",
+    "width": 1448,
+    "height": 1086,
+    "generated": true,
+    "sourceFile": "exec-0ea5e7af-0f72-4a7e-8be5-39cca3ef962e.png"
+  },
+  {
+    "id": "painting",
+    "title": "Car painting",
+    "alt": "AI-generated garage scene: Painter spraying a detached car fender in a paint booth",
+    "width": 1448,
+    "height": 1086,
+    "generated": true,
+    "sourceFile": "exec-2b56dbd3-9f91-45e3-8408-c3860e1e373f.png"
+  },
+  {
+    "id": "ac-service",
+    "title": "Car AC service",
+    "alt": "AI-generated garage scene: Mechanic checking car air conditioning with a manifold gauge set",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-1926f194-c088-493d-8458-1524a4ea6556.png"
+  },
+  {
+    "id": "car-servicing",
+    "title": "Periodic servicing",
+    "alt": "AI-generated garage scene: Mechanic servicing a hatchback engine with the bonnet open",
+    "width": 1448,
+    "height": 1086,
+    "generated": true,
+    "sourceFile": "exec-b29a02d9-44f4-487e-a866-489b650a2045.png"
+  },
+  {
+    "id": "workshop-bays",
+    "title": "Multi-brand car care",
+    "alt": "AI-generated garage scene: Mechanics working on cars across several garage bays",
+    "width": 1448,
+    "height": 1086,
+    "generated": true,
+    "sourceFile": "exec-3795ac98-6caf-4aef-bb91-3e4bd0edbbc0.png"
+  },
+  {
+    "id": "engine-inspection",
+    "title": "Engine inspection",
+    "alt": "AI-generated garage scene: Mechanic inspecting the engine bay of a silver hatchback",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-04917cc4-4124-497c-803a-cc9091677b76.png"
+  },
+  {
+    "id": "parts-inventory",
+    "title": "Parts & workshop tools",
+    "alt": "AI-generated garage scene: Spare-parts shelves alongside engine and suspension work",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-e290236e-7af5-49ec-ae31-c98abb3612a7.png"
+  }
+]

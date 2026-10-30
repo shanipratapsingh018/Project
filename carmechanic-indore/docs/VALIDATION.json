@@ -1,21 +1,14 @@
 {
-  "version": "1.7.1",
+  "version": "1.8.0",
   "date_ist": "2026-10-31",
-  "brand": "Garagewala \u00b7 Nice Car Mechanic",
-  "hours": "Every day, 7:00 AM\u201311:30 PM IST",
   "validation": {
-    "npm test": "passed: 276 rate figures and 41 unit/server/build checks",
-    "npm run test:browser": "passed: all 22 pages mobile/desktop and existing interactions",
-    "npm run test:reliability": "passed: 41 checks, including website feedback validation, all ratings, optional publication consent, private feedback, stale-link clearing, safe text handling, daily hours, generated photos and no-JS fallback",
-    "visual review": "passed: homepage, About image and review form at 390px and 1366px"
+    "npm test": "passed: 276 approved rate figures and 41 unit/server/build checks",
+    "npm run test:browser": "passed: all 22 pages at mobile and desktop sizes and existing booking/estimator/gallery interactions",
+    "npm run test:gallery": "passed: 183 checks at 320, 390, 768, 1024, 1366 and 1920 pixels, ten distinct photo assets, complete navigation and wrapping, keyboard, scroll/swipe position, resize, Call Now links and no-JavaScript fallback",
+    "visible image-label audit": "passed on all 21 content pages",
+    "visual review": "passed: homepage slider, mobile slider and gallery card"
   },
-  "google_status": "Owner-supplied sharing URL connected as Garagewala on Google. Redirect destination could not be checked because share.google is blocked by cloud egress policy. No direct review editor, Google rating or profile verification is inferred.",
-  "reviews_status": "Website form prepares a WhatsApp message; customer must press Send. Public display requires garage approval and customer permission. No automatic storage/publication. No borrowed reviews.",
-  "previous_full_suite_version": "1.7.0",
-  "validation_v1.7.1": {
-    "npm run build": "passed: 22 pages rebuilt",
-    "node tests/photos.test.js": "passed: 3 asset/provenance/font checks",
-    "focused browser checks": "passed: 67 checks at 320, 390, 768, 1024, 1366 and 1920 pixels and no-JavaScript mode; seven Call Now links, phone target, retained actions, image loading, caption removal, no overflow and no script errors",
-    "visual review": "passed: mobile package card and desktop hero"
-  }
+  "gallery": "Renamed Service Gallery at the same gallery.html URL. Header and nineteen cards include the configured telephone link. Image source kinds remain unchanged.",
+  "carousel": "Ten locally bundled AI-generated service scenes, 800/1600px responsive WebP, lazy loading, no autoplay; native scrolling without JavaScript.",
+  "reviews": "No changes to publication permission or WhatsApp review handoff; no borrowed reviews or ratings added."
 }

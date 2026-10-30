@@ -48,3 +48,10 @@ Verification ke baad Maps sharing aur Ask for reviews links website mein connect
 - Reviews page par form hai: naam, 1–5 stars, car/service aur feedback. Prepare ke baad WhatsApp mein Send dabana zaroori hai.
 - Publish permission optional hai; private feedback website par publish na karein. Approved, permitted reviews `reviews.js` mein add hote hain.
 - Owner ka Google share link alag "Garagewala on Google" button mein connected hai. Direct Ask for reviews URL milne par `googleReviewUrl` mein add karein.
+
+## v1.8.0
+
+Before & After ka naam Service Gallery hai. Header aur har gallery card mein Call Now hai.
+Homepage calculator ke neeche 10 service photos ka slider hai: Next/Previous, keyboard aur
+mobile swipe supported hain. Image example labels owner ke kehne par hata diye hain;
+source information data files mein sahi rakhi gayi hai.

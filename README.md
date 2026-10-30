@@ -1,16 +1,16 @@
-# Garagewala — Nice Car Mechanic · v1.7.1
+# Garagewala — Nice Car Mechanic · v1.8.0
 
 Live website: https://shanipratapsingh018.github.io/Project/
 
-Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=1.7.1
+Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=1.8.0
 
 The updated website is in **carmechanic-indore/**.
 The original Arduino temp.txt is preserved separately.
 
 ## Download
 
-- [Hosting-ready ZIP](downloads/garagewala-v1.7.1-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
-- [Complete source ZIP](downloads/garagewala-v1.7.1-source.zip) — on GitHub, click **Download raw**.
+- [Hosting-ready ZIP](downloads/garagewala-v1.8.0-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
+- [Complete source ZIP](downloads/garagewala-v1.8.0-source.zip) — on GitHub, click **Download raw**.
 - [Six AI-generated garage photos](downloads/garagewala-ai-garage-photos.zip) — original PNGs in one ZIP; illustrative scenes, not photos of the actual workshop.
 - Or choose **Code → Download ZIP** to download this whole branch.
 
@@ -39,3 +39,7 @@ Its redirect destination and Google verification could not be checked from this 
 rating were removed after the owner's correction. Genuine Garagewala feedback is invited instead.
 
 Validation is recorded in [VALIDATION.json](carmechanic-indore/docs/VALIDATION.json).
+
+Service Gallery: https://shanipratapsingh018.github.io/Project/gallery.html?v=1.8.0
+
+The homepage has a ten-photo service slider beneath the calculator; Previous/Next and mobile swipe are supported. Gallery cards include Call Now.

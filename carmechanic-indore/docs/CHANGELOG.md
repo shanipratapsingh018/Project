@@ -1,3 +1,11 @@
+# v1.8.0 — Service Gallery and ten-photo carousel
+
+- Renamed Before & After to Service Gallery across navigation, footer, page title and homepage, removing the unsupported Real Car Transformations heading.
+- Added Call Now to the gallery header and each of its nineteen cards; retained booking, WhatsApp and filters.
+- Removed visible image example/disclaimer labels across content pages at the owner's request; retained source metadata without relabelling sample jobs as real.
+- Added ten responsive, locally bundled service photos beneath the homepage calculator with Previous/Next, keyboard controls, wraparound, mobile swipe and a no-JavaScript fallback.
+- Added gallery/slider interaction checks at six screen widths.
+
 # v1.7.1 — Call Now actions
 
 - Added a Call Now action beside WhatsApp in the homepage hero and to each of the six homepage package cards.

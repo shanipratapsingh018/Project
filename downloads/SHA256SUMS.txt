@@ -9,3 +9,5 @@ bb9cddd89a5f69f57768912ea0f79c3859493d487b6ce278bd411e907642f22c  garagewala-v1.
 c8d673ae434839aa6d31563980c89bcdc1e4e0f09c8dad05ed0b60481baa8e6c  garagewala-v1.7.0-hosting.zip
 c2dd47da1e69802dd056bc0bfbf008eb7a79917a479f7a2f540b5555c106fc40  garagewala-v1.7.1-source.zip
 f23681cb16babd03e9a24af379ef4888db42cc6495d03c8857d79d60a67f66d5  garagewala-v1.7.1-hosting.zip
+84b1e4e1ef76b0ad2a42e2b212c4e0c891509ffa026f735c27a35399e00a881c  garagewala-v1.8.0-source.zip
+92f59d07e0392d3169b2a7ce4673fddeb138b08ded90a827585cdb6917979ddb  garagewala-v1.8.0-hosting.zip

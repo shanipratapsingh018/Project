@@ -192,7 +192,7 @@ with sync_playwright() as p:
     # Gallery page: 10 cards, labels, filters, swipe on mobile
     pg.goto(BASE + "gallery.html"); pg.wait_for_load_state("networkidle")
     n = pg.locator(".ba-card").count()
-    check(n == 19 and pg.locator(".ba-note").count() == 19 and all("not an actual customer vehicle" in t for t in pg.locator(".ba-note").all_inner_texts()), "Gallery has 19 sample cards, each labelled illustrative")
+    check(n == 19 and pg.locator(".ba-note").count() == 0 and pg.locator(".ba-card [data-call-now]").count() == 19, "Service gallery has 19 cards with Call Now and no image disclaimers")
     check(pg.locator(".ba-label--before").count() == 19 and pg.locator(".ba-label--after").count() == 19, "Every card has a Before and an After image")
     pg.click('[data-filter="body"]')
     vis = pg.eval_on_selector_all(".ba-card", "els => els.filter(e => !e.hidden).length")

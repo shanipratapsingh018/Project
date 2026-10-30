@@ -16,10 +16,11 @@ test('Every static image, script, stylesheet and font resolves locally',()=>{
  }
  for(const css of ['fonts.css','style.css'])for(const m of fs.readFileSync(path.join(root,'assets/css',css),'utf8').matchAll(/url\("([^"#]+)"\)/g))assert(fs.existsSync(path.resolve(root,'assets/css',m[1])));
 });
-test('Every photo slot is used; illustrations are clearly labelled',()=>{
+test('Every photo slot is used and source metadata is retained',()=>{
  const html=files.map(f=>fs.readFileSync(path.join(root,f),'utf8')).join('\n');
  for(const photo of manifest.photos){assert(html.includes(`data-photo-id="${photo.id}"`),photo.id);assert(photo.generated||photo.own||(photo.photographer&&photo.profile.startsWith('https://unsplash.com/@')),photo.id);}
- assert(html.includes('Illustrative example — not our workshop or a customer vehicle.'));
+ assert(!html.includes('Illustrative example — not our workshop or a customer vehicle.'));
+ assert(!html.includes('About these images:'));
 });
 test('Bundled fonts include their open licences',()=>{
  for(const font of ['barlow','barlow-condensed','ibm-plex-mono'])assert(fs.readFileSync(path.join(root,`assets/fonts/${font}-LICENSE.txt`),'utf8').includes('SIL OPEN FONT LICENSE'));
