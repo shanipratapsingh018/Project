@@ -1,3 +1,5 @@
 38fb42e01ed186399cb743929489a6368c9331fa8d4fc728882220590d9b573a  garagewala-v1.6.1-hosting.zip
 b078ed42ee237ff88cf0401a80a5cdf6d2a6207f768660e0ae9389575cfdf57b  garagewala-v1.6.1-source.zip
 bf322ef2417c7abb0da2532a18ef45559b32aac5218f46a0aa9733ea56557e59  garagewala-ai-garage-photos.zip
+b73b75b4c203c5ff6390c11eba9d851c0089b300e2d573cf79b172a1283507a3  garagewala-homepage.png
+1f89ad60981c43f576eb1241d690d908f6e99a2ee1cfad3ec4b567fb38535ba8  garagewala-homepage-image.zip
