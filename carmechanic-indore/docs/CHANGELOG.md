@@ -1,0 +1,133 @@
+# v1.5 — reliability and self-contained delivery
+
+Booking validation, quantity handoff, stale-estimate invalidation, API timeout/duplicate protection, local fonts/images, zero-dependency serving, SEO configuration, source-labelled owner reviews and regression tests. See RELIABILITY_REVIEW.md.
+
+# Changelog
+
+## v1.4.0 — 29 Oct 2026 — owner's before & after images
+
+- The Before & After gallery now uses the owner's file `garage_before_after_20_high_resolution_1.zip`:
+  19 of the 20 pairs, each split into a separate before and after image (baked-in labels, caption bar and
+  neighbouring-tile slivers cropped off). Files: `public/assets/img/gallery/samples/`.
+- Pair 09 "wheel alignment" was left out: it showed a worn vs new tyre, the same as pair 08, which doesn't depict an alignment.
+- The images look AI-generated and are not jobs done at the garage, so every card keeps the label
+  "Illustrative example — not an actual customer vehicle." Switch an entry to `kind: "real"` only for genuine jobs.
+- Gallery filters are now Bodywork & lights (5), Servicing & filters (7), Mechanical repairs (7).
+- Service pages show the matching pairs (e.g. brake page: brake service + clutch replacement).
+- Alloy wheel repair, exhaust repair and wiper blades aren't in the rate card, so "Book Similar Service" uses
+  OT-07 (general labour, price on request) for them.
+- Gallery tiles are square; the drawn SVG illustrations were removed (the hero fallback illustration stays).
+
+
+## v1.3.0 — 29 Oct 2026 — real photos
+
+- **13 real photos** from Unsplash, each confirmed free under the Unsplash License (commercial use allowed;
+  none are paid Unsplash+). Used in the homepage hero, the 9 homepage service cards, every service page hero,
+  3 photos on the detailing page and the About page. List and credits: `tools/photos.json`, `docs/PHOTO_CREDITS.md`.
+- Every caption says **"Stock photo · Photographer / Unsplash"**, so no photo is presented as the garage's own work.
+  The Before & After gallery stays as labelled illustrations (no genuine same-car pairs exist in free stock libraries).
+- `npm run photos` downloads all photos (800 px + 1600 px) into `public/assets/img/photos/`. Until then, pages load
+  them from Unsplash's CDN; if that fails, the hero shows the illustration and other photos hide (no broken images).
+- To use your own photo instead: same file name, `"own": true` in `tools/photos.json`, `npm run build`.
+- Privacy page mentions that images may load from Unsplash's servers.
+- Fixed: mobile menu button was squeezed to 14 px wide on phones; service cards no longer say "From ₹0".
+- Tests: new `tests/photos.test.js`; browser tests cover photos loading, photos blocked, and the menu button.
+
+**Files:** new `tools/photos.json`, `tools/fetch-photos.mjs`, `tests/photos.test.js`, `docs/PHOTO_CREDITS.md`;
+changed `tools/build.mjs`, `public/assets/css/style.css`, `public/assets/js/price-table.js`, `tests/browser_test.py`,
+`package.json`, generated pages, docs.
+
+
+## v1.2.0 — 27 Oct 2026 — approved rate card
+
+### Prices
+- The approved rate card (69 services, 11 categories) replaces the demo prices. It lives in the new
+  `public/assets/js/rate-card.js`, with IDs matching the research workbook (GS-01 … OT-07).
+- Each service has hatchback labour + parts and its own sedan / SUV / luxury factor. Luxury defaults to
+  "Quote after inspection" unless a factor is set (oil change, dent & paint, deep cleaning, polishing have one).
+- New states: **Price on request** (20 services with no published price yet) and **+ parts quoted by model**
+  (labour-only jobs: brake shoes, clutch set, shock absorbers, tyre fitting).
+- "Demo prices" tags, the PREVIEW ribbon and "demo estimate" in WhatsApp messages are removed.
+- `npm run import-rates -- file.csv` updates prices from an edited CSV.
+- `tests/ratecard.test.js` checks all 276 figures (69 × 4 categories) against the approved CSV.
+
+### Calculator
+- Every rate-card service is a separate option, grouped by category, with the hatchback price shown beside it
+  and a search box. Quantity inputs appear for per-panel / per-tyre jobs.
+- Basic / standard / comprehensive service are now separate options (only one can be picked).
+- Fixed: a job priced as "quote" (e.g. standard service on a luxury car) no longer marks the jobs it would include
+  (e.g. oil change) as "Included" — they are priced on their own.
+
+### Pages
+- **Services & Prices** page (`services.html`) is now the full price list, with prices in the static HTML for
+  search engines and OfferCatalog structured data.
+- Each service page shows its own price list; homepage packages and service cards show rate-card prices.
+- Booking form groups services by category.
+- Header spacing adjusted so the 7-item menu fits at 1181–1440 px.
+
+### Files
+New: `public/assets/js/rate-card.js`, `public/assets/js/price-table.js`, `tools/import-rates.mjs`,
+`tests/ratecard.test.js`, `docs/rate-card/*`.
+Changed: `pricing.js` (rewritten), `config.js`, `app.js`, `gallery.js` (service IDs), `style.css`, `tools/build.mjs`,
+`tests/estimate.test.js`, `tests/browser_test.py`, all generated pages, README and docs.
+
+
+## v1.1.0 — 23 Oct 2026
+
+### Navigation
+- Main menu on every page: Home · Services · Cost Calculator · Before & After · Reviews · About Us · Contact, with the current page highlighted (orange underline) and a hamburger menu below 1180px.
+- Logo links home on every page; "Back to Home" button at the top of every inner page.
+- Header Book button and call icon; floating WhatsApp button and mobile bottom bar kept.
+- Automated check: no link on any page points to a missing file.
+
+### Before & After gallery (new)
+- `gallery.html` + a 4-card preview on the homepage, titled "Before & After — Real Car Transformations".
+- 10 categories, each with a before and an after image, category, description, optional vehicle/time/price, "Book Similar Service" (opens the booking form with that service ticked) and a WhatsApp enquiry button.
+- Side-by-side on desktop; swipeable slider with dots on mobile; category filters.
+- No licensed stock photos could be downloaded in this build environment, so the 20 images are drawn illustrations generated by `tools/make_illustrations.py`, each watermarked "ILLUSTRATION · NOT A PHOTO" and captioned "Illustrative example — not an actual customer vehicle." Real photos slot in via `gallery.js`.
+
+### PIN code checker (rewritten)
+- 452020 and 15 other verified Indore city PINs are now covered. Messages match the requested wording; incomplete and invalid PINs get specific errors; locality names (e.g. Kasturbagram) also work.
+- WhatsApp button visible in every state, prefilled with the PIN and a pickup/drop confirmation request.
+- Same checker used in the homepage, Pickup & Drop page, calculator, booking form and service-page forms.
+- Messages no longer render on blur, which previously shifted the "Next" button under the user's tap.
+
+### Reviews
+- "What Our Customers Say" with six SAMPLE cards (star ratings, service, vehicle, source, approval and consent fields), each visibly labelled as demo content. A notice explains they aren't real customers or Google reviews.
+- "Share Your Experience" (Google review link when configured, WhatsApp otherwise) and "Feedback on WhatsApp".
+- New `reviews.html`.
+
+### Calculator
+- New dedicated `estimate.html`.
+- Result now has "Book This Service" (booking form, details carried over), "Book on WhatsApp", "Copy estimate" and "Start over".
+- Fixed: the Back button showed on step 1 because `.btn` overrode the `hidden` attribute. A global `[hidden]` rule now fixes this everywhere.
+
+### Service pages
+- Before/after images, "Typical problems & symptoms", Call button in the hero, and a booking form on every service page that sends to WhatsApp.
+- New accident repair page (switchable in `config.js → pages`). Insurance-claim support claims removed.
+
+### Booking
+- Reads `?service=` from gallery links; live PIN status; states clearly that bookings go through WhatsApp and aren't stored in a database.
+
+### New pages
+`estimate.html`, `gallery.html`, `reviews.html`, `about.html`, `accident-repair-indore.html` (all in the sitemap).
+
+### Files changed
+| File | Change |
+|---|---|
+| `public/assets/js/service-areas.js` | **new** — verified PIN list, localities, messages |
+| `public/assets/js/area-check.js` | **new** — pure PIN checker |
+| `public/assets/js/gallery.js` | **new** — gallery data |
+| `public/assets/js/reviews.js` | **new** — review data |
+| `public/assets/img/hero-workshop.svg`, `public/assets/img/gallery/illustrative/*.svg` (20) | **new** |
+| `public/assets/img/gallery/real/` | **new** empty folder for genuine photos |
+| `tools/make_illustrations.py` | **new** |
+| `tests/area.test.js` | **new** — 11 PIN tests |
+| `docs/HOW_TO_UPDATE.md`, `docs/CHANGELOG.md` | **new** |
+| `public/assets/js/app.js` | checker UI, gallery, reviews, quick booking, calculator tools, Hindi strings |
+| `public/assets/js/config.js` | areas/reviews moved out, `pages` flags, accident service wording, pickup FAQ |
+| `public/assets/css/style.css` | nav, back-home, gallery, reviews, status, `[hidden]` fix |
+| `tools/build.mjs` | new nav/pages/sections, service-page photos + booking form |
+| `tests/browser_test.py` | now 61 checks |
+| All generated `public/*.html`, `sitemap.xml` | rebuilt |
+| `README.md`, `docs/DEMO_CONTENT.md`, `docs/LAUNCH_CHECKLIST.md`, `package.json` | updated |

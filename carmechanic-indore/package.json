@@ -1,0 +1,20 @@
+{
+  "name": "carmechanic-indore",
+  "version": "1.5.0",
+  "private": true,
+  "description": "CarMechanic Indore \u2014 static car service website with cost estimator and WhatsApp booking",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "test": "node tests/ratecard.test.js && node tests/estimate.test.js && node tests/area.test.js && node tests/photos.test.js && node tests/forms.test.js && node --test tests/server.test.mjs && node --test tests/build.test.mjs",
+    "test:browser": "python3 tests/browser_test.py",
+    "serve": "node tools/serve.mjs",
+    "illustrations": "python3 tools/make_illustrations.py",
+    "import-rates": "node tools/import-rates.mjs",
+    "photos": "node tools/fetch-photos.mjs",
+    "start": "node tools/serve.mjs",
+    "test:reliability": "python3 tests/reliability_test.py"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

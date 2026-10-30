@@ -1,0 +1,3219 @@
+{
+  "meta": {
+    "status": "OWNER REVIEW REQUIRED — proposed rates, not published. Do not copy into the live site until approved.",
+    "researchDate": "2026-10-23",
+    "currency": "INR",
+    "base": "hatchback, petrol, standard-grade parts",
+    "roundingStep": 50,
+    "notes": [
+      "Ranges anchored on competitor prices cited in 'evidence' (IDs from competitor_prices.csv).",
+      "Labour/parts splits are estimates; only Pitcrew labour figures (C058, C060, C061) are published as labour-only.",
+      "ownerToSet = no competitor publishes a price; inspectionRequired = show 'Inspection required — request a quote'.",
+      "partsQuotedSeparately = labour range only; the current calculator shows parts as ₹0, so it needs a small UI change to say 'parts quoted by model'."
+    ]
+  },
+  "defaultCategoryFactors": {
+    "hatchback": 1.0,
+    "sedan": 1.15,
+    "suv": 1.35,
+    "luxury": null,
+    "basis": "Sedan 1.15 / SUV 1.35: midpoint of competitor category steps — YMO hatch→SUV 1.20 (service), 1.60 (AC), 1.40 (interior), 1.22 (panel); Pitcrew lowest→5th service tier 1.63. Luxury: competitor luxury multiples range 1.5x–10x (YMO, conflicting), so default = quote after inspection."
+  },
+  "calculatorServices": {
+    "periodic": {
+      "fromRateCard": "GS-02",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        1100,
+        1400
+      ],
+      "parts": [
+        1900,
+        2600
+      ],
+      "tiers": {
+        "basic": {
+          "factor": 0.74,
+          "fromRateCard": "GS-01"
+        },
+        "standard": {
+          "factor": 1.0,
+          "fromRateCard": "GS-02"
+        },
+        "comprehensive": {
+          "factor": 1.47,
+          "fromRateCard": "GS-03"
+        }
+      }
+    },
+    "oil": {
+      "fromRateCard": "GS-04",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        250,
+        350
+      ],
+      "parts": [
+        1050,
+        1450
+      ]
+    },
+    "filters": {
+      "fromRateCard": "GS-05",
+      "inspectionRequired": false,
+      "ownerToSet": true
+    },
+    "ac": {
+      "fromRateCard": "AC-03",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        600,
+        800
+      ],
+      "parts": [
+        600,
+        1000
+      ]
+    },
+    "brakes": {
+      "fromRateCard": "BR-02",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        400,
+        600
+      ],
+      "parts": [
+        1000,
+        1900
+      ]
+    },
+    "clutch": {
+      "fromRateCard": "CL-02",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        2000,
+        3500
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": true
+    },
+    "suspension": {
+      "fromRateCard": "SU-02",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        800,
+        1500
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": true
+    },
+    "battery": {
+      "fromRateCard": "TB-05",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        0,
+        200
+      ],
+      "parts": [
+        3400,
+        5500
+      ]
+    },
+    "tyres": {
+      "fromRateCard": "SU-04",
+      "inspectionRequired": false,
+      "ownerToSet": true
+    },
+    "diagnostics": {
+      "fromRateCard": "EN-02",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        600,
+        1000
+      ],
+      "parts": [
+        0,
+        0
+      ]
+    },
+    "electrical": {
+      "fromRateCard": "EL-01",
+      "inspectionRequired": false,
+      "ownerToSet": true
+    },
+    "cooling": {
+      "fromRateCard": "EN-05",
+      "inspectionRequired": true,
+      "ownerToSet": false
+    },
+    "transmission": {
+      "fromRateCard": "CL-04",
+      "inspectionRequired": true,
+      "ownerToSet": false
+    },
+    "fuel": {
+      "fromRateCard": "EN-07",
+      "inspectionRequired": true,
+      "ownerToSet": false
+    },
+    "denting": {
+      "fromRateCard": "BD-01",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        1200,
+        1700
+      ],
+      "parts": [
+        800,
+        1300
+      ],
+      "unit": "panel"
+    },
+    "accident": {
+      "fromRateCard": "BD-09",
+      "inspectionRequired": true,
+      "ownerToSet": false
+    },
+    "glass": {
+      "fromRateCard": "BD-07",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        500,
+        800
+      ],
+      "parts": [
+        2000,
+        4200
+      ]
+    },
+    "detailing": {
+      "fromRateCard": "CD-01..CD-04",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        300,
+        2500
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "note": "Spans exterior wash (CD-01) to deep interior cleaning (CD-03); consider splitting into separate calculator options."
+    },
+    "ppi": {
+      "fromRateCard": "OT-04",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        1000,
+        2000
+      ],
+      "parts": [
+        0,
+        0
+      ]
+    },
+    "custom": {
+      "fromRateCard": "OT-07",
+      "inspectionRequired": true,
+      "ownerToSet": false
+    }
+  },
+  "calculatorPricingProposal": {
+    "categoryMultiplier": {
+      "hatchback": {
+        "labour": 1.0,
+        "parts": 1.0
+      },
+      "sedan": {
+        "labour": 1.1,
+        "parts": 1.2
+      },
+      "suv": {
+        "labour": 1.25,
+        "parts": 1.45
+      },
+      "luxury": null
+    },
+    "luxuryNote": "Competitor luxury multiples range from 1.5x to 10x and conflict (YMO). Recommend luxury = inspection required unless the owner sets a factor.",
+    "pickup": {
+      "inCoveredArea": 0,
+      "outsideArea": null,
+      "basis": "GaadiMech, GoMechanic, YMO and Pitcrew all advertise free pickup & drop (C001, C106, C070, C044)."
+    },
+    "taxes": "Only Pitcrew states prices include GST. Decide whether to show prices incl. GST before enabling taxes."
+  },
+  "rateCard": [
+    {
+      "id": "GS-01",
+      "category": "1. General servicing",
+      "service": "Basic service",
+      "unit": "per service",
+      "description": "Engine oil + oil filter, fluid top-ups, multi-point check, wash",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        800,
+        1000
+      ],
+      "parts": [
+        1400,
+        2000
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: engine oil, oil filter, top-up fluids",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.1,
+        "suv": 1.25,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          2200,
+          3000
+        ],
+        "sedan": [
+          2400,
+          3300
+        ],
+        "suv": [
+          2750,
+          3750
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 2600,
+      "evidence": [
+        "C007",
+        "C022",
+        "C023",
+        "C106",
+        "C064",
+        "C001",
+        "C110"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore",
+        "https://gomechanic.in/indore/car-repair/hyundai",
+        "https://gomechanic.in/indore/car-repair/maruti-suzuki",
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.gaadimech.com/doorstep-car-service-indore",
+        "https://www.ridenrepair.com/car-service/toyota/indore",
+        "https://www.yourmechaniconline.com/pricing"
+      ],
+      "competitorSummary": "GaadiMech ₹1,999 (hatch, national) · GoMechanic Indore from ₹1,999 / 'starts at ₹2,669' · YMO ₹2,499 (hatch & sedan), ₹2,999 SUV · GaadiMech Indore ₹2,499 · Ride N Repair ₹3,065",
+      "basis": "Total ₹2,200–3,000 sits inside the ₹1,999–3,065 Indore band. Sedan/SUV factors from YMO (sedan same as hatch, SUV +20%).",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "GS-02",
+      "category": "1. General servicing",
+      "service": "Standard service",
+      "unit": "per service",
+      "description": "Basic + air filter, brake clean & adjust, battery check, coolant/brake-fluid top-up, wash & vacuum",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        1100,
+        1400
+      ],
+      "parts": [
+        1900,
+        2600
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: oil, oil filter, air filter, top-ups",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.1,
+        "suv": 1.3,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          3000,
+          4000
+        ],
+        "sedan": [
+          3300,
+          4400
+        ],
+        "suv": [
+          3900,
+          5200
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 3500,
+      "evidence": [
+        "C008",
+        "C045",
+        "C044",
+        "C111",
+        "C064"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.pitcrew.co.in/car-service/indore/",
+        "https://www.ridenrepair.com/car-service/toyota/indore",
+        "https://www.yourmechaniconline.com/pricing"
+      ],
+      "competitorSummary": "GaadiMech ₹3,499 (hatch) · Pitcrew tier 1 ₹2,869–4,443 incl. GST · Pitcrew FAQ 'starts at ₹3,495' · Ride N Repair ₹4,284 · YMO 'complete' ₹2,499",
+      "basis": "₹3,000–4,000 matches Pitcrew's tax-included tier 1 and sits below Ride N Repair.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "GS-03",
+      "category": "1. General servicing",
+      "service": "Comprehensive service",
+      "unit": "per service",
+      "description": "Standard + cabin filter, spark plugs/fuel filter check, alignment & balancing, AC vent clean, interior clean",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        1500,
+        1900
+      ],
+      "parts": [
+        3000,
+        3900
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: oil, oil/air/cabin filters; spark plugs and fuel filter extra if replaced",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.1,
+        "suv": 1.3,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          4500,
+          5800
+        ],
+        "sedan": [
+          4950,
+          6400
+        ],
+        "suv": [
+          5850,
+          7550
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 5150,
+      "evidence": [
+        "C009",
+        "C112",
+        "C069",
+        "C048"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.pitcrew.co.in/car-service/indore/",
+        "https://www.ridenrepair.com/car-service/toyota/indore",
+        "https://www.yourmechaniconline.com/pricing"
+      ],
+      "competitorSummary": "GaadiMech ₹5,499 (hatch) · Ride N Repair ₹5,713 · YMO major service from ₹4,999 · Pitcrew tier 4 ₹4,263–6,602",
+      "basis": "₹4,500–5,800 brackets the three published comprehensive/major prices.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "GS-04",
+      "category": "1. General servicing",
+      "service": "Engine oil & oil filter change",
+      "unit": "per job",
+      "description": "Drain, new oil (grade per manual), new oil filter",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        250,
+        350
+      ],
+      "parts": [
+        1050,
+        1450
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: oil + filter (mineral/semi-synthetic). Full synthetic extra.",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.65,
+        "luxury": 3.7
+      },
+      "estimate": {
+        "hatchback": [
+          1300,
+          1800
+        ],
+        "sedan": [
+          1500,
+          2050
+        ],
+        "suv": [
+          2150,
+          2950
+        ],
+        "luxury": [
+          4800,
+          6650
+        ]
+      },
+      "standardPrice": 1550,
+      "evidence": [
+        "C076",
+        "C079",
+        "C077",
+        "C078",
+        "C080"
+      ],
+      "sources": [
+        "https://www.yourmechaniconline.com/pricing",
+        "https://www.yourmechaniconline.com/services/car-oil-change-in-indore"
+      ],
+      "competitorSummary": "YMO hatch ₹1,499 · sedan ₹1,499 (pricing page) / ₹2,499 (Indore page — conflict) · SUV ₹2,499 · luxury from ₹5,600",
+      "basis": "₹1,300–1,800 hatch brackets YMO ₹1,499. Factors from YMO SUV ₹2,499 (1.65x) and luxury ₹5,600 (3.7x).",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "GS-05",
+      "category": "1. General servicing",
+      "service": "Air filter replacement",
+      "unit": "per job",
+      "description": "Replace engine air filter",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "No competitor publishes a standalone price.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "GS-06",
+      "category": "1. General servicing",
+      "service": "Cabin (AC) filter replacement",
+      "unit": "per job",
+      "description": "Replace cabin/pollen filter",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C034"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-detailing/hyundai"
+      ],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set. (GoMechanic lists it, price hidden).",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "GS-07",
+      "category": "1. General servicing",
+      "service": "Fuel filter replacement",
+      "unit": "per job",
+      "description": "Replace fuel filter (diesel/petrol where serviceable)",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "GS-08",
+      "category": "1. General servicing",
+      "service": "Spark plug replacement",
+      "unit": "per set",
+      "description": "Replace spark plugs (petrol/CNG)",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "GS-09",
+      "category": "1. General servicing",
+      "service": "Coolant replacement",
+      "unit": "per job",
+      "description": "Drain and refill coolant",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "GS-10",
+      "category": "1. General servicing",
+      "service": "Brake fluid replacement",
+      "unit": "per job",
+      "description": "Flush and replace brake fluid",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set. (GaadiMech brake service mentions top-up only).",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "GS-11",
+      "category": "1. General servicing",
+      "service": "Periodic inspection / health check",
+      "unit": "per visit",
+      "description": "Multi-point inspection with written report, no parts",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        400,
+        600
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Labour only",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          400,
+          600
+        ],
+        "sedan": [
+          450,
+          700
+        ],
+        "suv": [
+          550,
+          800
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 500,
+      "evidence": [
+        "C108",
+        "C107",
+        "C113"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore",
+        "https://www.ridenrepair.com/indore-car-mechanic"
+      ],
+      "competitorSummary": "GoMechanic Indore 'Inspection' from ₹499 · Ride N Repair 'general service' from ₹999 (scope = inspection visit)",
+      "basis": "₹400–600 sits around GoMechanic's ₹499.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "AC-01",
+      "category": "2. AC services",
+      "service": "AC inspection",
+      "unit": "per visit",
+      "description": "Vent temperature, pressure and visual check",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        100,
+        300
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Labour only",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          100,
+          300
+        ],
+        "sedan": [
+          100,
+          350
+        ],
+        "suv": [
+          150,
+          400
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 200,
+      "evidence": [
+        "C026"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-ac-repair/hyundai"
+      ],
+      "competitorSummary": "GoMechanic Indore 'AC Inspection' under ₹49 (+ pickup charges)",
+      "basis": "Few published prices. Low anchor is GoMechanic; many garages waive it with a service — owner decision.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "AC-02",
+      "category": "2. AC services",
+      "service": "AC gas refill / top-up",
+      "unit": "per job",
+      "description": "Evacuate (if needed) and recharge refrigerant, leak check",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        300,
+        400
+      ],
+      "parts": [
+        600,
+        1000
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: refrigerant (R134a; R1234yf costs more — quote)",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.2,
+        "suv": 1.5,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          900,
+          1400
+        ],
+        "sedan": [
+          1100,
+          1700
+        ],
+        "suv": [
+          1350,
+          2100
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 1150,
+      "evidence": [
+        "C010",
+        "C054",
+        "C081"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.pitcrew.co.in/car-ac-service-repair/indore/",
+        "https://www.yourmechaniconline.com/services/car-air-conditioner-servicing-in-pune"
+      ],
+      "competitorSummary": "GaadiMech AC gas refill ₹999 · Pitcrew gas top-up ₹819–1,268 / 983–1,522 / 1,229–1,903 incl. GST · YMO AC service incl. gas top-up ₹999",
+      "basis": "₹900–1,400 hatch; SUV factor 1.5 from Pitcrew top tier vs bottom tier.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "AC-03",
+      "category": "2. AC services",
+      "service": "AC service (standard)",
+      "unit": "per job",
+      "description": "Gas pressure check & top-up, filter cleaning, condenser & vent cleaning, cooling test",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        600,
+        800
+      ],
+      "parts": [
+        600,
+        1000
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: gas top-up, cleaning consumables",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.3,
+        "suv": 1.6,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          1200,
+          1800
+        ],
+        "sedan": [
+          1550,
+          2350
+        ],
+        "suv": [
+          1900,
+          2900
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 1500,
+      "evidence": [
+        "C002",
+        "C011",
+        "C025",
+        "C052",
+        "C081",
+        "C082",
+        "C083",
+        "C118",
+        "C071"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-ac-repair/hyundai",
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.gaadimech.com/doorstep-car-service-indore",
+        "https://www.pitcrew.co.in/car-ac-service-repair/indore/",
+        "https://www.ridenrepair.com/car-ac-repair/maruti-suzuki/indore",
+        "https://www.yourmechaniconline.com/locations/indore",
+        "https://www.yourmechaniconline.com/pricing",
+        "https://www.yourmechaniconline.com/services/car-air-conditioner-servicing-in-pune"
+      ],
+      "competitorSummary": "GaadiMech Indore ₹999 / national ₹1,999 (conflict) · GoMechanic Indore from ₹1,199 · YMO ₹999 / ₹1,299 / ₹1,599 (hatch/sedan/SUV) · Ride N Repair from ₹1,999 · Pitcrew basic ₹409–633 (no gas)",
+      "basis": "₹1,200–1,800 between YMO/GaadiMech and Ride N Repair. Category factors from YMO.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "AC-04",
+      "category": "2. AC services",
+      "service": "AC filter cleaning",
+      "unit": "per job",
+      "description": "Clean cabin/AC filter and vents",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        300,
+        600
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Labour only; replacement filter extra (see GS-06)",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          300,
+          600
+        ],
+        "sedan": [
+          350,
+          700
+        ],
+        "suv": [
+          400,
+          800
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 450,
+      "evidence": [
+        "C052"
+      ],
+      "sources": [
+        "https://www.pitcrew.co.in/car-ac-service-repair/indore/"
+      ],
+      "competitorSummary": "Pitcrew basic AC service ₹409–633 incl. GST (filter cleaning + radiator flush + pressure check)",
+      "basis": "Pitcrew's basic AC is the only comparable price.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "AC-05",
+      "category": "2. AC services",
+      "service": "AC leak detection",
+      "unit": "per job",
+      "description": "UV dye / nitrogen leak test",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set. (included in YMO/Ride N Repair AC packages).",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "AC-06",
+      "category": "2. AC services",
+      "service": "AC condenser repair / replacement",
+      "unit": "per job",
+      "description": "Condenser repair or replacement",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C027"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-ac-repair/hyundai"
+      ],
+      "competitorSummary": "Only condenser CLEANING is priced: GoMechanic under ₹99. Repair/replacement not published.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "AC-07",
+      "category": "2. AC services",
+      "service": "AC compressor repair / replacement",
+      "unit": "per job",
+      "description": "Compressor repair or replacement",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C012",
+        "C081"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.yourmechaniconline.com/services/car-air-conditioner-servicing-in-pune"
+      ],
+      "competitorSummary": "Not published. YMO: 'compressor work quoted upfront'. GaadiMech 'AC Complete Repair' ₹2,999 has no stated scope.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BR-01",
+      "category": "3. Brakes",
+      "service": "Brake inspection",
+      "unit": "per visit",
+      "description": "Pad/shoe thickness, disc/drum, fluid level check",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        300,
+        500
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Labour only",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          300,
+          500
+        ],
+        "sedan": [
+          350,
+          600
+        ],
+        "suv": [
+          400,
+          700
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 400,
+      "evidence": [
+        "C072",
+        "C087",
+        "C088"
+      ],
+      "sources": [
+        "https://www.yourmechaniconline.com/locations/indore",
+        "https://www.yourmechaniconline.com/services/car-brake-repair"
+      ],
+      "competitorSummary": "YMO brake inspection from ₹499 (FAQ) / ₹899 incl. fluid top-up (table) — conflict",
+      "basis": "₹300–500 at or below YMO.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BR-02",
+      "category": "3. Brakes",
+      "service": "Front brake pad replacement",
+      "unit": "per axle",
+      "description": "Replace front pads, clean & lube calipers",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        400,
+        600
+      ],
+      "parts": [
+        1000,
+        1900
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: brake pad set (standard grade)",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.4,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          1400,
+          2500
+        ],
+        "sedan": [
+          1600,
+          2900
+        ],
+        "suv": [
+          1950,
+          3500
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 1950,
+      "evidence": [
+        "C019",
+        "C058",
+        "C087",
+        "C006"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.gaadimech.com/doorstep-car-service-indore",
+        "https://www.pitcrew.co.in/car-repair/indore/",
+        "https://www.yourmechaniconline.com/services/car-brake-repair"
+      ],
+      "competitorSummary": "GaadiMech 'Brake Pads' ₹1,499 (hatch) · Pitcrew brake labour ₹300–600 · YMO front pads ₹499 (unclear if parts incl.) · GaadiMech Indore brake service ₹799",
+      "basis": "Labour from Pitcrew's stated labour range; total ₹1,400–2,500 brackets GaadiMech ₹1,499.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BR-03",
+      "category": "3. Brakes",
+      "service": "Rear brake shoe replacement",
+      "unit": "per axle",
+      "description": "Replace rear shoes, adjust drums",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        400,
+        600
+      ],
+      "parts": null,
+      "partsQuotedSeparately": true,
+      "partsNote": "Shoes quoted by model",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          400,
+          600
+        ],
+        "sedan": [
+          450,
+          700
+        ],
+        "suv": [
+          550,
+          800
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 500,
+      "evidence": [
+        "C058"
+      ],
+      "sources": [
+        "https://www.pitcrew.co.in/car-repair/indore/"
+      ],
+      "competitorSummary": "Pitcrew brake labour ₹300–600. Shoe price not published.",
+      "basis": "Labour only; parts quoted.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BR-04",
+      "category": "3. Brakes",
+      "service": "Brake disc resurfacing (pair)",
+      "unit": "per axle",
+      "description": "Machine (skim) brake discs",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C020",
+        "C042"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-repair/hyundai",
+        "https://www.gaadimech.com/car-service-pricing"
+      ],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set. GaadiMech 'Disc Brake' ₹2,999 doesn't say resurfacing or replacement.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BR-05",
+      "category": "3. Brakes",
+      "service": "Brake disc replacement",
+      "unit": "per axle",
+      "description": "Replace discs",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C089",
+        "C020"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.yourmechaniconline.com/services/car-brake-repair"
+      ],
+      "competitorSummary": "YMO pads + rotors ₹2,499 (sedan) · GaadiMech 'Disc Brake' ₹2,999 (scope unclear). Depends on model.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BR-06",
+      "category": "3. Brakes",
+      "service": "Complete brake service",
+      "unit": "per job",
+      "description": "Pads/shoes, fluid, discs/drums check all wheels",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C021",
+        "C059"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.pitcrew.co.in/car-repair/indore/"
+      ],
+      "competitorSummary": "GaadiMech 'Complete Brake' ₹4,499 (hatch) · Pitcrew brakes overall ₹1,000–10,000",
+      "basis": "Range too wide to publish; quote after inspection.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "CL-01",
+      "category": "4. Clutch, transmission & gearbox",
+      "service": "Clutch adjustment",
+      "unit": "per job",
+      "description": "Cable/pedal free-play adjustment",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "CL-02",
+      "category": "4. Clutch, transmission & gearbox",
+      "service": "Clutch plate / set replacement",
+      "unit": "per job",
+      "description": "Replace clutch plate, pressure plate, release bearing (gearbox off)",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        2000,
+        3500
+      ],
+      "parts": null,
+      "partsQuotedSeparately": true,
+      "partsNote": "Clutch set quoted by model",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.4,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          2000,
+          3500
+        ],
+        "sedan": [
+          2300,
+          4050
+        ],
+        "suv": [
+          2800,
+          4900
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 2750,
+      "evidence": [
+        "C061",
+        "C037"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-lights-replacement/hyundai",
+        "https://www.pitcrew.co.in/car-repair/indore/"
+      ],
+      "competitorSummary": "Pitcrew clutch replacement LABOUR ₹2,000–5,000 · GoMechanic Clutch & Body Parts from ₹1,599 (item not named)",
+      "basis": "Labour inside Pitcrew's stated band; parts vary too much by model to publish.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "CL-03",
+      "category": "4. Clutch, transmission & gearbox",
+      "service": "Clutch overhaul",
+      "unit": "per job",
+      "description": "Clutch overhaul incl. flywheel check",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C037"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-lights-replacement/hyundai"
+      ],
+      "competitorSummary": "GoMechanic lists 'Clutch Overhaul — Labour Rates Only', price hidden.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "CL-04",
+      "category": "4. Clutch, transmission & gearbox",
+      "service": "Gearbox inspection & repair",
+      "unit": "per job",
+      "description": "Manual/AMT/automatic gearbox diagnosis and repair",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C105"
+      ],
+      "sources": [
+        "https://www.yourmechaniconline.com/pricing"
+      ],
+      "competitorSummary": "Not published by any platform.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "EN-01",
+      "category": "5. Engine & diagnostics",
+      "service": "Computer scanning (OBD)",
+      "unit": "per scan",
+      "description": "OBD scan and fault-code report",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        400,
+        600
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Labour only",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          400,
+          600
+        ],
+        "sedan": [
+          450,
+          700
+        ],
+        "suv": [
+          550,
+          800
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 500,
+      "evidence": [
+        "C107"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore"
+      ],
+      "competitorSummary": "GoMechanic Indore 'Car Inspection/Diagnostics' from ₹499",
+      "basis": "Brackets GoMechanic ₹499.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "EN-02",
+      "category": "5. Engine & diagnostics",
+      "service": "Check-engine light diagnosis",
+      "unit": "per job",
+      "description": "OBD scan, live data, road test, cause report",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        600,
+        1000
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Labour only; repair quoted after",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          600,
+          1000
+        ],
+        "sedan": [
+          700,
+          1150
+        ],
+        "suv": [
+          800,
+          1350
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 800,
+      "evidence": [
+        "C107",
+        "C120"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore",
+        "https://www.ridenrepair.com/car-repair/maruti-suzuki/indore"
+      ],
+      "competitorSummary": "GoMechanic diagnostics from ₹499 · Ride N Repair 'car repair' diagnosis visit from ₹999",
+      "basis": "Between the two Indore entry prices.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "EN-03",
+      "category": "5. Engine & diagnostics",
+      "service": "Engine tune-up",
+      "unit": "per job",
+      "description": "Throttle body/injector clean, plugs, filters",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "EN-04",
+      "category": "5. Engine & diagnostics",
+      "service": "Engine mounting replacement",
+      "unit": "per mount",
+      "description": "Replace engine mount",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "EN-05",
+      "category": "5. Engine & diagnostics",
+      "service": "Cooling system & radiator repair",
+      "unit": "per job",
+      "description": "Pressure test, hoses, thermostat, radiator",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C120"
+      ],
+      "sources": [
+        "https://www.ridenrepair.com/car-repair/maruti-suzuki/indore"
+      ],
+      "competitorSummary": "Not published. Ride N Repair includes a cooling pressure test in its ₹999 diagnosis.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "EN-06",
+      "category": "5. Engine & diagnostics",
+      "service": "Engine overhaul",
+      "unit": "per job",
+      "description": "Engine overhaul",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not published by any platform.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "EN-07",
+      "category": "5. Engine & diagnostics",
+      "service": "Fuel system repair",
+      "unit": "per job",
+      "description": "Injector, pump, fuel line repairs",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "SU-01",
+      "category": "6. Suspension & steering",
+      "service": "Suspension inspection",
+      "unit": "per visit",
+      "description": "Bushes, links, shocks, ball joints check",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C043"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/custom-repair/hyundai"
+      ],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set. (GoMechanic 'Complete Suspension Inspection', price hidden).",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "SU-02",
+      "category": "6. Suspension & steering",
+      "service": "Shock absorber replacement",
+      "unit": "per pair",
+      "description": "Replace pair of shock absorbers/struts",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        800,
+        1500
+      ],
+      "parts": null,
+      "partsQuotedSeparately": true,
+      "partsNote": "Shock absorbers quoted by model",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.4,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          800,
+          1500
+        ],
+        "sedan": [
+          900,
+          1750
+        ],
+        "suv": [
+          1100,
+          2100
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 1150,
+      "evidence": [
+        "C060"
+      ],
+      "sources": [
+        "https://www.pitcrew.co.in/car-repair/indore/"
+      ],
+      "competitorSummary": "Pitcrew suspension parts replacement LABOUR ₹500–3,000",
+      "basis": "Labour within Pitcrew band; parts by model.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "SU-03",
+      "category": "6. Suspension & steering",
+      "service": "Steering repair",
+      "unit": "per job",
+      "description": "Rack, tie-rod, EPS faults",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "SU-04",
+      "category": "6. Suspension & steering",
+      "service": "Wheel alignment & balancing",
+      "unit": "per job",
+      "description": "4-wheel alignment + balancing",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C030"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-tyre-replacement/hyundai"
+      ],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set. (GoMechanic 'Complete Wheel Care', price hidden).",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "TB-01",
+      "category": "7. Tyres & battery",
+      "service": "Puncture repair (tubeless)",
+      "unit": "per tyre",
+      "description": "Plug/patch repair, pressure check",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        150,
+        250
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Labour + plug",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          150,
+          250
+        ],
+        "sedan": [
+          150,
+          300
+        ],
+        "suv": [
+          200,
+          350
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 200,
+      "evidence": [
+        "C005"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/doorstep-car-service-indore"
+      ],
+      "competitorSummary": "GaadiMech Indore 'Tyre Service' ₹199 (puncture repair, rotation, pressure check)",
+      "basis": "Brackets GaadiMech ₹199.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "TB-02",
+      "category": "7. Tyres & battery",
+      "service": "Tyre fitting (new tyre)",
+      "unit": "per tyre",
+      "description": "Fit and balance a new tyre",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        0,
+        200
+      ],
+      "parts": null,
+      "partsQuotedSeparately": true,
+      "partsNote": "Tyre quoted by size and brand",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          0,
+          200
+        ],
+        "sedan": [
+          0,
+          250
+        ],
+        "suv": [
+          0,
+          250
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 100,
+      "evidence": [
+        "C030",
+        "C031"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-tyre-replacement/hyundai"
+      ],
+      "competitorSummary": "GoMechanic tyres from ₹3,000 (Eon, 'fitting cost included')",
+      "basis": "Most platforms include fitting in the tyre price.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "TB-03",
+      "category": "7. Tyres & battery",
+      "service": "Battery testing",
+      "unit": "per test",
+      "description": "Voltage/CCA load test, charging check",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        0,
+        300
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Labour only; free with service is common",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          0,
+          300
+        ],
+        "sedan": [
+          0,
+          350
+        ],
+        "suv": [
+          0,
+          400
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 150,
+      "evidence": [
+        "C003"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/doorstep-car-service-indore"
+      ],
+      "competitorSummary": "GaadiMech Indore 'Battery Service' ₹499 (test, jump start, terminal cleaning)",
+      "basis": "Test alone kept below GaadiMech's bundled ₹499.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "TB-04",
+      "category": "7. Tyres & battery",
+      "service": "Jump start",
+      "unit": "per call-out",
+      "description": "Doorstep jump start",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        300,
+        500
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Labour + call-out",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          300,
+          500
+        ],
+        "sedan": [
+          350,
+          600
+        ],
+        "suv": [
+          400,
+          700
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 400,
+      "evidence": [
+        "C003"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/doorstep-car-service-indore"
+      ],
+      "competitorSummary": "GaadiMech Indore Battery Service ₹499 includes jump start",
+      "basis": "₹300–500 around GaadiMech.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "TB-05",
+      "category": "7. Tyres & battery",
+      "service": "Battery replacement",
+      "unit": "per battery",
+      "description": "New battery with fitting and old-battery disposal",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        0,
+        200
+      ],
+      "parts": [
+        3400,
+        5500
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: battery (brand/capacity per model), fitting",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.5,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          3400,
+          5700
+        ],
+        "sedan": [
+          3900,
+          6550
+        ],
+        "suv": [
+          5100,
+          8550
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 4550,
+      "evidence": [
+        "C016",
+        "C017",
+        "C018",
+        "C029",
+        "C119"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-battery-replacement/hyundai",
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.ridenrepair.com/car-battery/maruti-suzuki/indore"
+      ],
+      "competitorSummary": "GaadiMech hatch ₹3,499 basic / ₹4,999 premium / ₹5,499 Amaron · GoMechanic Indore from ₹3,400 (free installation) · Ride N Repair from ₹999 (battery not included)",
+      "basis": "Matches GaadiMech/GoMechanic battery band. Factors by typical battery size — confirm with supplier.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "EL-01",
+      "category": "8. Electrical",
+      "service": "Wiring fault diagnosis",
+      "unit": "per job",
+      "description": "Trace electrical faults",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "EL-02",
+      "category": "8. Electrical",
+      "service": "Starter motor repair / replacement",
+      "unit": "per job",
+      "description": "Starter motor",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "EL-03",
+      "category": "8. Electrical",
+      "service": "Alternator repair / replacement",
+      "unit": "per job",
+      "description": "Alternator",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "EL-04",
+      "category": "8. Electrical",
+      "service": "Headlight / bulb replacement",
+      "unit": "per job",
+      "description": "Headlight bulb or unit, accessories",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BD-01",
+      "category": "9. Bodywork & glass",
+      "service": "Dent removal & paint",
+      "unit": "per panel",
+      "description": "Dent repair, primer, colour-matched paint, clear coat, polish",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        1200,
+        1700
+      ],
+      "parts": [
+        800,
+        1300
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: paint & consumables",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.05,
+        "suv": 1.2,
+        "luxury": 1.55
+      },
+      "estimate": {
+        "hatchback": [
+          2000,
+          3000
+        ],
+        "sedan": [
+          2100,
+          3150
+        ],
+        "suv": [
+          2400,
+          3600
+        ],
+        "luxury": [
+          3100,
+          4650
+        ]
+      },
+      "standardPrice": 2500,
+      "evidence": [
+        "C013",
+        "C032",
+        "C055",
+        "C073",
+        "C090",
+        "C091",
+        "C092"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-dent-paint/hyundai",
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.pitcrew.co.in/car-paint-dent/indore/",
+        "https://www.yourmechaniconline.com/locations/indore",
+        "https://www.yourmechaniconline.com/pricing",
+        "https://www.yourmechaniconline.com/services/car-denting-and-painting-3000"
+      ],
+      "competitorSummary": "GaadiMech ₹2,499/panel (hatch) · GoMechanic Indore from ₹1,800 · Pitcrew ₹1,635–3,549 incl. GST (FAQ ₹1,995) · YMO from ₹4,500 (SUV ₹5,500, luxury ₹6,999)",
+      "basis": "₹2,000–3,000 per panel = Indore middle; YMO is the outlier. SUV/luxury factors from YMO.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BD-02",
+      "category": "9. Bodywork & glass",
+      "service": "Bumper paint",
+      "unit": "per bumper",
+      "description": "Repaint front or rear bumper",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        1500,
+        2000
+      ],
+      "parts": [
+        1000,
+        1500
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: paint & consumables",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          2500,
+          3500
+        ],
+        "sedan": [
+          2900,
+          4050
+        ],
+        "suv": [
+          3400,
+          4750
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 3000,
+      "evidence": [
+        "C014",
+        "C093"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.yourmechaniconline.com/services/car-denting-and-painting-3000"
+      ],
+      "competitorSummary": "GaadiMech ₹2,999 (hatch) · YMO ₹3,500",
+      "basis": "₹2,500–3,500 brackets both.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BD-03",
+      "category": "9. Bodywork & glass",
+      "service": "Bumper repair (cracks / clips)",
+      "unit": "per bumper",
+      "description": "Plastic welding, clip/bracket repair",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BD-04",
+      "category": "9. Bodywork & glass",
+      "service": "Roof dent & paint",
+      "unit": "per roof",
+      "description": "Roof panel dent repair and paint",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        2000,
+        3000
+      ],
+      "parts": [
+        1300,
+        2000
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: paint & consumables",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.25,
+        "suv": 1.75,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          3300,
+          5000
+        ],
+        "sedan": [
+          4150,
+          6250
+        ],
+        "suv": [
+          5800,
+          8750
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 4150,
+      "evidence": [
+        "C056"
+      ],
+      "sources": [
+        "https://www.pitcrew.co.in/car-paint-dent/indore/"
+      ],
+      "competitorSummary": "Pitcrew roof ₹3,275–5,073 / 4,095–6,343 / 5,735–8,883 incl. GST",
+      "basis": "Matches Pitcrew's lowest tier; factors from its tiers.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BD-05",
+      "category": "9. Bodywork & glass",
+      "service": "Full-body painting",
+      "unit": "per car",
+      "description": "Full exterior repaint",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        12000,
+        17000
+      ],
+      "parts": [
+        8000,
+        13000
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: paint & consumables",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.1,
+        "suv": 1.5,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          20000,
+          30000
+        ],
+        "sedan": [
+          22000,
+          33000
+        ],
+        "suv": [
+          30000,
+          45000
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 25000,
+      "evidence": [
+        "C015",
+        "C057",
+        "C094"
+      ],
+      "sources": [
+        "https://www.gaadimech.com/car-service-pricing",
+        "https://www.pitcrew.co.in/car-paint-dent/indore/",
+        "https://www.yourmechaniconline.com/services/car-denting-and-painting-3000"
+      ],
+      "competitorSummary": "GaadiMech ₹19,999 (hatch) · Pitcrew ₹18,035–27,933 / 19,675–30,473 / 28,695–44,443 incl. GST (FAQ ₹21,995) · YMO from ₹40,000",
+      "basis": "₹20,000–30,000 = GaadiMech/Pitcrew tier 1. Factors from Pitcrew tiers.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BD-06",
+      "category": "9. Bodywork & glass",
+      "service": "Windshield chip repair",
+      "unit": "per chip",
+      "description": "Resin chip repair",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BD-07",
+      "category": "9. Bodywork & glass",
+      "service": "Windshield replacement",
+      "unit": "per glass",
+      "description": "Front windshield replacement with sealant",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        500,
+        800
+      ],
+      "parts": [
+        2000,
+        4200
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: ISI windshield, sealant",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.2,
+        "suv": 1.5,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          2500,
+          5000
+        ],
+        "sedan": [
+          3000,
+          6000
+        ],
+        "suv": [
+          3750,
+          7500
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 3750,
+      "evidence": [
+        "C035",
+        "C036"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/windshield-glass-replacement/hyundai"
+      ],
+      "competitorSummary": "GoMechanic Indore windshields from ₹2,300 / ₹2,436 (Santro, 'Labour Included', ISI glass)",
+      "basis": "Low end from GoMechanic's starting price; high end allows for larger glass. ADAS/rain-sensor cars: quote.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BD-08",
+      "category": "9. Bodywork & glass",
+      "service": "Door glass replacement",
+      "unit": "per glass",
+      "description": "Door glass replacement",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C109"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore"
+      ],
+      "competitorSummary": "GoMechanic Indore 'Door Glass Replacement' from ₹700 (only a lower bound)",
+      "basis": "Owner to set the upper end.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "BD-09",
+      "category": "9. Bodywork & glass",
+      "service": "Accident repair",
+      "unit": "per job",
+      "description": "Assessment and repair of accident damage",
+      "inspectionRequired": true,
+      "ownerToSet": false,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Inspection required — request a quote",
+        "sedan": "Inspection required — request a quote",
+        "suv": "Inspection required — request a quote",
+        "luxury": "Inspection required — request a quote"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C041"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-insurance/hyundai"
+      ],
+      "competitorSummary": "Not published. GoMechanic insurance-claim services from ₹499 (service not named).",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "CD-01",
+      "category": "10. Cleaning & detailing",
+      "service": "Exterior wash",
+      "unit": "per wash",
+      "description": "Foam wash, tyre shine",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        300,
+        500
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: shampoo & consumables",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.3,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          300,
+          500
+        ],
+        "sedan": [
+          350,
+          600
+        ],
+        "suv": [
+          400,
+          650
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 400,
+      "evidence": [
+        "C004",
+        "C033"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-cleaning-service/hyundai",
+        "https://www.gaadimech.com/doorstep-car-service-indore"
+      ],
+      "competitorSummary": "GaadiMech Indore car wash ₹299 (incl. vacuum) · GoMechanic Indore spa from ₹499",
+      "basis": "Between the two Indore prices.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "CD-02",
+      "category": "10. Cleaning & detailing",
+      "service": "Interior cleaning (vacuum & dashboard)",
+      "unit": "per job",
+      "description": "Vacuum, mats, dashboard dressing",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        400,
+        700
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: consumables",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.3,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          400,
+          700
+        ],
+        "sedan": [
+          450,
+          800
+        ],
+        "suv": [
+          500,
+          900
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 550,
+      "evidence": [
+        "C004",
+        "C033"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-cleaning-service/hyundai",
+        "https://www.gaadimech.com/doorstep-car-service-indore"
+      ],
+      "competitorSummary": "GaadiMech wash ₹299 includes interior vacuum · GoMechanic spa from ₹499",
+      "basis": "Slightly above wash-with-vacuum.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "CD-03",
+      "category": "10. Cleaning & detailing",
+      "service": "Deep interior cleaning",
+      "unit": "per job",
+      "description": "Seat/roof/carpet shampoo, odour treatment",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        1200,
+        2500
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: chemicals & consumables",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.2,
+        "suv": 1.4,
+        "luxury": 1.6
+      },
+      "estimate": {
+        "hatchback": [
+          1200,
+          2500
+        ],
+        "sedan": [
+          1450,
+          3000
+        ],
+        "suv": [
+          1700,
+          3500
+        ],
+        "luxury": [
+          1900,
+          4000
+        ]
+      },
+      "standardPrice": 1850,
+      "evidence": [
+        "C062",
+        "C074",
+        "C095",
+        "C096",
+        "C097",
+        "C098"
+      ],
+      "sources": [
+        "https://www.pitcrew.co.in/car-dry-cleaning/",
+        "https://www.yourmechaniconline.com/locations/indore",
+        "https://www.yourmechaniconline.com/pricing",
+        "https://www.yourmechaniconline.com/services/car-interior-cleaning-in-pune-2500"
+      ],
+      "competitorSummary": "Pitcrew interior dry cleaning from ₹895 (Delhi page) · YMO ₹2,500 / ₹2,999 / ₹3,499 (hatch/sedan/SUV), luxury from ₹3,999",
+      "basis": "From Pitcrew's entry price to YMO's hatch price. Factors from YMO.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "CD-04",
+      "category": "10. Cleaning & detailing",
+      "service": "Rubbing & polishing",
+      "unit": "per car",
+      "description": "Machine rubbing and polish (1–2 stage)",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        1500,
+        3500
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Included: compounds & polish",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.1,
+        "suv": 1.25,
+        "luxury": 1.55
+      },
+      "estimate": {
+        "hatchback": [
+          1500,
+          3500
+        ],
+        "sedan": [
+          1650,
+          3850
+        ],
+        "suv": [
+          1900,
+          4400
+        ],
+        "luxury": [
+          2350,
+          5450
+        ]
+      },
+      "standardPrice": 2500,
+      "evidence": [
+        "C034",
+        "C075",
+        "C099",
+        "C100",
+        "C101"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-detailing/hyundai",
+        "https://www.yourmechaniconline.com/locations/indore",
+        "https://www.yourmechaniconline.com/pricing",
+        "https://www.yourmechaniconline.com/services/car-rubbing-and-polishing-in-pune-6500"
+      ],
+      "competitorSummary": "GoMechanic Indore detailing from ₹1,499 · YMO 3-stage ₹6,500 (hatch/sedan), ₹7,999 SUV, luxury from ₹9,999",
+      "basis": "1–2 stage priced from GoMechanic's entry up to about half of YMO's 3-stage.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "CD-05",
+      "category": "10. Cleaning & detailing",
+      "service": "Ceramic coating",
+      "unit": "per car",
+      "description": "Ceramic paint protection",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C034"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/car-detailing/hyundai"
+      ],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set. (GoMechanic lists ceramic coating with a 1-year warranty, price hidden).",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "OT-01",
+      "category": "11. Other",
+      "service": "Doorstep inspection",
+      "unit": "per visit",
+      "description": "Mechanic visit and inspection at home/office",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        400,
+        600
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Labour + visit",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          400,
+          600
+        ],
+        "sedan": [
+          450,
+          700
+        ],
+        "suv": [
+          550,
+          800
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 500,
+      "evidence": [
+        "C108"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore"
+      ],
+      "competitorSummary": "GoMechanic Indore 'Inspection' from ₹499",
+      "basis": "Brackets GoMechanic ₹499.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "OT-02",
+      "category": "11. Other",
+      "service": "Breakdown diagnosis",
+      "unit": "per call-out",
+      "description": "On-site breakdown check",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set. (YMO: quote after inspection).",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "OT-03",
+      "category": "11. Other",
+      "service": "Towing",
+      "unit": "per tow",
+      "description": "Flatbed/crane towing within Indore",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [
+        "C104",
+        "C063"
+      ],
+      "sources": [
+        "https://www.pitcrew.co.in/roadside-assistance/",
+        "https://www.yourmechaniconline.com/services/car-towing-roadside-assistance-in-indore"
+      ],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set. (YMO quote; Pitcrew roadside is Delhi NCR only).",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "OT-04",
+      "category": "11. Other",
+      "service": "Pre-purchase inspection",
+      "unit": "per car",
+      "description": "Engine, body, underbody, OBD scan, road test, written report",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        1000,
+        2000
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Labour only",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          1000,
+          2000
+        ],
+        "sedan": [
+          1150,
+          2300
+        ],
+        "suv": [
+          1350,
+          2700
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 1500,
+      "evidence": [
+        "C122",
+        "C123",
+        "C124",
+        "C038"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore/custom-repair/hyundai",
+        "https://www.grabon.in/carvaidya-coupons/"
+      ],
+      "competitorSummary": "CarVaidya ₹899 (discounted) / ₹999 / from ₹2,199 with scanning — Delhi, third-party source · GoMechanic Indore inspections from ₹3,300 (item not named)",
+      "basis": "Weak evidence (Delhi coupon site). Owner should test against local used-car buyers.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "OT-05",
+      "category": "11. Other",
+      "service": "Pickup & drop (in service area)",
+      "unit": "per booking",
+      "description": "Collect and return car within confirmed Indore PINs",
+      "inspectionRequired": false,
+      "ownerToSet": false,
+      "labour": [
+        0,
+        0
+      ],
+      "parts": [
+        0,
+        0
+      ],
+      "partsQuotedSeparately": false,
+      "partsNote": "Free",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": [
+          0,
+          0
+        ],
+        "sedan": [
+          0,
+          0
+        ],
+        "suv": [
+          0,
+          0
+        ],
+        "luxury": "Quote after inspection"
+      },
+      "standardPrice": 0,
+      "evidence": [
+        "C001",
+        "C106",
+        "C070",
+        "C044"
+      ],
+      "sources": [
+        "https://gomechanic.in/indore",
+        "https://www.gaadimech.com/doorstep-car-service-indore",
+        "https://www.pitcrew.co.in/car-service/indore/",
+        "https://www.yourmechaniconline.com/locations/indore"
+      ],
+      "competitorSummary": "GaadiMech, GoMechanic, YMO: free pickup & drop · Pitcrew free (T&C apply) · GoMechanic small AC jobs: 'Pickup Charges Additional'",
+      "basis": "Every Indore platform advertises free pickup, so charging would stand out.",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "OT-06",
+      "category": "11. Other",
+      "service": "Pickup & drop (outside service area)",
+      "unit": "per booking",
+      "description": "Pickup beyond confirmed PINs",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set.",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    },
+    {
+      "id": "OT-07",
+      "category": "11. Other",
+      "service": "General labour rate",
+      "unit": "per hour",
+      "description": "Hourly labour for custom repairs",
+      "inspectionRequired": false,
+      "ownerToSet": true,
+      "labour": null,
+      "parts": null,
+      "partsQuotedSeparately": false,
+      "partsNote": "",
+      "categoryFactors": {
+        "hatchback": 1.0,
+        "sedan": 1.15,
+        "suv": 1.35,
+        "luxury": null
+      },
+      "estimate": {
+        "hatchback": "Not publicly listed — owner to set",
+        "sedan": "Not publicly listed — owner to set",
+        "suv": "Not publicly listed — owner to set",
+        "luxury": "Not publicly listed — owner to set"
+      },
+      "standardPrice": null,
+      "evidence": [],
+      "sources": [],
+      "competitorSummary": "Not publicly listed by any platform checked — owner to set. Only job-level labour is published (Pitcrew).",
+      "basis": "",
+      "status": "OWNER REVIEW REQUIRED"
+    }
+  ]
+}
