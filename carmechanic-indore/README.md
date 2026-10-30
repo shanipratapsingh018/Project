@@ -1,7 +1,7 @@
-# Garagewala — Nice Car Mechanic · v1.6.1
+# Garagewala — Nice Car Mechanic · v1.7.0
 
 A ready-to-run static garage website branded **Garagewala · Nice Car Mechanic**: 22 responsive pages, 69-service price list,
-vehicle-specific estimates, pickup-area checks, before/after gallery, customer-feedback invitation and WhatsApp booking. Node.js 18+ is needed for local serving
+vehicle-specific estimates, pickup-area checks, before/after gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
 and rebuilding; a static hosting provider needs only the included `public/` files.
 
 ## Live website
@@ -54,6 +54,25 @@ must validate and reprice everything server-side, enforce rate limits and handle
 requests; a client-side estimate is not an authoritative price. HTTP 2xx means receipt of the
 request, not confirmation of a service slot. API failure/timeout offers WhatsApp recovery and
 warns that a request may already have arrived. Tests use intercepted API responses, not a live backend.
+
+## Customer reviews and workshop hours
+
+The homepage and About page use the owner-selected, locally bundled AI workshop illustration,
+with responsive images (about 99 KB / 271 KB) and a visible caption. It also displays on phones.
+Opening hours are **every day, 7:00 AM–11:30 PM IST**, confirmed by the owner.
+
+The homepage and About page link to `reviews.html#write-review`. Customers enter a display
+name, 1–5 star rating and feedback, then open WhatsApp and press Send. Preparing a message
+is not delivery. Publication consent is optional and unchecked; private feedback must not be
+published. No review is automatically stored or displayed publicly. The garage checks feedback
+and adds permitted customer reviews to `public/assets/js/reviews.js`; see `docs/HOW_TO_UPDATE.md`.
+All ratings follow the same workflow. Editing clears stale prepared messages.
+
+The owner supplied `https://share.google/Zot7dWX2M9FAUQRIX`; a separate **Garagewala on Google**
+button opens that link. It is not treated as a direct review-writing URL. Its redirect destination
+could not be checked from this cloud environment because Google sharing hosts are blocked.
+The Maps address-search link is still separate. Set `googleReviewUrl` only when an actual
+Ask for reviews URL is available; the website feedback form stays available alongside Google.
 
 ## Tests
 

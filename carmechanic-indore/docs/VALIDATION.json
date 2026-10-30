@@ -1,13 +1,14 @@
 {
-  "version": "1.6.1",
+  "version": "1.7.0",
+  "date_ist": "2026-10-31",
   "brand": "Garagewala \u00b7 Nice Car Mechanic",
-  "address": "Front of Regional Park, Indore",
+  "hours": "Every day, 7:00 AM\u201311:30 PM IST",
   "validation": {
-    "npm test": "passed: 276 approved price figures and 41 unit/server/build checks",
+    "npm test": "passed: 276 rate figures and 41 unit/server/build checks",
     "npm run test:browser": "passed: all 22 pages mobile/desktop and existing interactions",
-    "npm run test:reliability": "passed: 27 checks including removal of unrelated reviews, publication permission, landmark address and Maps links",
-    "static_address_audit": "passed: supplied address on all 22 pages, no invented PIN/coordinates/profile sameAs"
+    "npm run test:reliability": "passed: 41 checks, including website feedback validation, all ratings, optional publication consent, private feedback, stale-link clearing, safe text handling, daily hours, generated photos and no-JS fallback",
+    "visual review": "passed: homepage, About image and review form at 390px and 1366px"
   },
-  "google_status": "Only a labelled address/landmark search exists. Google Business Profile creation and ownership verification remain for the owner.",
-  "reviews_status": "No genuine Garagewala reviews supplied. Unrelated reviews and aggregate rating removed; customer permission required for publication."
+  "google_status": "Owner-supplied sharing URL connected as Garagewala on Google. Redirect destination could not be checked because share.google is blocked by cloud egress policy. No direct review editor, Google rating or profile verification is inferred.",
+  "reviews_status": "Website form prepares a WhatsApp message; customer must press Send. Public display requires garage approval and customer permission. No automatic storage/publication. No borrowed reviews."
 }

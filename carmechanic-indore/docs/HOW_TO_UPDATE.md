@@ -1,4 +1,4 @@
-> v1.6.1: run `npm run build` after content edits. Add only genuine Garagewala customer reviews with owner approval and customer permission. Reviews and ratings from other garages are removed. The Maps address search is separate from an actual Google Business Profile.
+> v1.7.0: run `npm run build` after content edits. Add only genuine Garagewala customer reviews with owner approval and customer permission. Reviews and ratings from other garages are removed. The Maps address search is separate from an actual Google Business Profile.
 
 # How to update prices, PIN codes, gallery photos and reviews
 
@@ -58,14 +58,25 @@ The current sample pairs are in `public/assets/img/gallery/samples/` (from the o
 Square-ish photos work best: gallery tiles are shown 1:1 and cropped to fill.
 
 ## 3. Customer reviews — `reviews.js`
-1. Ask the customer for a review (WhatsApp or Google) **and** permission to show it on the website.
-2. Add an entry: `name` (as the customer wants it shown, e.g. "Rahul S."), `rating` 1–5, `service`,
-   optional `vehicle` and `date`, `text` (their words), `source` ("Google", "WhatsApp"…),
-   `isSample: false`, `approved: true`, `consent: true`.
-3. As soon as one such review exists, all six sample reviews are hidden automatically.
-   To hide samples earlier, set `showSamples: false` — the page then shows a "Share your experience" prompt.
-4. Paste your Google review link (Google Business Profile → "Ask for reviews") into `googleReviewUrl`
-   so the **Share Your Experience** button opens Google instead of WhatsApp.
 
-Never publish a review that a customer didn't write, and never add star ratings or review counts
-to the structured data unless they come from real reviews.
+1. Customers can fill in the form at `reviews.html#write-review` and send the prepared message
+   on WhatsApp. The website does not automatically save or publish a submission.
+2. Publication permission is **optional and unchecked**. If the message says private feedback,
+   do not publish it. All ratings follow the same process; do not redirect unhappy customers
+   away from the public-review option.
+3. After checking a genuine Garagewala review and the customer's permission, add an entry:
+   `name`, `rating` (1–5), `service`, optional `vehicle` and `date`, `text` (their words),
+   `source` (for this form, "Website via WhatsApp"), `isSample: false`, `approved: true`, `consent: true`.
+   Remove personal contact details and keep `showSamples: false`.
+4. The owner-supplied Google sharing link is in `googleProfileUrl`. The separate Google button
+   is labelled "Garagewala on Google". It is not assumed to open the review composer.
+5. Put an actual Google Business Profile → Ask for reviews URL in `googleReviewUrl` to enable
+   the separate "Review on Google" action. Website feedback remains available.
+
+Never copy another garage's reviews or publish feedback without customer permission.
+Do not add unsupported ratings or counts to structured data.
+
+## 4. Hours
+
+`business.hours` uses `days: "Mo-Su"`, `open: "07:00"`, `close: "23:30"` and a readable label.
+Run `npm run build` after changing hours so Contact, homepage, footer and structured data agree.

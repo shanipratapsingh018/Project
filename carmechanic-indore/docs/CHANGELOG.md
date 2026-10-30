@@ -1,3 +1,11 @@
+# v1.7.0 — Workshop photo, review form and daily opening hours
+
+- Owner-selected AI workshop illustration on homepage and About, locally bundled in two responsive sizes; visible on phones.
+- Every day, 7:00 AM–11:30 PM IST in contact details, homepage, footer and structured data.
+- Website feedback form: display name, 1–5 stars, car/service and experience; optional publication consent.
+- Honest WhatsApp handoff with no premature delivery/publication claims, safe rendering, validation and stale-link clearing.
+- Separate owner-supplied Google profile link alongside website feedback; no invented direct-review URL or ratings.
+
 # v1.6.1 — Regional Park address
 
 - Owner-supplied address: Front of Regional Park, Indore; no postal code or coordinates invented.

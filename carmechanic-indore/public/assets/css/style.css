@@ -373,6 +373,8 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
 .share-box h3 { color: #fff; }
 .share-box p { color: var(--fog); }
 .share-box .hero-ctas { gap: 10px; }
+.share-box .btn--outline { color: #fff; border-color: var(--fog); }
+.share-box .btn--outline:hover { background: #fff; color: var(--ink); }
 @media (min-width: 861px) { .reviews--six { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 600px) and (max-width: 860px) { .reviews--six { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
@@ -489,6 +491,23 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
 .photo-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .photo-row img { aspect-ratio: 4 / 3; }
 .prose > .photo img { aspect-ratio: 16 / 9; }
+
+/* Workshop image and customer feedback */
+.hero-art.photo { display: grid; width: 100%; }
+.hero-art.photo img { aspect-ratio: 1672 / 941; max-height: none; }
+.review-layout { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 36px; align-items: start; }
+.review-intro { display: grid; gap: 16px; }
+.review-intro .btn { justify-self: start; }
+.review-form-card { padding: 28px; border: 1px solid var(--line); border-radius: var(--r); background: var(--card); }
+.review-form-card form { display: grid; gap: 20px; }
+.review-rating { padding: 0; margin: 0; border: 0; min-width: 0; }
+.review-rating legend { font-weight: 600; margin-bottom: 8px; }
+.review-rating-options { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.review-rating-options .chip span { justify-content: center; width: 100%; padding: 0 6px; border-radius: var(--r-sm); }
+.review-consent { display: flex; align-items: flex-start; gap: 12px; font-size: .92rem; cursor: pointer; }
+.review-consent input { width: 20px; height: 20px; min-height: 20px; flex: none; margin-top: 3px; accent-color: var(--signal-ink); }
+#write-review { scroll-margin-top: 100px; }
+@media (max-width: 800px) { .review-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; } .review-form-card { padding: 20px; } }
 
 /* v1.3: keep the mobile menu button full size */
 .menu-btn { flex: none; }

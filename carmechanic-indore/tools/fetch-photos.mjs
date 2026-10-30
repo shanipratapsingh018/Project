@@ -20,7 +20,7 @@ const remote = (p, w) => `https://images.unsplash.com/${p.unsplash}?fm=jpg&q=72&
 let ok = 0, skipped = 0, failed = 0, missing = 0;
 
 for (const p of photos) {
-  if (p.own) { skipped += WIDTHS.length; continue; }
+  if (p.own || p.generated) { skipped += WIDTHS.length; continue; }
   for (const w of WIDTHS) {
     const file = join(OUT, `${p.id}-${w}.jpg`);
     if (existsSync(file) && statSync(file).size > 1000 && !force) { skipped++; continue; }

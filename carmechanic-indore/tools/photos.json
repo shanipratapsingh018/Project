@@ -1,21 +1,119 @@
 {
-  "_readme": "Stock photos used on the site. All verified on 29 Oct 2026 as 'Free to use under the Unsplash License' (https://unsplash.com/license): free for commercial use, no permission or attribution required (we credit anyway). None are Unsplash+ (paid). These are NOT photos of CarMechanic Indore's workshop or customers' cars — captions say 'Stock photo'. Run `npm run photos` to download them into public/assets/img/photos/. To replace one with your own photo, save it as public/assets/img/photos/<id>-800.jpg and <id>-1600.jpg and set \"own\": true.",
-  "license": "Unsplash License",
-  "licenseUrl": "https://unsplash.com/license",
+  "_readme": "Mixed illustrative assets. workshop-hero and workshop-cars use the same locally bundled AI-generated Indian workshop image, clearly captioned. Other slots retain stock source metadata and fall back to locally bundled illustrations when stock files are absent. No generated image depicts the actual Garagewala premises.",
   "verified": "2026-10-29",
   "photos": [
-    { "id": "workshop-hero", "unsplash": "photo-1727893119356-1702fe921cf9", "page": "https://unsplash.com/photos/mechanics-working-in-automotive-repair-workshop-8t6tk7LYLrE", "photographer": "Mehmet Talha Onuk", "profile": "https://unsplash.com/@mtonuk", "alt": "Mechanics working on cars in a bright, spacious repair workshop", "used": "Homepage hero" },
-    { "id": "workshop-cars", "unsplash": "photo-1767681092416-bccf9410bda4", "page": "https://unsplash.com/photos/cars-being-repaired-in-a-workshop-VdXnpwrp1qc", "photographer": "Winston Chen", "profile": "https://unsplash.com/@winstonchen", "alt": "Cars being repaired in a workshop", "used": "About page" },
-    { "id": "oil-service", "unsplash": "photo-1771340742493-52fbd5476ccb", "page": "https://unsplash.com/photos/mechanic-pouring-oil-into-car-engine-gW34cv-Ojjs", "photographer": "Dextar Studio", "profile": "https://unsplash.com/@dextarstudio", "alt": "Mechanic pouring fresh engine oil into a car engine", "used": "Car servicing" },
-    { "id": "ac-vent", "unsplash": "photo-1609044760952-4f7f53fbff9f", "page": "https://unsplash.com/photos/black-and-silver-car-air-vent--hrsdEdyWUQ", "photographer": "Philip Blank", "profile": "https://unsplash.com/@philip_blank", "alt": "Close-up of a car dashboard air-conditioning vent", "used": "Car AC repair" },
-    { "id": "brake-system", "unsplash": "photo-1760317890322-364a810cd4da", "page": "https://unsplash.com/photos/close-up-of-a-cars-performance-brake-system-EpT-ZetoKm8", "photographer": "Erik Mclean", "profile": "https://unsplash.com/@introspectivedsgn", "alt": "Close-up of a car's brake disc and caliper", "used": "Brake & clutch" },
-    { "id": "engine-inspection", "unsplash": "photo-1771340012378-3c86cb649193", "page": "https://unsplash.com/photos/mechanic-inspecting-a-car-engine-with-hood-open-erWc6mrOq_I", "photographer": "Dextar Studio", "profile": "https://unsplash.com/@dextarstudio", "alt": "Mechanic inspecting a car engine with the bonnet open", "used": "Engine diagnostics" },
-    { "id": "engine-check", "unsplash": "photo-1625047509248-ec889cbff17f", "page": "https://unsplash.com/photos/mechanic-inspecting-car-engine-bEGTsOCnHro", "photographer": "Kate Ibragimova", "profile": "https://unsplash.com/@kateibragimova", "alt": "Mechanic in a grey uniform checking the engine bay of a car", "used": "Battery & electrical" },
-    { "id": "under-car", "unsplash": "photo-1702146713858-8e7d1cc29fe8", "page": "https://unsplash.com/photos/a-man-working-on-a-car-under-a-vehicle-K5624F8cipE", "photographer": "Tahamie Farooqui", "profile": "https://unsplash.com/@tami171091", "alt": "Mechanic working underneath a car in a busy workshop", "used": "Suspension & steering" },
-    { "id": "panel-sanding", "unsplash": "photo-1786489785506-9c527aaf908d", "page": "https://unsplash.com/photos/person-sanding-car-in-workshop-zyLW2erHdRg", "photographer": "Zoshua Colah", "profile": "https://unsplash.com/@zoshuacolah", "alt": "Technician sanding the rear panel of a grey car before painting", "used": "Denting & painting" },
-    { "id": "polishing", "unsplash": "photo-1780558852670-3f49298ecc1f", "page": "https://unsplash.com/photos/person-polishing-a-blue-cars-hood-with-an-orbital-buffer-iXpjQNP__EQ", "photographer": "Luay Barani", "profile": "https://unsplash.com/@luaybarani", "alt": "Detailer polishing a blue car's bonnet with an orbital buffer", "used": "Car detailing" },
-    { "id": "dashboard-cleaning", "unsplash": "photo-1771491237218-cbd4a707497e", "page": "https://unsplash.com/photos/detailer-cleaning-the-dashboard-of-a-classic-car-5SmPnmCjwcU", "photographer": "Luay Barani", "profile": "https://unsplash.com/@luaybarani", "alt": "Detailer cleaning the dashboard of a car", "used": "Car detailing" },
-    { "id": "foam-wash", "unsplash": "photo-1608506375591-b90e1f955e4b", "page": "https://unsplash.com/photos/sports-car-washing-in-garage-pRppMPh4Zho", "photographer": "Andre Tan", "profile": "https://unsplash.com/@andredantan19", "alt": "Snow-foam being sprayed onto a black car during a wash", "used": "Car detailing" },
-    { "id": "accident-damage", "unsplash": "photo-1597328290883-50c5787b7c7e", "page": "https://unsplash.com/photos/damaged-silver-car-with-crushed-hood-CSkriQWeTVs", "photographer": "Clark Van Der Beken", "profile": "https://unsplash.com/@snapsbyclark", "alt": "Silver car with a crushed bonnet and broken headlight after a collision", "used": "Accident repair" }
-  ]
+    {
+      "id": "workshop-hero",
+      "generated": true,
+      "alt": "AI-generated Indian garage scene with spare-parts shelves and mechanics working on engines and suspension",
+      "used": "Homepage hero"
+    },
+    {
+      "id": "workshop-cars",
+      "generated": true,
+      "alt": "AI-generated Indian garage scene with spare-parts shelves and mechanics working on engines and suspension",
+      "used": "About page"
+    },
+    {
+      "id": "oil-service",
+      "unsplash": "photo-1771340742493-52fbd5476ccb",
+      "page": "https://unsplash.com/photos/mechanic-pouring-oil-into-car-engine-gW34cv-Ojjs",
+      "photographer": "Dextar Studio",
+      "profile": "https://unsplash.com/@dextarstudio",
+      "alt": "Mechanic pouring fresh engine oil into a car engine",
+      "used": "Car servicing"
+    },
+    {
+      "id": "ac-vent",
+      "unsplash": "photo-1609044760952-4f7f53fbff9f",
+      "page": "https://unsplash.com/photos/black-and-silver-car-air-vent--hrsdEdyWUQ",
+      "photographer": "Philip Blank",
+      "profile": "https://unsplash.com/@philip_blank",
+      "alt": "Close-up of a car dashboard air-conditioning vent",
+      "used": "Car AC repair"
+    },
+    {
+      "id": "brake-system",
+      "unsplash": "photo-1760317890322-364a810cd4da",
+      "page": "https://unsplash.com/photos/close-up-of-a-cars-performance-brake-system-EpT-ZetoKm8",
+      "photographer": "Erik Mclean",
+      "profile": "https://unsplash.com/@introspectivedsgn",
+      "alt": "Close-up of a car's brake disc and caliper",
+      "used": "Brake & clutch"
+    },
+    {
+      "id": "engine-inspection",
+      "unsplash": "photo-1771340012378-3c86cb649193",
+      "page": "https://unsplash.com/photos/mechanic-inspecting-a-car-engine-with-hood-open-erWc6mrOq_I",
+      "photographer": "Dextar Studio",
+      "profile": "https://unsplash.com/@dextarstudio",
+      "alt": "Mechanic inspecting a car engine with the bonnet open",
+      "used": "Engine diagnostics"
+    },
+    {
+      "id": "engine-check",
+      "unsplash": "photo-1625047509248-ec889cbff17f",
+      "page": "https://unsplash.com/photos/mechanic-inspecting-car-engine-bEGTsOCnHro",
+      "photographer": "Kate Ibragimova",
+      "profile": "https://unsplash.com/@kateibragimova",
+      "alt": "Mechanic in a grey uniform checking the engine bay of a car",
+      "used": "Battery & electrical"
+    },
+    {
+      "id": "under-car",
+      "unsplash": "photo-1702146713858-8e7d1cc29fe8",
+      "page": "https://unsplash.com/photos/a-man-working-on-a-car-under-a-vehicle-K5624F8cipE",
+      "photographer": "Tahamie Farooqui",
+      "profile": "https://unsplash.com/@tami171091",
+      "alt": "Mechanic working underneath a car in a busy workshop",
+      "used": "Suspension & steering"
+    },
+    {
+      "id": "panel-sanding",
+      "unsplash": "photo-1786489785506-9c527aaf908d",
+      "page": "https://unsplash.com/photos/person-sanding-car-in-workshop-zyLW2erHdRg",
+      "photographer": "Zoshua Colah",
+      "profile": "https://unsplash.com/@zoshuacolah",
+      "alt": "Technician sanding the rear panel of a grey car before painting",
+      "used": "Denting & painting"
+    },
+    {
+      "id": "polishing",
+      "unsplash": "photo-1780558852670-3f49298ecc1f",
+      "page": "https://unsplash.com/photos/person-polishing-a-blue-cars-hood-with-an-orbital-buffer-iXpjQNP__EQ",
+      "photographer": "Luay Barani",
+      "profile": "https://unsplash.com/@luaybarani",
+      "alt": "Detailer polishing a blue car's bonnet with an orbital buffer",
+      "used": "Car detailing"
+    },
+    {
+      "id": "dashboard-cleaning",
+      "unsplash": "photo-1771491237218-cbd4a707497e",
+      "page": "https://unsplash.com/photos/detailer-cleaning-the-dashboard-of-a-classic-car-5SmPnmCjwcU",
+      "photographer": "Luay Barani",
+      "profile": "https://unsplash.com/@luaybarani",
+      "alt": "Detailer cleaning the dashboard of a car",
+      "used": "Car detailing"
+    },
+    {
+      "id": "foam-wash",
+      "unsplash": "photo-1608506375591-b90e1f955e4b",
+      "page": "https://unsplash.com/photos/sports-car-washing-in-garage-pRppMPh4Zho",
+      "photographer": "Andre Tan",
+      "profile": "https://unsplash.com/@andredantan19",
+      "alt": "Snow-foam being sprayed onto a black car during a wash",
+      "used": "Car detailing"
+    },
+    {
+      "id": "accident-damage",
+      "unsplash": "photo-1597328290883-50c5787b7c7e",
+      "page": "https://unsplash.com/photos/damaged-silver-car-with-crushed-hood-CSkriQWeTVs",
+      "photographer": "Clark Van Der Beken",
+      "profile": "https://unsplash.com/@snapsbyclark",
+      "alt": "Silver car with a crushed bonnet and broken headlight after a collision",
+      "used": "Accident repair"
+    }
+  ],
+  "stockLicense": "Unsplash License",
+  "stockLicenseUrl": "https://unsplash.com/license"
 }

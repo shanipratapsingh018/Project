@@ -18,7 +18,7 @@ const AREAS = require(join(ROOT, "assets/js/service-areas.js"));
 const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "1.6.1";
+const VERSION = "1.7.0";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -38,6 +38,9 @@ const unsplash = (p, w) => `https://images.unsplash.com/${p.unsplash}?fm=jpg&q=7
 function photo(id, { cls = "", sizes = "(max-width: 900px) 100vw, 50vw", eager = false, fallback = "", credit = true, alt } = {}) {
   const p = PH_BY[id];
   if (!p) throw new Error("Unknown photo " + id);
+  if (p.generated) {
+    return `<figure class="photo ${cls}" data-photo-id="${id}"><img src="assets/img/photos/garagewala-workshop-800.webp" srcset="assets/img/photos/garagewala-workshop-800.webp 800w, assets/img/photos/garagewala-workshop-1600.webp 1600w" sizes="${sizes}" alt="${esc(p.alt)}" width="1672" height="941" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"><figcaption class="photo-credit">AI-generated illustration — not a photo of our workshop.</figcaption></figure>`;
+  }
   const local = (w) => `assets/img/photos/${p.id}-${w}.jpg`;
   if (!existsSync(join(ROOT, local(800))) || !existsSync(join(ROOT, local(1600)))) {
     const samples = {
@@ -193,7 +196,7 @@ ${body}
       <p>Multi-brand car servicing, diagnostics and repairs in ${esc(B.city)}, ${esc(B.state)}. Estimates are indicative until inspection; extra work only with your approval.</p>
       <p>Call / WhatsApp<br><span class="phone-line" data-phone>${esc(B.phoneDisplay)}</span></p>
       ${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${mapLink(true)}` : ""}
-      ${B.hours ? `<p>${B.hours.map((h) => `${esc(h.days)}: ${esc(h.open)}–${esc(h.close)}`).join("<br>")}</p>` : `<p class="small">Working hours: please call or WhatsApp to confirm.</p>`}
+      ${B.hours ? `<p>${hoursText()}</p>` : `<p class="small">Working hours: please call or WhatsApp to confirm.</p>`}
     </div>
     <div><h4>Services</h4><ul>${SERVICE_PAGES.map((p) => `<li><a href="${p.file}">${esc(p.nav)}</a></li>`).join("")}</ul></div>
     <div><h4>Customers</h4><ul><li><a href="index.html">Home</a></li><li><a href="estimate.html">Cost calculator</a></li><li><a href="booking.html">Book a service</a></li><li><a href="gallery.html">Before &amp; after</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="pickup-drop.html">Pickup &amp; drop areas</a></li><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact</a></li><li><a href="index.html#faq">FAQs</a></li></ul></div>
@@ -384,6 +387,31 @@ ${ctaBand("Book your " + p.nav.toLowerCase() + " in Indore")}`;
 function areaChecker(id) {
   return `<div class="checker"><h3>Check your PIN code</h3><form data-area-check novalidate><label class="sr-only" for="${id}">PIN code or locality</label><input id="${id}" placeholder="6-digit PIN, e.g. 452020" inputmode="text" autocomplete="postal-code" maxlength="40"><button class="btn" type="submit">Check</button></form><p class="small muted" style="margin:0">You can also type a locality, e.g. Vijay Nagar or Kasturbagram.</p><div data-area-result aria-live="polite"></div></div>`;
 }
+function hoursText() {
+  const clock = (value) => {
+    const [hour, minute] = value.split(":").map(Number);
+    return `${hour % 12 || 12}:${String(minute).padStart(2, "0")} ${hour >= 12 ? "PM" : "AM"}`;
+  };
+  return B.hours.map((h) => `${esc(h.label || h.days)}: ${clock(h.open)}–${clock(h.close)} (IST)`).join("<br>");
+}
+
+function reviewForm() {
+  return `<section class="band" id="write-review"><div class="wrap review-layout">
+  <div class="review-intro"><span class="eyebrow">Your experience matters</span><h2>Write your review</h2><p>Tell us what went well and what we can improve. All star ratings are welcome.</p><p>Fill in your feedback here, then send it to Garagewala on WhatsApp. Reviews appear on this website after the garage checks them and you allow publication.</p><p class="small muted">Please leave out phone numbers, vehicle registration numbers and other private details. <a href="privacy.html">Privacy policy</a></p><a class="btn btn--wa btn--sm" data-feedback-wa href="https://wa.me/${B.whatsapp}">Feedback on WhatsApp</a></div>
+  <div class="review-form-card" data-review-enhanced hidden>
+  <form data-review-form>
+    <div class="field"><label for="r-name">Display name *</label><input id="r-name" name="name" autocomplete="name" maxlength="60" required placeholder="The name you want shown with your review"></div>
+    <fieldset class="review-rating"><legend>Your rating *</legend><div class="review-rating-options">${[1,2,3,4,5].map(n => `<label class="chip"><input type="radio" name="rating" value="${n}" required aria-label="${n} ${n === 1 ? "star" : "stars"}"><span>${n} ★</span></label>`).join("")}</div></fieldset>
+    <div class="grid-2"><div class="field"><label for="r-car">Car model (optional)</label><input id="r-car" name="car" maxlength="80" placeholder="e.g. Swift"></div><div class="field"><label for="r-service">Service (optional)</label><select id="r-service" name="service"><option value="">Choose a service</option>${["Car servicing","Engine repair","Suspension & steering","Brakes & clutch","Car AC service","Denting & painting","Car washing & detailing","Other"].map(s => `<option>${esc(s)}</option>`).join("")}</select></div></div>
+    <div class="field"><label for="r-text">Your experience *</label><textarea id="r-text" name="experience" minlength="20" maxlength="1500" rows="5" required aria-describedby="r-hint" placeholder="Tell us about the service you received and anything we could improve."></textarea><span class="hint" id="r-hint">20–1,500 characters. Honest feedback of any rating is welcome.</span></div>
+    <label class="review-consent"><input type="checkbox" name="consent"><span>You may publish my display name, rating, car model, service and feedback on the Garagewala website. Leave unchecked to send private feedback only.</span></label>
+    <p class="small muted">Your review reaches the garage only after you press Send in WhatsApp. It is not posted to Google or published automatically.</p>
+    <div class="hero-ctas"><button class="btn" type="submit">Prepare my review ${ic("arrow")}</button><button class="btn btn--outline" type="reset">Clear</button></div>
+    <div data-review-result role="status" aria-live="polite" hidden></div>
+  </form></div><noscript><p>To send feedback without JavaScript, use the WhatsApp button above.</p></noscript>
+  </div></section>`;
+}
+
 function reviewsSection(full = false) {
   return `<section class="band band--white" id="reviews"><div class="wrap">
   <div class="section-head"><span class="eyebrow">Reviews</span><h2 data-i18n="sec.reviews">What Our Customers Say</h2></div>
@@ -391,7 +419,7 @@ function reviewsSection(full = false) {
   <div class="notice" data-review-summary hidden></div>
   <div class="reviews reviews--six" data-reviews></div>
   <div class="share-box"><div><h3>Serviced your car with us?</h3><p>Tell us how it went. With your permission we'll publish your review here.</p></div>
-    <div class="hero-ctas"><a class="btn" data-share-review href="https://wa.me/${B.whatsapp}">${ic("star")}<span data-i18n="cta.share">Share Your Experience</span></a><a class="btn btn--wa" data-feedback-wa href="https://wa.me/${B.whatsapp}">${ic("wa")}Feedback on WhatsApp</a></div></div>
+    <div class="hero-ctas"><a class="btn" data-share-review href="reviews.html#write-review">${ic("star")}Write a website review</a><a class="btn btn--outline" data-google-review hidden>Review on Google</a><a class="btn btn--wa" data-feedback-wa href="https://wa.me/${B.whatsapp}">${ic("wa")}Feedback on WhatsApp</a></div></div>
   ${full ? "" : `<p style="margin-top:20px"><a href="reviews.html">More about our reviews →</a></p>`}
 </div></section>`;
 }
@@ -442,7 +470,7 @@ function homepage() {
         <li>${ic("check")}All major brands</li><li>${ic("receipt")}Itemised bills</li><li>${ic("shield")}Approval before extra work</li>
       </ul>
       <p class="pickup-terms"><strong style="color:#fff">Free pickup &amp; drop</strong> across our ${AREAS.coveredPins.length} confirmed Indore PIN codes, subject to booking confirmation. <a href="pickup-drop.html">Check your PIN</a>.</p>
-      ${photo("workshop-hero", { cls: "hero-art", eager: true, sizes: "(max-width: 960px) 0px, 520px", fallback: "assets/img/hero-workshop.svg" })}
+      ${photo("workshop-hero", { cls: "hero-art", eager: true, sizes: "(max-width: 960px) calc(100vw - 40px), 520px" })}
     </div>
     <div class="jobcard reveal" id="estimate" data-estimator><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
   </div>
@@ -489,7 +517,7 @@ ${faqBlock(C.faqs)}
   <div class="prose"><span class="eyebrow">Contact</span><h2 style="margin-top:0">Talk to a mechanic</h2>
     <p>Call or WhatsApp <span class="phone-line" style="color:var(--ink)" data-phone>${esc(B.phoneDisplay)}</span></p>
     ${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${mapLink()}` : `<p class="muted">Workshop address will be shown here once confirmed. Ask on WhatsApp for directions.</p>`}
-    ${B.hours ? "" : `<p class="muted">Working hours: please call or WhatsApp to confirm.</p>`}
+    ${B.hours ? `<p data-working-hours>${hoursText()}</p>` : `<p class="muted">Working hours: please call or WhatsApp to confirm.</p>`}
   </div>
   <div class="side-card" style="position:static"><a class="btn btn--block" href="tel:${B.phoneE164}" data-tel>${ic("phone")}Call ${esc(B.phoneDisplay)}</a><a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a><a class="btn btn--outline btn--block" href="booking.html">${ic("calendar")}Booking form</a></div>
 </div></section>
@@ -639,7 +667,7 @@ function contactPage() {
   <div class="prose">
     <h2 style="margin-top:0">Phone &amp; WhatsApp</h2><p class="phone-line" style="color:var(--ink);font-size:1.4rem" data-phone>${esc(B.phoneDisplay)}</p>
     <h2>Workshop</h2>${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${!B.googleBusinessProfileUrl && B.googleMapsSearchUrl ? '<p class="small muted">The map link searches the landmark area. Please call for the exact workshop entrance before visiting.</p>' : ""}` : `<p class="placeholder">Please call or WhatsApp for the workshop address and directions before visiting.</p>`}
-    <h2>Working hours</h2>${B.hours ? `<p>${B.hours.map((h) => `${esc(h.days)}: ${esc(h.open)}–${esc(h.close)}`).join("<br>")}</p>` : `<p class="placeholder">Please call or WhatsApp to confirm today’s hours and appointment availability.</p>`}
+    <h2>Working hours</h2>${B.hours ? `<p data-working-hours>${hoursText()}</p>` : `<p class="placeholder">Please call or WhatsApp to confirm today’s hours and appointment availability.</p>`}
     ${B.email ? `<h2>Email</h2><p>${esc(B.email)}</p>` : ""}
   </div>
   <div class="side-card"><a class="btn btn--block" href="tel:${B.phoneE164}" data-tel>${ic("phone")}Call now</a><a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a><a class="btn btn--outline btn--block" href="booking.html">${ic("calendar")}Booking form</a>${mapLink()}</div>
@@ -664,7 +692,7 @@ const terms = legalPage("terms.html", "Terms & Conditions | Garagewala", "Terms 
 ], "Terms and conditions for car service and repair bookings with Garagewala.");
 const privacy = legalPage("privacy.html", "Privacy Policy | Garagewala", "Privacy policy", [
   ["What we collect", `<p>When you request an estimate or booking we may collect your name, mobile number, car details, optional registration number, service needs, and pickup address and PIN code if you request pickup. We do not ask for payment card details, ID documents or other sensitive information on this website.</p>`],
-  ["How it's used", `<p>Only to contact you about your enquiry, arrange pickup and service, and send your quotation and bill.</p>`],
+  ["How it's used", `<p>To contact you about your enquiry, arrange pickup and service, and send your quotation and bill. Feedback you send through the review form is used to respond to your experience. Your display name, rating, car model, service and feedback are published only if you choose the optional publication permission and the garage approves the review. Private feedback is not published.</p>`],
   ["WhatsApp", `<p>If you use the WhatsApp buttons, your message is sent through WhatsApp and is subject to WhatsApp's own privacy policy.</p>`],
   ["Images", `<p>Images and fonts are served with this website. Stock photos, where used, are credited. External services such as WhatsApp or Google receive connection information when you follow their links.</p>`],
   ["Storage", `<p>The cost estimator runs in your browser. Booking details you send are kept only as long as needed for your service and records.</p>${PH("The estimator temporarily keeps its booking handoff in session storage in this browser tab; closing the tab clears that session. Language preference is saved locally. In the default WhatsApp mode, no booking API is called. If a booking API is enabled, your submitted details are sent to that service; ask the garage about its storage and retention policy.")}`],
@@ -719,6 +747,7 @@ function reviewsPage() {
   const body = `
 <section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Reviews</p><span class="eyebrow">Reviews</span><h1>Customer reviews</h1><p>Had your car serviced at Garagewala? Share your experience. We’ll publish genuine customer feedback here with permission.</p></div></section>
 ${reviewsSection(true)}
+${reviewForm()}
 <section class="band"><div class="wrap prose">
   <h2 style="margin-top:0">Our review policy</h2>
   <ul>
@@ -742,7 +771,7 @@ function aboutPage() {
     <p>Periodic servicing, AC, brakes and clutch, suspension and steering, battery and electrical faults, diagnostics, denting and painting, detailing and pre-purchase inspections — for most car brands sold in India.</p>
     <h2>Talk to us</h2>
     <p>Tell us about your car and the problem you’re facing. We’ll confirm whether we can help, explain the next steps and share a quotation before work starts.</p>
-    <h2>Our workshop</h2>
+    <h2>Workshop services</h2>
     ${photo("workshop-cars", { sizes: "(max-width: 900px) 100vw, 60vw" })}
     <p>Images on this page are labelled examples. For our workshop location, current opening hours and appointment availability, <a href="contact.html">contact us before visiting</a>.</p>
   </div>
@@ -754,6 +783,7 @@ function aboutPage() {
     </div>
     <a class="btn btn--block" href="booking.html">${ic("calendar")}Book a service</a>
     <a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a>
+    <a class="btn btn--outline btn--block" href="reviews.html#write-review">${ic("star")}Write a website review</a>
   </div>
 </div></section>`;
   return layout({ file: "about.html", title: "About Us | Garagewala — Multi-brand Car Garage", desc: "About Garagewala, a multi-brand car service and repair garage in Indore focused on transparent estimates and customer approval.", body, navKey: "about.html" });

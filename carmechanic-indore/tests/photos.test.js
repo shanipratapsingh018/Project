@@ -18,7 +18,7 @@ test('Every static image, script, stylesheet and font resolves locally',()=>{
 });
 test('Every photo slot is used; illustrations are clearly labelled',()=>{
  const html=files.map(f=>fs.readFileSync(path.join(root,f),'utf8')).join('\n');
- for(const photo of manifest.photos){assert(html.includes(`data-photo-id="${photo.id}"`),photo.id);assert(photo.own||(photo.photographer&&photo.profile.startsWith('https://unsplash.com/@')),photo.id);}
+ for(const photo of manifest.photos){assert(html.includes(`data-photo-id="${photo.id}"`),photo.id);assert(photo.generated||photo.own||(photo.photographer&&photo.profile.startsWith('https://unsplash.com/@')),photo.id);}
  assert(html.includes('Illustrative example — not our workshop or a customer vehicle.'));
 });
 test('Bundled fonts include their open licences',()=>{

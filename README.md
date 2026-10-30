@@ -1,16 +1,16 @@
-# Garagewala — Nice Car Mechanic · v1.6.1
+# Garagewala — Nice Car Mechanic · v1.7.0
 
 Live website: https://shanipratapsingh018.github.io/Project/
 
-Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=garagewala-1.6
+Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=1.7.0
 
 The updated website is in **carmechanic-indore/**.
 The original Arduino temp.txt is preserved separately.
 
 ## Download
 
-- [Hosting-ready ZIP](downloads/garagewala-v1.6.1-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
-- [Complete source ZIP](downloads/garagewala-v1.6.1-source.zip) — on GitHub, click **Download raw**.
+- [Hosting-ready ZIP](downloads/garagewala-v1.7.0-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
+- [Complete source ZIP](downloads/garagewala-v1.7.0-source.zip) — on GitHub, click **Download raw**.
 - [Six AI-generated garage photos](downloads/garagewala-ai-garage-photos.zip) — original PNGs in one ZIP; illustrative scenes, not photos of the actual workshop.
 - Or choose **Code → Download ZIP** to download this whole branch.
 
@@ -24,10 +24,18 @@ npm start
 ```
 
 See [website README](carmechanic-indore/README.md) and [Hindi quick start](carmechanic-indore/docs/QUICKSTART-HINDI.md).
+Reviews: https://shanipratapsingh018.github.io/Project/reviews.html#write-review
+
+Opening hours: every day, 7:00 AM–11:30 PM IST.
+The owner-selected AI workshop image is on the homepage and About page.
+The website review form prepares WhatsApp feedback; the customer must press Send.
+Publication consent is optional, and feedback appears publicly only after the garage checks it.
+
 Bookings use WhatsApp. The production URL is configured; rebuilding preserves the live GitHub Pages URLs.
 
 Address: Front of Regional Park, Indore. The Google Maps button searches the landmark area;
-no Google Business Profile has been created or verified. Reviews from another garage and their
+the owner-supplied Google share link is connected separately for profile access.
+Its redirect destination and Google verification could not be checked from this environment. Reviews from another garage and their
 rating were removed after the owner's correction. Genuine Garagewala feedback is invited instead.
 
 Validation is recorded in [VALIDATION.json](carmechanic-indore/docs/VALIDATION.json).

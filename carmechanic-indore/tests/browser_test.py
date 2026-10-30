@@ -186,7 +186,7 @@ with sync_playwright() as p:
     pg.goto(BASE + "index.html"); pg.wait_for_load_state("networkidle")
     check(pg.locator("#reviews .review").count() == 0 and pg.locator("#reviews .tag--demo").count() == 0, "No reviews from another garage or sample testimonials")
     check(pg.locator("#reviews [data-review-summary]").is_hidden() and pg.locator("#reviews .review-empty").is_visible(), "No borrowed Google rating; invite genuine Garagewala customers instead")
-    check("wa.me/918965957978" in pg.get_attribute("#reviews [data-share-review]", "href"), "'Share Your Experience' falls back to WhatsApp (no Google URL set)")
+    check(pg.get_attribute("#reviews [data-share-review]", "href") == "reviews.html#write-review", "Website reviews link to the customer feedback form")
     check(pg.locator("#before-after .ba-card").count() == 4, "Homepage shows 4-card Before & After preview")
 
     # Gallery page: 10 cards, labels, filters, swipe on mobile
@@ -270,7 +270,7 @@ with sync_playwright() as p:
     import io
     pg.goto(BASE + "index.html"); pg.wait_for_load_state("networkidle")
     check(pg.locator(".hero-art img").evaluate("e => e.complete && e.naturalWidth > 0"), "Bundled hero illustration loads")
-    check("Illustrative example" in pg.inner_text(".hero-art .photo-credit"), "Illustrations are labelled honestly")
+    check("AI-generated illustration" in pg.inner_text(".hero-art .photo-credit"), "Illustrations are labelled honestly")
     # (b) available: serve a test JPEG for every local photo path
     from PIL import Image
     buf = io.BytesIO(); Image.new("RGB", (1600, 1067), (90, 110, 130)).save(buf, "JPEG"); JPG = buf.getvalue()
@@ -283,7 +283,7 @@ with sync_playwright() as p:
     loaded = pp.eval_on_selector_all("figure.photo img", "els => els.filter(e => e.complete && e.naturalWidth > 0 && !e.closest('figure').hidden).length")
     total = pp.locator("figure.photo img").count()
     check(total >= 10 and loaded == total, f"Photos available → all {total} homepage photos display ({loaded} loaded)")
-    check("Illustrative example" in pp.inner_text(".hero-art .photo-credit"), "Hero illustration has an example caption")
+    check("AI-generated illustration" in pp.inner_text(".hero-art .photo-credit"), "Hero illustration has an example caption")
     pp.screenshot(path=f"{SHOTS}/photos-home-desktop.png", full_page=False)
     pp.goto(BASE + "car-detailing-indore.html"); pp.wait_for_load_state("networkidle")
     check(pp.locator(".page-hero-photo img").is_visible() and pp.locator(".photo-row img").count() == 2, "Detailing page shows hero photo + 2 extra photos")

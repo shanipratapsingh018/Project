@@ -40,3 +40,11 @@ Garagewala Google listing nahi. Apne Google account se https://business.google.c
 par Garagewala ki apni listing create/claim aur verify karo. Kisi aur garage ka profile claim
 ya rename mat karo. Exact entrance pin, postal code aur hours owner ko fill karne hain.
 Verification ke baad Maps sharing aur Ask for reviews links website mein connect kiye ja sakte hain.
+
+## v1.7.0 updates
+
+- Homepage aur About par selected AI garage image lag gayi hai; mobile par bhi dikhti hai.
+- Hours: roz subah 7:00 se raat 11:30 (IST).
+- Reviews page par form hai: naam, 1–5 stars, car/service aur feedback. Prepare ke baad WhatsApp mein Send dabana zaroori hai.
+- Publish permission optional hai; private feedback website par publish na karein. Approved, permitted reviews `reviews.js` mein add hote hain.
+- Owner ka Google share link alag "Garagewala on Google" button mein connected hai. Direct Ask for reviews URL milne par `googleReviewUrl` mein add karein.

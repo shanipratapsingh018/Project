@@ -1,3 +1,9 @@
+> v1.7.0 update: The owner supplied https://share.google/Zot7dWX2M9FAUQRIX.
+> It is connected as a separate "Garagewala on Google" button via `reviews.js → googleProfileUrl`.
+> The redirect destination could not be checked in this environment; no direct-review URL,
+> ownership verification or Google rating is inferred. The address-search link remains separate.
+> The owner confirmed daily hours: 7:00 AM–11:30 PM IST.
+
 # Garagewala: create your own Google Business Profile
 
 No Google listing has been created or verified by this code change. The website currently
