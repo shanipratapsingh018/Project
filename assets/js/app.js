@@ -75,6 +75,7 @@
   const ICON = {
     wa: '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>',
     calendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg>',
+    phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>',
     star: '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-star"/></svg>',
     arrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg>'
   };
@@ -538,12 +539,12 @@
       <div class="ba-head"><span class="eyebrow">${esc(it.category)}</span><h3>${esc(it.title)}</h3></div>
       <div class="ba-pair" tabindex="0" aria-label="Before and after images, swipe to compare">${baFigure(it.before, "Before", i < 2)}${baFigure(it.after, "After", i < 2)}</div>
       <div class="ba-dots" aria-hidden="true"><span class="on"></span><span></span><em>Swipe to see after →</em></div>
-      ${it.kind !== "real" ? '<p class="ba-note">Illustrative example — not an actual customer vehicle.</p>' : '<p class="ba-note ba-note--real">Work done at our workshop</p>'}
       <p class="ba-desc">${esc(it.description)}</p>
       ${facts.length ? `<dl class="ba-facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
       <div class="ba-actions">
         <a class="btn btn--sm" href="booking.html?service=${esc(it.serviceId)}" data-book-similar="${esc(it.serviceId)}">${ICON.calendar} Book Similar Service</a>
         <a class="btn btn--wa btn--sm" target="_blank" rel="noopener" href="${waUrl(`Hello ${B.name}, I'm interested in ${it.category.toLowerCase()} (${svcName}).\nCar (make/model/year): \nArea / PIN: `)}">${ICON.wa} WhatsApp enquiry</a>
+        <a class="btn btn--outline btn--sm" data-tel data-call-now href="tel:${B.phoneE164}">${ICON.phone} Call Now</a>
       </div>
     </article>`;
   }
@@ -574,6 +575,36 @@
       const a = e.target.closest("[data-book-similar]"); if (!a) return;
       store.set("cmi-booking", { services: [a.getAttribute("data-book-similar")] });
     });
+  }
+
+  /* ---------- Homepage service photos ---------- */
+  function mountWorkshopSlider(root) {
+    const track = $("[data-slide-track]", root);
+    const slides = $$("[data-slide]", root);
+    const controls = $("[data-slider-controls]", root);
+    const count = $("[data-slide-count]", root);
+    if (!track || !slides.length || !controls) return;
+    let active = 0;
+    const update = () => {
+      if (track.clientWidth) active = Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / track.getBoundingClientRect().width)));
+      count.textContent = `${active + 1} / ${slides.length}`;
+    };
+    const go = (index) => {
+      active = (index + slides.length) % slides.length;
+      track.scrollTo({ left: active * track.getBoundingClientRect().width, behavior: "instant" });
+      update();
+    };
+    controls.hidden = false;
+    $("[data-slide-prev]", root).addEventListener("click", () => go(active - 1));
+    $("[data-slide-next]", root).addEventListener("click", () => go(active + 1));
+    track.addEventListener("scroll", update, { passive: true });
+    root.addEventListener("keydown", e => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
+      e.preventDefault();
+      go(e.key === "Home" ? 0 : e.key === "End" ? slides.length - 1 : active + (e.key === "ArrowRight" ? 1 : -1));
+    });
+    if (typeof ResizeObserver !== "undefined") new ResizeObserver(() => go(active)).observe(track);
+    update();
   }
 
   /* ---------- Quick booking form on service pages ---------- */
@@ -821,8 +852,8 @@
 
   /* ---------- Hindi toggle (key UI strings) ---------- */
   const HI = {
-    "nav.home": "होम", "nav.calc": "खर्च कैलकुलेटर", "nav.gallery": "पहले और बाद", "nav.reviews": "समीक्षाएँ", "nav.about": "हमारे बारे में", "back.home": "← होम पर वापस",
-    "sec.gallery": "पहले और बाद — असली बदलाव", "sec.reviews": "हमारे ग्राहक क्या कहते हैं", "cta.share": "अपना अनुभव साझा करें",
+    "nav.home": "होम", "nav.calc": "खर्च कैलकुलेटर", "nav.gallery": "सर्विस गैलरी", "nav.reviews": "समीक्षाएँ", "nav.about": "हमारे बारे में", "back.home": "← होम पर वापस",
+    "sec.gallery": "सर्विस गैलरी", "sec.reviews": "हमारे ग्राहक क्या कहते हैं", "cta.share": "अपना अनुभव साझा करें",
     "nav.services": "सेवाएँ", "nav.estimate": "खर्च जानें", "nav.pickup": "पिकअप-ड्रॉप", "nav.book": "बुकिंग", "nav.contact": "संपर्क",
     "hero.title": "इंदौर में भरोसेमंद कार सर्विस और रिपेयर", "hero.sub": "पारदर्शी अनुमान। भरोसेमंद मैकेनिक। सुविधाजनक पिकअप और ड्रॉप।",
     "cta.calc": "सर्विस खर्च जानें", "cta.book": "कार सर्विस बुक करें", "cta.wa": "व्हाट्सऐप पर बात करें", "cta.call": "कॉल करें",
@@ -844,6 +875,7 @@
     $$("[data-booking]").forEach(mountBooking);
     renderPackages(); renderRateTables(); renderReviews(); renderAreas(); renderGallery();
     $$("form[data-review-form]").forEach(mountReviewForm);
+    $$("[data-workshop-slider]").forEach(mountWorkshopSlider);
     $$("[data-service-explorer]").forEach(mountServiceExplorer);
     $$("form[data-quick-book]").forEach(mountQuickBook);
     wireWhatsApp();

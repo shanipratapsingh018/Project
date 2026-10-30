@@ -4,12 +4,11 @@
    Images in assets/img/gallery/samples/ come from the owner's file
    garage_before_after_20_high_resolution_1.zip (supplied 29 Oct 2026),
    split into separate before / after images. They are SAMPLE images, not
-   jobs done at this garage, so they use kind: "illustrative" and every card
-   says "Illustrative example — not an actual customer vehicle."
+   jobs done at this garage, so they use kind: "illustrative" and source information is preserved in this data file.
    (Pair 09 "wheel alignment" was left out: it showed the same worn/new
    tyre idea as tyre replacement, which doesn't depict an alignment.)
 
-   kind: "illustrative" → sample image, always labelled as above
+   kind: "illustrative" → service visual, with source retained in this file
          "real"         → genuine photos of a job done at THIS garage
                           (same car, before and after, with owner's consent)
 
@@ -24,8 +23,8 @@
    ===================================================================== */
 (function (root) {
   const GALLERY = {
-    title: "Before & After — Real Car Transformations",
-    subtitle: "See how professional servicing and repairs can bring your car back to its best.",
+    title: "Service Gallery",
+    subtitle: "Explore servicing, bodywork, detailing and mechanical repairs for your car.",
     source: "Owner-supplied sample images (garage_before_after_20_high_resolution_1.zip, 29 Oct 2026)",
     groups: [
       { id: "body", label: "Bodywork & lights" },
