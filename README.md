@@ -11,6 +11,7 @@ The original Arduino temp.txt is preserved separately.
 
 - [Hosting-ready ZIP](downloads/garagewala-v1.6.1-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
 - [Complete source ZIP](downloads/garagewala-v1.6.1-source.zip) — on GitHub, click **Download raw**.
+- [Six AI-generated garage photos](downloads/garagewala-ai-garage-photos.zip) — original PNGs in one ZIP; illustrative scenes, not photos of the actual workshop.
 - Or choose **Code → Download ZIP** to download this whole branch.
 
 ## Run locally
