@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shanipratapsingh018.github.io/Project/sitemap.xml
