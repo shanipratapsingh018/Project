@@ -33,3 +33,5 @@ d99b5ce4a699c3b0eff097d3902490e00b49e9354559c0d37af304cfb50c3b2c  garagewala-v2.
 ed2949f96acc560449ebf9a0bdcdb2aa88494d990514bc65615ff0cbb677de72  garagewala-v2.1.0-source.zip
 c8d21df11a8cb5dd1f706f6351797f3bb687dadb13b575144a5f5b5813eac587  car-repair-wala-v2.2.0-hosting.zip
 78a9391060031d16c907c7a040d877be8f14065abdbab5ffafc20daaefa6858f  car-repair-wala-v2.2.0-source.zip
+ff807dde2387ffd3c02fc27481cbc7e291a34d9731e07fe8a0fdf7dca6d267ff  car-repair-wala-v2.2.1-hosting.zip
+a9b1c8ad001db16f07fe9f903e309f0c81aaf1df0e12c00e94da4af7619f44f0  car-repair-wala-v2.2.1-source.zip

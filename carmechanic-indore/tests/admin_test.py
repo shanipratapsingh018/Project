@@ -143,6 +143,11 @@ try:
         submissions=[]
         def intake(route):
             if route.request.method=='OPTIONS':return route.fulfill(status=204,headers={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'*','Access-Control-Allow-Methods':'POST,OPTIONS'})
+            # Validate browser payloads with the same pure handler module deployed
+            # to Supabase, while keeping every database/API call fictional.
+            validation=subprocess.run(['node','--input-type=module','-e','import {validateBooking} from "./supabase/functions/submit-booking/handler.mjs"; import {readFileSync} from "node:fs"; process.stdout.write(JSON.stringify(validateBooking(JSON.parse(readFileSync(0,"utf8")))));'],cwd=ROOT,input=route.request.post_data,text=True,capture_output=True)
+            assert validation.returncode==0,validation.stderr
+            assert json.loads(validation.stdout)['contactMethod']=='call'
             submissions.append((route.request.headers,route.request.post_data_json));route.fulfill(status=503 if len(submissions)==1 else 200,content_type='application/json',headers={'Access-Control-Allow-Origin':'*'},body='{}' if len(submissions)==1 else '{"received":true}')
         public_ctx.route('https://test.supabase.co/functions/v1/submit-booking',intake)
         pg=public_ctx.new_page();pg.goto(base+'booking.html')
@@ -153,6 +158,7 @@ try:
         expect(pg.locator('[data-b-result]')).to_contain_text("couldn't confirm");next_step();expect(pg.locator('[data-b-result]')).to_contain_text('Request received.')
         check(len(submissions)==2 and submissions[0][0]['x-idempotency-key']==submissions[1][0]['x-idempotency-key'],'Public booking retries preserve the request ID after uncertain receipt')
         check(submissions[0][0]['apikey']=='sb_publishable_fixture' and submissions[0][1]['contactMethod']=='Phone call','Enabled bridge sends public key and customer contact preference')
+        check(len(submissions)==2,'Website request bodies pass the deployed handler validation before mocked storage')
         public_ctx.close();browser.close()
     print(f'{checks} admin browser checks passed. Fixtures are fictional; no live backend was contacted.',flush=True)
 finally:server.terminate();server.wait(timeout=10)

@@ -1,16 +1,16 @@
-# Car Repair Wala — Your Car. Our Care. · v2.2.0
+# Car Repair Wala — Your Car. Our Care. · v2.2.1
 
 Live website: https://shanipratapsingh018.github.io/Project/
 
-Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=2.2.0
+Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=2.2.1
 
 The updated website is in **carmechanic-indore/**.
 The original Arduino temp.txt is preserved separately.
 
 ## Download
 
-- [Hosting-ready ZIP](downloads/car-repair-wala-v2.2.0-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
-- [Complete source ZIP](downloads/car-repair-wala-v2.2.0-source.zip) — on GitHub, click **Download raw**.
+- [Hosting-ready ZIP](downloads/car-repair-wala-v2.2.1-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
+- [Complete source ZIP](downloads/car-repair-wala-v2.2.1-source.zip) — on GitHub, click **Download raw**.
 - [Six AI-generated garage photos](downloads/garagewala-ai-garage-photos.zip) — original PNGs in one ZIP; illustrative scenes, not photos of the actual workshop.
 - Or choose **Code → Download ZIP** to download this whole branch.
 
@@ -31,9 +31,11 @@ The About page keeps its workshop image; the homepage uses one full-width twenty
 The website review form prepares WhatsApp feedback; the customer must press Send.
 Publication consent is optional, and feedback appears publicly only after the garage checks it.
 
-Bookings use WhatsApp by default. The production URL is configured; rebuilding preserves the live GitHub Pages URLs.
+The main **Book Service** form saves requests directly to **Admin → Bookings** through Supabase.
+WhatsApp buttons and service-page quick enquiries still require sending a WhatsApp message.
+The production URL is configured; rebuilding preserves the live GitHub Pages URLs.
 
-Owner workspace: https://shanipratapsingh018.github.io/Project/admin/?v=2.2.0
+Owner workspace: https://shanipratapsingh018.github.io/Project/admin/?v=2.2.1
 
 Customer vehicles and manual enquiries have searchable brand/model dropdowns: 70 brands,
 847 models, year/fuel selection and manual choices for anything missing. Existing saved
@@ -42,7 +44,8 @@ vehicles stay editable. [Vehicle entry guide](carmechanic-indore/docs/VEHICLE_DR
 The private admin interface, database migrations and booking endpoint are included for customers,
 vehicles, bookings, job cards, invoices and manual payment tracking. The public Supabase URL/key are configured.
 Login requires the [admin setup](carmechanic-indore/docs/ADMIN_SETUP.md) and an authorised owner account.
-The owner has reported completing initial database setup. Website bookings still use WhatsApp.
+The owner completed initial database setup and demonstrated successful deployed-function tests.
+Direct booking storage is enabled for the main Book Service form.
 No subscription has been purchased, no secret keys are included, and no real customer records are stored in this repository.
 
 Address: **Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012**.
@@ -55,6 +58,6 @@ For future invoice addresses, use **Admin → Settings → Use workshop address*
 
 Validation is recorded in [VALIDATION.json](carmechanic-indore/docs/VALIDATION.json).
 
-Service Gallery: https://shanipratapsingh018.github.io/Project/gallery.html?v=2.2.0
+Service Gallery: https://shanipratapsingh018.github.io/Project/gallery.html?v=2.2.1
 
 The homepage has a twenty-photo service slider beneath the calculator; Previous/Next and mobile swipe are supported. Gallery cards include Call Now.

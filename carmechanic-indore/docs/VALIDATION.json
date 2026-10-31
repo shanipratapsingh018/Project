@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.2.1",
   "date_ist": "2026-10-31",
   "validation": {
     "npm test": "passed: 276 approved rate figures and 41 unit/server/build checks",
@@ -100,5 +100,17 @@
     "private_data": "existing private invoice names/records were not silently rewritten; owner Save settings is required for future bills",
     "external_listing": "Google profile link retained; listing name changes are controlled in the owner Google Business account",
     "compatibility": "private storage bucket and historical database IDs retained to preserve access to existing records and files"
+  },
+  "validation_v2.2.1": {
+    "online_booking": "Enabled for the main four-step Book Service form; private Supabase intake creates new enquiries in Admin > Bookings",
+    "owner_live_function_evidence": "Owner screenshots show HTTP 200 with received:true for both https://supabase.com and https://shanipratapsingh018.github.io Origin values; identical UUID replay returned the same request ID",
+    "public_unit": "passed: 276 approved rate figures and 41 unit/server/build checks",
+    "public_browser": "passed: all 22 pages on mobile/desktop; actual enabled backend configuration uses an intercepted function response; booking payload, public key, request ID and pending appointment wording checked",
+    "public_reliability": "passed: 41 checks including API failure/timeout recovery and explicitly disabled WhatsApp fallback fixtures",
+    "admin_unit": "passed: 13 tests",
+    "admin_browser": "passed: 43 fictional mocked-response checks; actual browser payloads validated by the deployed pure handler module; uncertain receipt retries preserve the same request ID",
+    "privacy_copy": "Booking page and privacy text now describe active private request storage; WhatsApp buttons and service-page quick enquiries retain their message handoff",
+    "database": "No schema migration or financial behavior changed",
+    "verification_limit": "Workspace cannot contact the live Supabase project or authenticate as the owner. Browser tests use intercepted responses and do not write fictional customer records. Owner should check one full live website submission in Admin > Bookings after deployment."
   }
 }

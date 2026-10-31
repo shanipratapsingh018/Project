@@ -1,6 +1,6 @@
-# Car Repair Wala owner workspace · v2.2.0
+# Car Repair Wala owner workspace · v2.2.1
 
-The public connection settings now point to project `oraooxeefxcwmwgycrei`. **Database and owner-account setup still need to be completed and verified** through the owner's Supabase dashboard. The public site continues to use WhatsApp booking by default. Publishing the admin files does not publish customer records. The owner's email and password are not placed in public website files.
+The public connection settings point to project `oraooxeefxcwmwgycrei`. The owner has completed database and owner-account setup and demonstrated successful deployed-function tests. The main booking form now saves online requests through the deployed Edge Function; WhatsApp buttons remain a separate handoff. The setup steps below are retained for new installations. Publishing the admin files does not publish customer records. The owner's email and password are not placed in public website files.
 
 Open [this project's SQL Editor](https://supabase.com/dashboard/project/oraooxeefxcwmwgycrei/sql/new) and use [the combined database setup file](../supabase/setup-admin.sql) for a new project. It contains the same two reviewed initial migrations, without account credentials. Use Supabase's dashboard to create the owner Auth user and grant owner membership as described below.
 
@@ -54,7 +54,7 @@ supabase functions deploy submit-booking --no-verify-jwt
 
 Run those commands from this site folder. The CLI reads `supabase/config.toml`. Origin values contain only scheme and host, not `/Project/`. Add a custom website origin as a comma-separated value if needed. Supabase provides `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to the Edge Function **server**; never copy the service-role key into the website. The endpoint is intentionally public, accepts only validated booking fields, and has no customer-read operation. `apikey` is sent by the public site, but is public configuration, not proof of identity.
 
-Test one booking in the browser, confirm it appears only in the owner workspace, then set `bookingEnabled: true` and deploy. Before enabling, test the deployed endpoint with a controlled request using a UUID `X-Idempotency-Key`; a repeat with the same body must return success without adding another booking. The response contains no customer details. The browser retains its request ID in memory for identical retries after a timeout. If the tab is reloaded after uncertain receipt, check with the garage before submitting again.
+Before enabling a new installation, test the deployed endpoint with a controlled request using a UUID `X-Idempotency-Key` and confirm the request appears in the owner workspace. A repeat with the same body must return success without adding another booking. Then set `bookingEnabled: true`, rebuild and deploy, and check the complete browser form once. The response contains no customer details. The browser retains its request ID in memory for identical retries after a timeout. If the tab is reloaded after uncertain receipt, check with the garage before submitting again.
 
 Persistent hourly limits are 100 total, 30 per IP hash and 5 per mobile hash. Hashes are HMAC-derived server-side and old rate-limit rows are purged on subsequent submissions after two days. The database stores contact information because the garage needs it to provide service. CORS is a browser safeguard, not authentication; a public intake can still receive spam. Monitor usage and contact the garage by call/WhatsApp if a limit is reached. If needed later, add a verified bot challenge, without weakening owner policies.
 
@@ -123,3 +123,18 @@ private-storage identifiers are kept compatible with stored records and files.
 The Google Business Profile link is retained. Change the listing's displayed
 business name through your own Google Business account if it still has the old
 name; website publishing does not edit Google's listing.
+
+## Online booking activation · v2.2.1
+
+The owner deployed `submit-booking`, disabled legacy JWT verification, and supplied
+successful HTTP 200 / `received: true` responses for the dashboard and website
+origins. `bookingEnabled` is now true for the main four-step booking form.
+The allowed-origin secret includes `https://shanipratapsingh018.github.io` and
+`https://supabase.com`; keep full paths such as `/Project/` out of Origin values.
+Header names and values are separate fields when using Supabase Test.
+
+A successful online form submission should appear as a new website enquiry in
+Admin → Bookings. Test once using your own contact details, then cancel the test
+enquiry after confirming receipt. The handler does not confirm an appointment or
+send a WhatsApp message. Source and published config must both be kept in sync
+when enabling or disabling intake; normal releases update both together.

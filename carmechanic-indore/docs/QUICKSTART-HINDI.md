@@ -1,9 +1,9 @@
-# Car Repair Wala — Your Car. Our Care. · v2.2.0
+# Car Repair Wala — Your Car. Our Care. · v2.2.1
 
 Live website: https://shanipratapsingh018.github.io/Project/
 Services page: https://shanipratapsingh018.github.io/Project/services.html
 
-Naya version kholne ke liye URL ke end mein `?v=2.2.0` laga sakte ho.
+Naya version kholne ke liye URL ke end mein `?v=2.2.1` laga sakte ho.
 GitHub Pages static website hai; live update `gh-pages` branch par push hone ke baad automatically deploy hota hai.
 
 # Website kaise chalayein
@@ -26,8 +26,8 @@ GitHub Pages static website hai; live update `gh-pages` branch par push hone ke 
 
 ## Booking kaise aayegi
 
-Customer form bharta hai; website WhatsApp message taiyar karti hai. Customer ko
-WhatsApp mein Send dabana hota hai. Uske baad garage slot aur final quote confirm karta hai.
+Main Book Service form submit hone par request Supabase mein save hoti hai aur Admin → Bookings mein dikhti hai.
+Garage date, slot aur quotation confirm karta hai. WhatsApp buttons aur service-page quick forms mein Send dabana ab bhi zaroori hai.
 Owner login footer se khulta hai: customers, job cards, invoices aur manual payments manage kar sakte hain. Online payment collection abhi enabled nahi hai.
 
 ## Reviews aur Google listing

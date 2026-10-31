@@ -50,6 +50,14 @@ with sync_playwright() as p:
         ctx.close()
 
     ctx = b.new_context(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True)
+    booking_requests = []
+    def booking_intake(route):
+        cors = {"Access-Control-Allow-Origin":"*", "Access-Control-Allow-Headers":"*", "Access-Control-Allow-Methods":"POST,OPTIONS"}
+        if route.request.method == "OPTIONS": return route.fulfill(status=204,headers=cors)
+        booking_requests.append((route.request.headers,route.request.post_data_json))
+        route.fulfill(status=200,content_type="application/json",headers=cors,body='{"received":true,"requestId":"fixture-only"}')
+    # Intercept the actual configured function; never submit fixture details to production.
+    ctx.route("https://oraooxeefxcwmwgycrei.supabase.co/functions/v1/submit-booking",booking_intake)
     pg = ctx.new_page()
     pg.goto(BASE + "index.html"); pg.wait_for_load_state("networkidle")
     pg.screenshot(path=f"{SHOTS}/home-mobile.png", full_page=False)
@@ -176,10 +184,10 @@ with sync_playwright() as p:
     pg.click("[data-b-next]")
     check("6-digit PIN" in pg.inner_text("[data-booking]"), "Booking validates PIN")
     pg.fill("#b-pin", "452010"); pg.click("[data-b-next]")
-    wa = pg.get_attribute("[data-b-wa]", "href")
-    bm = urllib.parse.unquote(wa.split("?text=")[1])
-    check("Mobile: 9876543210" in bm and "Registration: MP09 AB 1234" in bm and "in your confirmed service area" in bm, "Booking WhatsApp message has mobile, registration and area status")
-    check("booking confirmed" not in pg.inner_text("[data-b-result]").lower() and "only when you press send" in pg.inner_text("[data-b-result]").lower(), "Booking is clearly a request until the WhatsApp message is sent")
+    pg.locator('[data-b-result] strong').filter(has_text='Request received.').wait_for()
+    check(len(booking_requests)==1 and booking_requests[0][1]['mobile']=='9876543210' and booking_requests[0][1]['registration']=='MP09 AB 1234' and booking_requests[0][1]['pin']=='452010', "Enabled website form posts customer, car and pickup details to the configured function")
+    check(bool(booking_requests[0][0].get('apikey')) and bool(booking_requests[0][0].get('x-idempotency-key')), "Online booking includes the public key and a duplicate-safe request ID")
+    check("Request received." in pg.inner_text("[data-b-result]") and "confirmed only after" in pg.inner_text("[data-b-result]"), "Online receipt still requires the garage to confirm the appointment")
     pg.screenshot(path=f"{SHOTS}/booking-mobile.png", full_page=False)
 
     # Reviews: genuine customer invitation, no borrowed testimonials

@@ -26,6 +26,9 @@ try:
         ctx.on('page',lambda pg: pg.on('pageerror',lambda e:errors.append(str(e))))
         def page(draft=None, api=None, timeout=15000):
             pg = ctx.new_page()
+            # Explicitly exercise the optional WhatsApp fallback and mock API modes;
+            # never let regression fixtures submit to the production intake.
+            pg.route('**/assets/js/backend-config.js*',lambda route:route.fulfill(content_type='text/javascript',body='window.GW_BACKEND={url:"",publishableKey:"",bookingEnabled:false};'))
             if draft is not None:
                 pg.add_init_script('sessionStorage.setItem("cmi-booking", '+json.dumps(json.dumps(draft))+');')
             if api:
@@ -39,7 +42,9 @@ try:
             pg.fill('#b-name','Test Customer');pg.fill('#b-mobile','9876543210');next(pg)
             pg.select_option('#b-brand','maruti');pg.select_option('#b-model','Swift');pg.select_option('#b-year','2025');pg.select_option('#b-fuel','petrol');next(pg)
             cb=pg.locator(f'input[name="b-svc"][value="{service}"]')
-            cb.evaluate('e=>e.closest("details").open=true');cb.check(force=True)
+            cb.evaluate('e=>e.closest("details").open=true')
+            if not cb.is_checked(): cb.locator('..').click()
+            expect(cb).to_be_checked()
             next(pg);pg.select_option('#b-pickup','no')
 
         pg=page({'services':['bad\"selector','__proto__',None],'qty':[], 'lights':'bad'})

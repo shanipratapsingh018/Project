@@ -6,6 +6,7 @@ import { createRequire } from "module";
 import { writeFileSync, readFileSync, existsSync, unlinkSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import { runInNewContext } from "node:vm";
 
 const require = createRequire(import.meta.url);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "public");
@@ -19,7 +20,10 @@ const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const WORKSHOP_PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "workshop-photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "2.2.0";
+const backendContext = { window: {} };
+runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
+const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
+const VERSION = "2.2.1";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -596,7 +600,7 @@ function servicesHub() {
 
 function bookingPage() {
   const body = `
-<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Book</p><span class="eyebrow">Booking</span><h1>Book your car service</h1><p>Four short steps. Your request is sent to the garage on WhatsApp — the garage receives it when you press Send in WhatsApp. We confirm the slot and final quotation before any work starts.</p></div></section>
+<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Book</p><span class="eyebrow">Booking</span><h1>Book your car service</h1><p>Four short steps. ${ONLINE_BOOKING ? "Submit your request online and we’ll receive it directly. Your details are stored privately for the garage to follow up." : "Your request is sent to the garage on WhatsApp — the garage receives it when you press Send in WhatsApp."} We confirm the slot and final quotation before any work starts.</p></div></section>
 <section class="band"><div class="wrap">
   <div class="form-card" data-booking>
     <div class="jobcard-head"><span>Booking request</span><span data-b-count>Step 1 of 4</span></div>
@@ -705,7 +709,7 @@ const privacy = legalPage("privacy.html", "Privacy Policy | Car Repair Wala", "P
   ["How it's used", `<p>To contact you about your enquiry, arrange pickup and service, and send your quotation and bill. Feedback you send through the review form is used to respond to your experience. Your display name, rating, car model, service and feedback are published only if you choose the optional publication permission and the garage approves the review. Private feedback is not published.</p>`],
   ["WhatsApp", `<p>If you use the WhatsApp buttons, your message is sent through WhatsApp and is subject to WhatsApp's own privacy policy.</p>`],
   ["Images", `<p>Images and fonts are served with this website. Stock photos, where used, are credited. External services such as WhatsApp or Google receive connection information when you follow their links.</p>`],
-  ["Storage", `<p>The cost estimator runs in your browser. Booking details you send are kept only as long as needed for your service and records.</p><p>The estimator temporarily keeps its booking handoff in session storage in this browser tab; closing the tab clears that session. Language preference is saved locally. In the default WhatsApp mode, no booking API is called. If online booking storage is enabled, submitted contact, vehicle and service details are stored in Car Repair Wala's private Supabase database for authorised owner access. Private job files and billing records may also be stored there. Technical request identifiers and short-lived rate limits help prevent duplicate requests and abuse. Contact the garage about access, correction, deletion and record retention; billing records may need to be retained for legal requirements.</p>`],
+  ["Storage", `<p>The cost estimator runs in your browser. Booking details you send are kept only as long as needed for your service and records.</p><p>The estimator temporarily keeps its booking handoff in session storage in this browser tab; closing the tab clears that session. Language preference is saved locally. Online booking form submissions are stored in Car Repair Wala's private Supabase database for authorised owner access, so the garage can contact you about the request. WhatsApp buttons and the service-page quick-enquiry forms prepare messages that you must send in WhatsApp. Private job files and billing records may also be stored there. Technical request identifiers and short-lived rate limits help prevent duplicate requests and abuse. Contact the garage about access, correction, deletion and record retention; billing records may need to be retained for legal requirements.</p>`],
   ["Your choices", `<p>Ask us at any time to see or delete the details we hold about you by contacting <span data-phone>${esc(B.phoneDisplay)}</span>.</p>`]
 ], "How Car Repair Wala handles customer data from estimates and bookings.");
 const policies = legalPage("policies.html", "Cancellation, Pickup & Billing Policy | Car Repair Wala", "Cancellation, pickup & billing", [

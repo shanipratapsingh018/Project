@@ -1,8 +1,8 @@
 {
   "name": "car-repair-wala",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "private": true,
-  "description": "Car Repair Wala \u2014 Your Car. Our Care. Car service prices, estimates and WhatsApp booking in Indore.",
+  "description": "Car Repair Wala \u2014 Your Car. Our Care. Car service prices, estimates and online booking in Indore.",
   "scripts": {
     "build": "node tools/build.mjs",
     "build:admin": "npm --prefix admin-app run build",

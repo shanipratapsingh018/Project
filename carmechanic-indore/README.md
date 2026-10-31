@@ -1,7 +1,7 @@
-# Car Repair Wala — Your Car. Our Care. · v2.2.0
+# Car Repair Wala — Your Car. Our Care. · v2.2.1
 
 A ready-to-run static garage website branded **Car Repair Wala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
-vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
+vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form, online booking and WhatsApp contact. Node.js 18+ is needed for local serving
 and rebuilding; a static hosting provider needs only the included `public/` files.
 
 ## Live website
@@ -37,14 +37,16 @@ picker is used for customer vehicles and manual enquiries. See [vehicle dropdown
 
 Public connection settings point to project `oraooxeefxcwmwgycrei`. Login requires the database migrations,
 an Auth user and owner membership; the owner has reported completing initial database setup.
-Website bookings continue through WhatsApp until the booking endpoint is separately enabled.
+The main Book Service form now saves requests through the deployed Supabase function.
+Service-page quick-enquiry forms and WhatsApp chat buttons still use WhatsApp.
 No fake password or customer database is supplied.
 Follow [the admin setup guide](docs/ADMIN_SETUP.md) for migrations, owner creation and optional booking intake.
 Only the project URL and public publishable/anon key belong in `backend-config.js`; never include a secret key.
 
 To rebuild admin assets, use Node.js 22+ and run `npm ci --ignore-scripts` then `npm run build`
 inside `admin-app/`. The root static server needs no npm install. Tests include fictional mocked browser data
-and isolated PostgreSQL checks; live Supabase service configuration remains to be verified after activation.
+and isolated PostgreSQL checks. The owner verified the deployed intake with controlled requests;
+the complete live form and private booking list still need an owner check after publishing.
 
 ## Deploy
 
@@ -68,16 +70,22 @@ Host-specific rules are included for convenience; they were not deployed to an e
 
 ## What booking actually does
 
-By default, the booking form prepares a WhatsApp message. **The customer must press Send
-in WhatsApp; the garage then confirms availability and the quote.** The static website does
-not receive or store bookings in a database and does not accept payment.
+The main `booking.html` form now submits directly to the deployed `submit-booking` Edge Function.
+`public/assets/js/backend-config.js` has `bookingEnabled: true`. The owner demonstrated HTTP 200
+with `received: true` using both the Supabase dashboard origin and the website origin.
+Successful submissions are saved privately as new enquiries and can be read in **Admin → Bookings**.
+The garage still confirms the date, availability and quotation; receipt is not a confirmed appointment.
 
-An optional `business.bookingEndpoint` can receive a JSON POST. `bookingTimeoutMs` defaults
-to 15000. Stable `serviceItems: [{id, qty}]` are included alongside display names. The endpoint
-must validate and reprice everything server-side, enforce rate limits and handle duplicate
-requests; a client-side estimate is not an authoritative price. HTTP 2xx means receipt of the
-request, not confirmation of a service slot. API failure/timeout offers WhatsApp recovery and
-warns that a request may already have arrived. Tests use intercepted API responses, not a live backend.
+The browser supplies the public key and a UUID request ID. Identical retries in the same tab reuse
+that ID to avoid duplicate records. API failures or timeouts preserve entered details and offer
+WhatsApp/phone recovery. Check uncertain receipt with the garage before starting a fresh request.
+
+The service-page quick-enquiry forms and WhatsApp chat buttons still prepare WhatsApp messages;
+the customer must press Send in WhatsApp. They do not import messages or calls into admin.
+Feedback/review forms also keep their existing WhatsApp handoff. No payment is collected online.
+To disable online intake, set `bookingEnabled: false`, rebuild and redeploy; the main booking
+form then returns to the WhatsApp handoff. Browser tests intercept API calls and do not send
+fictional records to production.
 
 ## Service gallery and homepage photos
 
