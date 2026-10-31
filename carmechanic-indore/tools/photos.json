@@ -1,13 +1,7 @@
 {
-  "_readme": "Mixed illustrative assets. workshop-hero and workshop-cars use the same locally bundled AI-generated Indian workshop image, with source recorded in alt text and documentation. Other slots retain stock source metadata and fall back to locally bundled illustrations when stock files are absent. No generated image depicts the actual Garagewala premises.",
+  "_readme": "The About page uses a locally bundled generated workshop image. The homepage uses the separate twenty-scene workshop-photos.json carousel. Other slots retain stock-source metadata and use locally bundled service images when stock files are absent. Source information is retained in alt text and documentation.",
   "verified": "2026-10-29",
   "photos": [
-    {
-      "id": "workshop-hero",
-      "generated": true,
-      "alt": "AI-generated Indian garage scene with spare-parts shelves and mechanics working on engines and suspension",
-      "used": "Homepage hero"
-    },
     {
       "id": "workshop-cars",
       "generated": true,

@@ -83,10 +83,13 @@ Run `npm run build` after changing hours so Contact, homepage, footer and struct
 
 ## 5. Homepage service slider
 
-Edit `tools/workshop-photos.json` (ten service scenes), place the corresponding `-800.webp`
+Edit `tools/workshop-photos.json` (twenty service scenes), place the corresponding `-800.webp`
 and `-1600.webp` files under `public/assets/img/workshop/`, and run `npm run build`. Titles
 are shown below each picture; source information remains in the manifest and alt text.
 Use `npm run test:gallery` to check navigation, wrapping, mobile widths and gallery actions.
 The gallery page keeps its `gallery.html` URL and comparison filters under its new name.
 Visible image example labels are removed by owner request; do not change source kinds or
 claim the pictured sample jobs were actually performed at Garagewala.
+
+In v1.9.0 the homepage slider is a direct child of the hero grid and spans both columns.
+The separate hero photo is removed. Home navigation uses the same orange colour on all pages.

@@ -1,6 +1,6 @@
 # Website image sources
 
-The homepage (`workshop-hero`) and About page (`workshop-cars`) use the same
+The About page (`workshop-cars`) uses the
 AI-generated Indian garage scene selected by the owner. It depicts shelves of spare parts,
 engine servicing and suspension work. It is an illustration, not a photograph of the actual
 Garagewala premises or staff. At the owner’s request, visible image example captions are removed throughout the site in v1.8.0. Source information
@@ -20,7 +20,7 @@ only with permission and label their source accurately.
 
 ## Homepage service carousel
 
-Ten AI-generated service scenes are bundled at 800 and 1600 pixels wide under
+Twenty AI-generated service scenes are bundled at 800 and 1600 pixels wide under
 `public/assets/img/workshop/`. The scene list, original generated file names and source status
 are recorded in `tools/workshop-photos.json`. Two new scenes depict engine overhaul and AC
 diagnostics; the other eight reuse the previously generated garage/service images. The files
@@ -28,3 +28,11 @@ are responsive WebP encodings; original PNGs in the execution workspace are unch
 
 These pictures do not document actual Garagewala jobs or staff. UI labels were removed at
 the owner's request; source information and `kind: "illustrative"` records are retained.
+
+## v1.9.0 additional scenes
+
+Ten new generated scenes cover brake repair, wheel balancing, battery checks, oil/filter
+service, clutch/gearbox repair, cooling-system service, injector cleaning, computer diagnostics,
+interior cleaning and foam washing. Their original filenames are recorded in
+`tools/workshop-photos.json`; originals remain unchanged in the execution workspace.
+The homepage now has one full-width carousel, with no separate workshop photograph.

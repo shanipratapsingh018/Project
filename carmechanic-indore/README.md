@@ -1,4 +1,4 @@
-# Garagewala — Your Car. Our Care. · v1.8.1
+# Garagewala — Your Car. Our Care. · v1.9.0
 
 A ready-to-run static garage website branded **Garagewala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
@@ -62,9 +62,10 @@ service categories and image comparisons, with Call Now, booking and WhatsApp ac
 Visible image example/disclaimer labels are removed at the owner's request. Source metadata
 remains accurate in the data files and documentation; sample jobs are not relabelled as real jobs.
 
-A ten-photo service carousel fills the space beneath the homepage calculator. It includes car
-washing, engine work, suspension repair, denting, painting, AC service, periodic servicing,
-workshop bays, engine inspection and parts inventory. Previous/Next, keyboard navigation,
+A single twenty-photo service carousel spans the full content width beneath both homepage columns. It includes washing, engine work, suspension, denting, painting, AC service, servicing,
+workshop bays, engine inspection, parts inventory, brakes, wheel balancing, battery testing,
+oil/filter service, gearbox repair, cooling-system service, injector cleaning, diagnostics,
+interior cleaning and foam washing. Previous/Next, keyboard navigation,
 wraparound and native touch scrolling work without autoplay. Without JavaScript it stays a
 swipeable photo strip. Images use locally bundled 800/1600px WebP assets with lazy loading.
 Edit `tools/workshop-photos.json` and rebuild to update the carousel; image files are in
@@ -72,7 +73,7 @@ Edit `tools/workshop-photos.json` and rebuild to update the carousel; image file
 
 ## Customer reviews and workshop hours
 
-The homepage and About page use the owner-selected, locally bundled AI workshop illustration,
+The About page uses the owner-selected, locally bundled AI workshop illustration,
 with responsive images (about 99 KB / 271 KB). It also displays on phones.
 Visible image captions identifying examples were removed at the owner’s request; source information remains in alt text and documentation.
 Opening hours are **every day, 7:00 AM–11:30 PM IST**, confirmed by the owner.

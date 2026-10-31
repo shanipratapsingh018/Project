@@ -1,3 +1,10 @@
+# v1.9.0 — One full-width slider and twenty service photos
+
+- Removed the separate homepage workshop image; one carousel spans both columns below the introduction/calculator.
+- Added ten new generated repair/service photographs for twenty distinct carousel scenes.
+- Home keeps the same orange fill, text and border on every page, including hover; aria-current still identifies the current page correctly.
+- Updated slider/layout/colour checks and preserved mobile swipe and no-JavaScript support.
+
 # v1.8.1 — Home navigation and brand tagline
 
 - Home navigation has a house icon, rounded orange treatment, active state, hover and keyboard focus styles.

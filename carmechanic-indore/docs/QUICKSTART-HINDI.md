@@ -55,3 +55,9 @@ Before & After ka naam Service Gallery hai. Header aur har gallery card mein Cal
 Homepage calculator ke neeche 10 service photos ka slider hai: Next/Previous, keyboard aur
 mobile swipe supported hain. Image example labels owner ke kehne par hata diye hain;
 source information data files mein sahi rakhi gayi hai.
+
+## v1.9.0
+
+Homepage se alag workshop photo hata di hai. Ab introduction aur calculator ke neeche
+ek hi full-width slider hai, total 20 service/repair photos ke saath. Next/Previous aur
+mobile swipe pehle jaise hain. Home button ka orange rang har page par same hai.

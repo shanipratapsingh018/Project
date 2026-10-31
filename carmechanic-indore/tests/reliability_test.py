@@ -153,9 +153,9 @@ try:
         pg.close()
         for file in ['index.html','about.html']:
             pg=ctx.new_page();pg.goto(base+file);pg.wait_for_load_state('networkidle')
-            image=pg.locator('[data-photo-id="'+('workshop-hero' if file=='index.html' else 'workshop-cars')+'"] img')
+            image=pg.locator('[data-slide] img').first if file=='index.html' else pg.locator('[data-photo-id="workshop-cars"] img')
             image.scroll_into_view_if_needed()
-            check(image.is_visible() and image.evaluate('i=>i.complete && i.naturalWidth>0') and 'garagewala-workshop-' in image.get_attribute('src'),'Responsive generated workshop photo loads on mobile: '+file)
+            check(image.is_visible() and image.evaluate('i=>i.complete && i.naturalWidth>0') and ('assets/img/workshop/' if file=='index.html' else 'garagewala-workshop-') in image.get_attribute('src'),'Responsive generated workshop photo loads on mobile: '+file)
             pg.close()
         nojs=browser.new_context(java_script_enabled=False)
         pg=nojs.new_page();pg.goto(base+'reviews.html')

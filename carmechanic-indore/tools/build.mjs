@@ -19,7 +19,7 @@ const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const WORKSHOP_PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "workshop-photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "1.8.1";
+const VERSION = "1.9.0";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -427,7 +427,7 @@ function reviewsSection(full = false) {
 function workshopSlider() {
   return `<section class="service-carousel" data-workshop-slider role="region" aria-roledescription="carousel" aria-label="Car service photos">
     <div class="service-carousel-heading"><span class="eyebrow">Service spotlight</span><p>Explore our car care services</p></div>
-    <div class="service-slides" id="workshop-slides" data-slide-track tabindex="0" aria-label="Service photos; swipe or use arrow keys">${WORKSHOP_PHOTOS.map((p, i) => `<figure class="service-slide" data-slide role="group" aria-roledescription="slide" aria-label="${i+1} of ${WORKSHOP_PHOTOS.length}: ${esc(p.title)}"><img src="assets/img/workshop/${p.id}-800.webp" srcset="assets/img/workshop/${p.id}-800.webp 800w, assets/img/workshop/${p.id}-1600.webp 1600w" sizes="(max-width: 960px) calc(100vw - 32px), 560px" alt="${esc(p.alt)}" width="${p.width}" height="${p.height}" loading="lazy" decoding="async"><figcaption>${esc(p.title)}</figcaption></figure>`).join("")}</div>
+    <div class="service-slides" id="workshop-slides" data-slide-track tabindex="0" aria-label="Service photos; swipe or use arrow keys">${WORKSHOP_PHOTOS.map((p, i) => `<figure class="service-slide" data-slide role="group" aria-roledescription="slide" aria-label="${i+1} of ${WORKSHOP_PHOTOS.length}: ${esc(p.title)}"><img src="assets/img/workshop/${p.id}-800.webp" srcset="assets/img/workshop/${p.id}-800.webp 800w, assets/img/workshop/${p.id}-1600.webp 1600w" sizes="(max-width: 1200px) calc(100vw - 32px), 1140px" alt="${esc(p.alt)}" width="${p.width}" height="${p.height}" loading="lazy" decoding="async"><figcaption>${esc(p.title)}</figcaption></figure>`).join("")}</div>
     <div class="service-slider-controls" data-slider-controls hidden><button type="button" data-slide-prev aria-label="Previous service photo" aria-controls="workshop-slides">${ic("arrow")} Previous</button><span data-slide-count aria-live="polite" aria-atomic="true">1 / ${WORKSHOP_PHOTOS.length}</span><button type="button" data-slide-next aria-label="Next service photo" aria-controls="workshop-slides">Next ${ic("arrow")}</button></div>
     <noscript><p class="service-swipe-hint">Swipe across the photos to explore services.</p></noscript>
   </section>`;
@@ -478,9 +478,9 @@ function homepage() {
         <li>${ic("check")}All major brands</li><li>${ic("receipt")}Itemised bills</li><li>${ic("shield")}Approval before extra work</li>
       </ul>
       <p class="pickup-terms"><strong style="color:#fff">Free pickup &amp; drop</strong> across our ${AREAS.coveredPins.length} confirmed Indore PIN codes, subject to booking confirmation. <a href="pickup-drop.html">Check your PIN</a>.</p>
-      ${photo("workshop-hero", { cls: "hero-art", eager: true, sizes: "(max-width: 960px) calc(100vw - 40px), 520px" })}
     </div>
-    <div class="hero-service-column"><div class="jobcard reveal" id="estimate" data-estimator><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>${workshopSlider()}</div>
+    <div class="jobcard reveal" id="estimate" data-estimator><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
+    ${workshopSlider()}
   </div>
 </section>
 

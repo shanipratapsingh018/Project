@@ -1,21 +1,14 @@
 {
-  "version": "1.8.1",
+  "version": "1.9.0",
   "date_ist": "2026-10-31",
   "validation": {
     "npm test": "passed: 276 approved rate figures and 41 unit/server/build checks",
-    "npm run test:browser": "passed: all 22 pages at mobile and desktop sizes and existing booking/estimator/gallery interactions",
-    "npm run test:gallery": "passed: 183 checks at 320, 390, 768, 1024, 1366 and 1920 pixels, ten distinct photo assets, complete navigation and wrapping, keyboard, scroll/swipe position, resize, Call Now links and no-JavaScript fallback",
-    "visible image-label audit": "passed on all 21 content pages",
-    "visual review": "passed: homepage slider, mobile slider and gallery card"
+    "npm run test:browser": "passed: all 22 pages on mobile and desktop plus existing estimator/booking/gallery interactions",
+    "npm run test:gallery": "passed: 321 checks including twenty distinct scenes, all navigation, wrapping, keyboard and native swipe, full content width, one slider with no separate hero photo, Home colour consistency across pages and no-JavaScript support",
+    "Home colour audit": "passed: Home, Services, About and Contact share background, text, border and shadow colours",
+    "visual review": "passed: full-width desktop slider and mobile view"
   },
-  "gallery": "Renamed Service Gallery at the same gallery.html URL. Header and nineteen cards include the configured telephone link. Image source kinds remain unchanged.",
-  "carousel": "Ten locally bundled AI-generated service scenes, 800/1600px responsive WebP, lazy loading, no autoplay; native scrolling without JavaScript.",
-  "reviews": "No changes to publication permission or WhatsApp review handoff; no borrowed reviews or ratings added.",
-  "previous_full_suite_version": "1.8.0",
-  "validation_v1.8.1": {
-    "build": "passed: all 22 pages rebuilt",
-    "assets": "passed: 3 local asset/source/font checks",
-    "header checks": "passed: 234 assertions at nine viewport widths across Home, Services and Contact, including Home navigation, active state, icon preservation through Hindi/English switching, new tagline and no horizontal overflow",
-    "visual review": "passed: desktop and mobile header previews"
-  }
+  "photos": "Ten new repair/service scenes added to the existing ten; all twenty are generated illustrations with original source metadata retained.",
+  "layout": "One slider spans both homepage columns below the introduction and calculator. The separate homepage workshop image is removed.",
+  "branding": "Home retains the same orange treatment on all pages; aria-current still identifies the current page."
 }

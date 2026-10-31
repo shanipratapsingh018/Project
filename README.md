@@ -1,16 +1,16 @@
-# Garagewala — Your Car. Our Care. · v1.8.1
+# Garagewala — Your Car. Our Care. · v1.9.0
 
 Live website: https://shanipratapsingh018.github.io/Project/
 
-Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=1.8.1
+Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=1.9.0
 
 The updated website is in **carmechanic-indore/**.
 The original Arduino temp.txt is preserved separately.
 
 ## Download
 
-- [Hosting-ready ZIP](downloads/garagewala-v1.8.1-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
-- [Complete source ZIP](downloads/garagewala-v1.8.1-source.zip) — on GitHub, click **Download raw**.
+- [Hosting-ready ZIP](downloads/garagewala-v1.9.0-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
+- [Complete source ZIP](downloads/garagewala-v1.9.0-source.zip) — on GitHub, click **Download raw**.
 - [Six AI-generated garage photos](downloads/garagewala-ai-garage-photos.zip) — original PNGs in one ZIP; illustrative scenes, not photos of the actual workshop.
 - Or choose **Code → Download ZIP** to download this whole branch.
 
@@ -27,7 +27,7 @@ See [website README](carmechanic-indore/README.md) and [Hindi quick start](carme
 Reviews: https://shanipratapsingh018.github.io/Project/reviews.html#write-review
 
 Opening hours: every day, 7:00 AM–11:30 PM IST.
-The owner-selected AI workshop image is on the homepage and About page.
+The About page keeps its workshop image; the homepage uses one full-width twenty-photo service slider.
 The website review form prepares WhatsApp feedback; the customer must press Send.
 Publication consent is optional, and feedback appears publicly only after the garage checks it.
 
@@ -40,6 +40,6 @@ rating were removed after the owner's correction. Genuine Garagewala feedback is
 
 Validation is recorded in [VALIDATION.json](carmechanic-indore/docs/VALIDATION.json).
 
-Service Gallery: https://shanipratapsingh018.github.io/Project/gallery.html?v=1.8.1
+Service Gallery: https://shanipratapsingh018.github.io/Project/gallery.html?v=1.9.0
 
-The homepage has a ten-photo service slider beneath the calculator; Previous/Next and mobile swipe are supported. Gallery cards include Call Now.
+The homepage has a twenty-photo service slider beneath the calculator; Previous/Next and mobile swipe are supported. Gallery cards include Call Now.

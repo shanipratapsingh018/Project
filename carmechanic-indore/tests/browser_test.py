@@ -269,8 +269,8 @@ with sync_playwright() as p:
     # Bundled illustrations work without third-party image servers.
     import io
     pg.goto(BASE + "index.html"); pg.wait_for_load_state("networkidle")
-    check(pg.locator(".hero-art img").evaluate("e => e.complete && e.naturalWidth > 0"), "Bundled hero illustration loads")
-    check(pg.locator(".hero-art .photo-credit").count() == 0 and "AI-generated" in pg.get_attribute(".hero-art img", "alt"), "Workshop image has accurate alt text without a visible caption")
+    check(pg.locator(".hero-art").count() == 0 and pg.locator("[data-slide]").count() == 20, "Homepage has one twenty-photo slider and no separate image")
+    check("AI-generated" in pg.locator("[data-slide] img").first.get_attribute("alt"), "Slider source metadata is retained in alt text")
     # (b) available: serve a test JPEG for every local photo path
     from PIL import Image
     buf = io.BytesIO(); Image.new("RGB", (1600, 1067), (90, 110, 130)).save(buf, "JPEG"); JPG = buf.getvalue()
@@ -282,8 +282,8 @@ with sync_playwright() as p:
     pp.wait_for_timeout(600); pp.evaluate("window.scrollTo(0,0)")
     loaded = pp.eval_on_selector_all("figure.photo img", "els => els.filter(e => e.complete && e.naturalWidth > 0 && !e.closest('figure').hidden).length")
     total = pp.locator("figure.photo img").count()
-    check(total >= 10 and loaded == total, f"Photos available → all {total} homepage photos display ({loaded} loaded)")
-    check(pp.locator(".hero-art .photo-credit").count() == 0, "Hero photo caption is removed as requested")
+    check(total == 9 and loaded == total, f"Photos available → all {total} homepage photos display ({loaded} loaded)")
+    check(pp.locator(".hero-art").count() == 0, "Separate homepage image is removed as requested")
     pp.screenshot(path=f"{SHOTS}/photos-home-desktop.png", full_page=False)
     pp.goto(BASE + "car-detailing-indore.html"); pp.wait_for_load_state("networkidle")
     check(pp.locator(".page-hero-photo img").is_visible() and pp.locator(".photo-row img").count() == 2, "Detailing page shows hero photo + 2 extra photos")

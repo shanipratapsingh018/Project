@@ -88,5 +88,95 @@
     "height": 941,
     "generated": true,
     "sourceFile": "exec-e290236e-7af5-49ec-ae31-c98abb3612a7.png"
+  },
+  {
+    "id": "brake-pad-repair",
+    "title": "Brake repair",
+    "alt": "AI-generated garage scene: Mechanic replacing front brake pads on a safely lifted car",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-9b29aa3d-405c-4e16-98c2-c02b9164cfbb.png"
+  },
+  {
+    "id": "wheel-balancing",
+    "title": "Wheel balancing",
+    "alt": "AI-generated garage scene: Tyre technician balancing a detached alloy wheel",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-8d1a1a53-b1ee-449b-abb8-fb29760f9334.png"
+  },
+  {
+    "id": "battery-electrical",
+    "title": "Battery & electrical checks",
+    "alt": "AI-generated garage scene: Automotive electrician testing a car battery with a multimeter",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-9974b86f-59c2-43f8-9e5d-fe6c72430f50.png"
+  },
+  {
+    "id": "oil-filter-service",
+    "title": "Engine oil & filter change",
+    "alt": "AI-generated garage scene: Mechanic changing an oil filter beneath a car on a professional lift",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-87637e75-66ff-4462-985d-68655f522b2f.png"
+  },
+  {
+    "id": "clutch-gearbox-work",
+    "title": "Clutch & gearbox repair",
+    "alt": "AI-generated garage scene: Mechanic inspecting a gearbox and clutch on a workshop bench",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-54aa700f-c2f4-4b0a-8a10-b35de615ad4e.png"
+  },
+  {
+    "id": "cooling-system-service",
+    "title": "Cooling system repair",
+    "alt": "AI-generated garage scene: Mechanic inspecting a radiator and cooling hoses",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-f691a6e2-70ec-40aa-9776-928bfd5cecc5.png"
+  },
+  {
+    "id": "injector-service",
+    "title": "Fuel injector cleaning",
+    "alt": "AI-generated garage scene: Technician using a fuel injector testing and cleaning machine",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-1b7000e2-2958-404c-80eb-329493b36302.png"
+  },
+  {
+    "id": "obd-diagnostic-scan",
+    "title": "Computer diagnostics",
+    "alt": "AI-generated garage scene: Technician scanning a parked car through its diagnostic connection",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-865f975f-f8fb-4485-99a6-30722c7d8293.png"
+  },
+  {
+    "id": "interior-detailing",
+    "title": "Interior cleaning",
+    "alt": "AI-generated garage scene: Worker vacuuming and cleaning a car interior",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-f77fd08d-ae48-4735-9fba-dea35fcf6fcc.png"
+  },
+  {
+    "id": "foam-wash-service",
+    "title": "Foam wash & car care",
+    "alt": "AI-generated garage scene: Worker washing a white car with shampoo foam",
+    "width": 1672,
+    "height": 941,
+    "generated": true,
+    "sourceFile": "exec-b71c6e36-0466-4a95-b41c-e153246bdf80.png"
   }
 ]
