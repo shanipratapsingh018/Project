@@ -692,15 +692,15 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
 .card .package-actions [data-call-now] { flex-basis: 100%; }
 .ba-actions [data-call-now] { flex-basis: 100%; }
 
-/* Service photos beneath the homepage calculator. */
-.hero-service-column { min-width: 0; display: grid; gap: 24px; }
+/* One full-width service slider beneath both homepage columns. */
+.hero > .wrap > .service-carousel { grid-column: 1 / -1; width: 100%; }
 .service-carousel { min-width: 0; overflow: hidden; border: 1px solid var(--steel); border-radius: var(--r); background: var(--char-800); }
 .service-carousel-heading { padding: 18px 20px 16px; display: grid; gap: 8px; }
 .service-carousel-heading p { font-size: .92rem; color: var(--fog); }
 .service-slides { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
 .service-slides::-webkit-scrollbar { display: none; }
 .service-slides:focus-visible { outline: 3px solid var(--signal); outline-offset: -3px; }
-.service-slide { flex: 0 0 100%; min-width: 0; margin: 0; position: relative; scroll-snap-align: start; aspect-ratio: 16 / 10; overflow: hidden; }
+.service-slide { flex: 0 0 100%; min-width: 0; margin: 0; position: relative; scroll-snap-align: start; aspect-ratio: 2 / 1; overflow: hidden; }
 .service-slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .service-slide figcaption { position: absolute; inset: auto 0 0; padding: 36px 20px 18px; background: linear-gradient(transparent, rgba(0,0,0,.82)); color: white; font: 600 1.35rem var(--f-display); letter-spacing: .03em; }
 .service-slider-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px; }
@@ -713,9 +713,11 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
 .service-swipe-hint { padding: 12px 20px; font-size: .85rem; color: var(--fog); }
 
 /* Home remains easy to find on every page. */
-.nav a.nav-home { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 12px; border: 1px solid rgba(255,139,66,.5); border-radius: 999px; background: rgba(255,107,26,.08); color: #ffb07b; font-weight: 600; transition: background .15s, border-color .15s, box-shadow .15s; }
+.nav a.nav-home { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 12px; border: 1px solid #ffab72; border-radius: 999px; background: linear-gradient(135deg, #ff9a4c, #ff6b1a); color: #241004; box-shadow: 0 3px 14px rgba(255,107,26,.2), inset 0 1px 0 rgba(255,255,255,.25); font-weight: 600; }
 .nav-home svg { width: 18px; height: 18px; flex: none; }
-.nav a.nav-home:hover { background: rgba(255,107,26,.18); border-color: #ff9a58; color: #fff; }
+.nav a.nav-home:hover { background: linear-gradient(135deg, #ff9a4c, #ff6b1a); border-color: #ffab72; color: #241004; }
 .nav a.nav-home[aria-current="page"] { background: linear-gradient(135deg, #ff9a4c, #ff6b1a); color: #241004; border-color: #ffab72; box-shadow: 0 3px 14px rgba(255,107,26,.2), inset 0 1px 0 rgba(255,255,255,.25); }
 .nav a.nav-home:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 @media (max-width: 1180px) { .nav a.nav-home { align-self: flex-start; justify-content: flex-start; min-height: 44px; min-width: 116px; padding: 10px 16px; } }
+
+@media (max-width: 640px) { .service-slide { aspect-ratio: 4 / 3; } }
