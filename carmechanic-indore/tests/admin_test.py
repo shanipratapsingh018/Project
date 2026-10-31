@@ -23,7 +23,7 @@ try:
         ctx=browser.new_context(viewport={'width':1366,'height':900})
         errors=[];writes=[];requests=[]
         ctx.on('page',lambda pg:pg.on('pageerror',lambda err:errors.append(str(err))))
-        pg=ctx.new_page();pg.goto(base+'admin/index.html');expect(pg.get_by_text('Your workspace is ready to connect.')).to_be_visible()
+        pg=ctx.new_page();pg.route('**/assets/js/backend-config.js*',lambda route:route.fulfill(content_type='text/javascript',body='window.GW_BACKEND={url:"",publishableKey:"",bookingEnabled:false};'));pg.goto(base+'admin/index.html');expect(pg.get_by_text('Your workspace is ready to connect.')).to_be_visible()
         check(pg.locator('input[type=password]').count()==0,'Unconnected admin fails closed without a fake login')
         pg.screenshot(path=str(OUT/'setup-desktop.png'),full_page=True);pg.close()
         state={'owner':True,'fail':False}

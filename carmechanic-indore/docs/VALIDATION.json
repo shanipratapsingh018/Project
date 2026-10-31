@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.1",
   "date_ist": "2026-10-31",
   "validation": {
     "npm test": "passed: 276 approved rate figures and 41 unit/server/build checks",
@@ -51,5 +51,16 @@
     "dependency_audit": "npm audit --omit=dev: 0 vulnerabilities at verification",
     "live_backend": "not connected: owner project URL, public key and owner account are pending; no live Auth, email, Storage or Edge Function has been verified",
     "deployment_mode": "public static admin setup screen; website bookings remain WhatsApp until explicitly enabled"
+  },
+  "validation_v2.0.1": {
+    "public_configuration": "supplied project URL and publishable key configured; format checked; bookingEnabled remains false",
+    "public_unit": "passed: 276 approved rate figures and 41 unit/server/build checks",
+    "admin_unit": "passed: 9 tests",
+    "admin_browser": "passed: 23 checks with fictional mocked HTTP responses; unconfigured fixture now explicitly clears connection settings",
+    "public_reliability": "passed: 41 checks",
+    "schema": "unchanged from v2.0.0; combined initial setup script generated from the two reviewed migration files",
+    "live_supabase_verification": "not completed: environment proxy rejected CONNECT to the project host with HTTP 403; no Supabase API response was obtained",
+    "activation": "owner must run database migrations, create an Auth user and grant owner membership; public key cannot perform project administration",
+    "privacy": "owner email/password excluded from public website files"
   }
 }

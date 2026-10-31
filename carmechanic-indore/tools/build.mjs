@@ -19,7 +19,7 @@ const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const WORKSHOP_PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "workshop-photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "2.0.0";
+const VERSION = "2.0.1";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;

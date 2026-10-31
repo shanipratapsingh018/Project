@@ -1,4 +1,4 @@
-# Garagewala — Your Car. Our Care. · v2.0.0
+# Garagewala — Your Car. Our Care. · v2.0.1
 
 A ready-to-run static garage website branded **Garagewala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
@@ -22,7 +22,7 @@ No `npm install`, framework, database, API key or external font/image server is 
 Open the address printed by the command in your browser. `PORT=9090 npm start` changes
 the port; use `HOST=0.0.0.0` only when deliberately exposing your development server.
 
-This describes the public website. The new private owner workspace requires a Supabase project; its built interface is included, with connection settings empty by default.
+This describes the public website. The new private owner workspace requires a Supabase project; the owner's public project URL/key are configured, and database/account activation remains pending.
 
 ## Private owner workspace
 
@@ -31,8 +31,10 @@ It includes customers and vehicles, manual and website enquiries, job cards and 
 private job attachments, itemised invoices, printing/Save as PDF, payment records and billing settings.
 Owner membership is checked by database policies. Invoice amounts and payment balances are checked by SQL functions.
 
-**Backend activation is pending.** Until the owner connects their own project, the admin shows a setup screen,
-and website bookings continue through WhatsApp. No fake password or customer database is supplied.
+**Backend activation is pending.** Public connection settings point to project `oraooxeefxcwmwgycrei`,
+and the admin shows its login form. The owner must complete the database migrations, create an Auth user
+and grant owner membership in Supabase before login can access private records. Website bookings continue
+through WhatsApp. No fake password or customer database is supplied.
 Follow [the admin setup guide](docs/ADMIN_SETUP.md) for migrations, owner creation and optional booking intake.
 Only the project URL and public publishable/anon key belong in `backend-config.js`; never include a secret key.
 
