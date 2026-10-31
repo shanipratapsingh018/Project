@@ -482,7 +482,7 @@
         </figure>`).join("");
     });
     $$("[data-google-review]").forEach((a) => {
-      const googleUrl = RV.googleReviewUrl || RV.googleProfileUrl;
+      const googleUrl = RV.googleReviewUrl || RV.googleProfileUrl || B.googleBusinessProfileUrl;
       if (googleUrl && /^https:\/\//i.test(googleUrl)) {
         a.href = googleUrl;
         a.textContent = RV.googleReviewUrl ? "Review on Google" : "Garagewala on Google";
