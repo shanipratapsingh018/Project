@@ -1,0 +1,4 @@
+project_id = "garagewala"
+
+[functions.submit-booking]
+verify_jwt = false

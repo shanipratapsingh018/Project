@@ -1,5 +1,5 @@
 {
-  "version": "1.9.4",
+  "version": "2.0.0",
   "date_ist": "2026-10-31",
   "validation": {
     "npm test": "passed: 276 approved rate figures and 41 unit/server/build checks",
@@ -40,5 +40,16 @@
     "anchors": "passed within compact-header checks: calculator and review sections start within 40px of viewport top without oversized sticky offsets",
     "expanded mobile menu": "passed: menu participates in normal document flow, scrolls fully away and Contact navigation works at three viewport sizes",
     "visual review": "passed: compact desktop header and scrolled page previews"
+  },
+  "validation_v2.0.0": {
+    "public_unit": "passed: 276 approved rate figures and 41 unit/server/build checks",
+    "public_browser": "passed: all 22 pages on desktop/mobile, estimator, booking, reviews, gallery, links and responsive layout",
+    "public_reliability": "passed: 41 checks; default WhatsApp booking preserved",
+    "admin_unit": "passed: 9 tests covering paise, GST rounding, escaping, connection-key checks, intake validation, origin/body limits and booking bridge",
+    "admin_database": "passed: 49 checks against isolated PostgreSQL 16 with stubbed Supabase roles/Auth/Storage; owner isolation, private objects, invoices, GST, snapshots, concurrent numbering/payments, booking rate limits and idempotency",
+    "admin_browser": "passed: 23 checks with fictional mocked Supabase responses; login/non-owner denial, forms, failed saves, XSS escaping, invoice printing, payment retries, memory-only sessions, owner recovery, responsive layout and public booking retries",
+    "dependency_audit": "npm audit --omit=dev: 0 vulnerabilities at verification",
+    "live_backend": "not connected: owner project URL, public key and owner account are pending; no live Auth, email, Storage or Edge Function has been verified",
+    "deployment_mode": "public static admin setup screen; website bookings remain WhatsApp until explicitly enabled"
   }
 }

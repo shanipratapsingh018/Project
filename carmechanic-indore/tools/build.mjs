@@ -19,7 +19,7 @@ const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const WORKSHOP_PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "workshop-photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "1.9.4";
+const VERSION = "2.0.0";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -199,7 +199,7 @@ ${body}
     </div>
     <div><h4>Services</h4><ul>${SERVICE_PAGES.map((p) => `<li><a href="${p.file}">${esc(p.nav)}</a></li>`).join("")}</ul></div>
     <div><h4>Customers</h4><ul><li><a href="index.html">Home</a></li><li><a href="estimate.html">Cost calculator</a></li><li><a href="booking.html">Book a service</a></li><li><a href="gallery.html">Service Gallery</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="pickup-drop.html">Pickup &amp; drop areas</a></li><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact</a></li><li><a href="index.html#faq">FAQs</a></li></ul></div>
-    <div><h4>Policies</h4><ul><li><a href="terms.html">Terms & conditions</a></li><li><a href="privacy.html">Privacy policy</a></li><li><a href="policies.html">Cancellation, pickup & billing</a></li></ul></div>
+    <div><h4>Policies</h4><ul><li><a href="terms.html">Terms & conditions</a></li><li><a href="privacy.html">Privacy policy</a></li><li><a href="policies.html">Cancellation, pickup & billing</a></li><li><a href="admin/index.html">Owner login</a></li></ul></div>
     <p class="fine">© <span data-year>${new Date().getFullYear()}</span> ${esc(B.name)}. Independent multi-brand garage; not affiliated with any car manufacturer. Brand names are used only to identify vehicles we service.</p>
   </div>
 </footer>
@@ -211,6 +211,8 @@ ${body}
 </nav>
 <script src="assets/js/rate-card.js?v=${VERSION}"></script>
 <script src="assets/js/config.js?v=${VERSION}"></script>
+<script src="assets/js/backend-config.js?v=${VERSION}"></script>
+<script src="assets/js/booking-backend.js?v=${VERSION}"></script>
 <script src="assets/js/pricing.js?v=${VERSION}"></script>
 <script src="assets/js/price-table.js?v=${VERSION}"></script>
 <script src="assets/js/service-areas.js?v=${VERSION}"></script>
@@ -703,7 +705,7 @@ const privacy = legalPage("privacy.html", "Privacy Policy | Garagewala", "Privac
   ["How it's used", `<p>To contact you about your enquiry, arrange pickup and service, and send your quotation and bill. Feedback you send through the review form is used to respond to your experience. Your display name, rating, car model, service and feedback are published only if you choose the optional publication permission and the garage approves the review. Private feedback is not published.</p>`],
   ["WhatsApp", `<p>If you use the WhatsApp buttons, your message is sent through WhatsApp and is subject to WhatsApp's own privacy policy.</p>`],
   ["Images", `<p>Images and fonts are served with this website. Stock photos, where used, are credited. External services such as WhatsApp or Google receive connection information when you follow their links.</p>`],
-  ["Storage", `<p>The cost estimator runs in your browser. Booking details you send are kept only as long as needed for your service and records.</p>${PH("The estimator temporarily keeps its booking handoff in session storage in this browser tab; closing the tab clears that session. Language preference is saved locally. In the default WhatsApp mode, no booking API is called. If a booking API is enabled, your submitted details are sent to that service; ask the garage about its storage and retention policy.")}`],
+  ["Storage", `<p>The cost estimator runs in your browser. Booking details you send are kept only as long as needed for your service and records.</p><p>The estimator temporarily keeps its booking handoff in session storage in this browser tab; closing the tab clears that session. Language preference is saved locally. In the default WhatsApp mode, no booking API is called. If online booking storage is enabled, submitted contact, vehicle and service details are stored in Garagewala's private Supabase database for authorised owner access. Private job files and billing records may also be stored there. Technical request identifiers and short-lived rate limits help prevent duplicate requests and abuse. Contact the garage about access, correction, deletion and record retention; billing records may need to be retained for legal requirements.</p>`],
   ["Your choices", `<p>Ask us at any time to see or delete the details we hold about you by contacting <span data-phone>${esc(B.phoneDisplay)}</span>.</p>`]
 ], "How Garagewala handles customer data from estimates and bookings.");
 const policies = legalPage("policies.html", "Cancellation, Pickup & Billing Policy | Garagewala", "Cancellation, pickup & billing", [
@@ -817,6 +819,6 @@ ${indexable.map((f) => `  <url><loc>${esc(url(f))}</loc><lastmod>${today}</lastm
 </urlset>
 `);
 if (!siteUrl && existsSync(join(ROOT, "sitemap.xml"))) unlinkSync(join(ROOT, "sitemap.xml"));
-writeFileSync(join(ROOT, "robots.txt"), siteUrl ? `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n` : "User-agent: *\nDisallow: /\n");
+writeFileSync(join(ROOT, "robots.txt"), siteUrl ? `User-agent: *\nAllow: /\nDisallow: /Project/admin/\nDisallow: /admin/\n\nSitemap: ${siteUrl}/sitemap.xml\n` : "User-agent: *\nDisallow: /\n");
 if (!siteUrl) console.log("Preview build: indexing disabled until SITE_URL or business.siteUrl is set to your HTTPS domain.");
 console.log("Built " + Object.keys(pages).length + " pages + " + (siteUrl ? "sitemap.xml + " : "") + "robots.txt into public/");

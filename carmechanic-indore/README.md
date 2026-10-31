@@ -1,4 +1,4 @@
-# Garagewala — Your Car. Our Care. · v1.9.4
+# Garagewala — Your Car. Our Care. · v2.0.0
 
 A ready-to-run static garage website branded **Garagewala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
@@ -21,6 +21,24 @@ npm start
 No `npm install`, framework, database, API key or external font/image server is required.
 Open the address printed by the command in your browser. `PORT=9090 npm start` changes
 the port; use `HOST=0.0.0.0` only when deliberately exposing your development server.
+
+This describes the public website. The new private owner workspace requires a Supabase project; its built interface is included, with connection settings empty by default.
+
+## Private owner workspace
+
+Open https://shanipratapsingh018.github.io/Project/admin/ or the **Owner login** link in the footer.
+It includes customers and vehicles, manual and website enquiries, job cards and customer approval,
+private job attachments, itemised invoices, printing/Save as PDF, payment records and billing settings.
+Owner membership is checked by database policies. Invoice amounts and payment balances are checked by SQL functions.
+
+**Backend activation is pending.** Until the owner connects their own project, the admin shows a setup screen,
+and website bookings continue through WhatsApp. No fake password or customer database is supplied.
+Follow [the admin setup guide](docs/ADMIN_SETUP.md) for migrations, owner creation and optional booking intake.
+Only the project URL and public publishable/anon key belong in `backend-config.js`; never include a secret key.
+
+To rebuild admin assets, use Node.js 22+ and run `npm ci --ignore-scripts` then `npm run build`
+inside `admin-app/`. The root static server needs no npm install. Tests include fictional mocked browser data
+and isolated PostgreSQL checks; live Supabase service configuration remains to be verified after activation.
 
 ## Deploy
 

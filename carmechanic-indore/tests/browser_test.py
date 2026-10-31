@@ -245,7 +245,7 @@ with sync_playwright() as p:
             if target and not os.path.exists(os.path.join(ROOT, target)): missing.add(f"{f} → {h}")
         if not pg.locator('.nav a[href="index.html"]').count() or not pg.locator('a.brand[href="index.html"]').count(): nohome.append(f)
         if f not in ("index.html", "404.html") and not pg.locator(".back-home").count(): nohome.append(f + " (no back-to-home)")
-        imgs = pg.eval_on_selector_all("main img", "els => els.map(e => [e.getAttribute('src'), e.complete && e.naturalWidth > 0, (e.getAttribute('alt')||'').length])")
+        imgs = pg.eval_on_selector_all('main img:not([aria-hidden="true"])', "els => els.map(e => [e.getAttribute('src'), e.complete && e.naturalWidth > 0, (e.getAttribute('alt')||'').length])")
         for src, ok, alt in imgs:
             if alt < 10: badimg.append(f"{f}: {src} alt too short")
         for wa in pg.eval_on_selector_all("a[href*='wa.me']", "els => els.map(e => e.href)"):
