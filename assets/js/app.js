@@ -485,7 +485,7 @@
       const googleUrl = RV.googleReviewUrl || RV.googleProfileUrl || B.googleBusinessProfileUrl;
       if (googleUrl && /^https:\/\//i.test(googleUrl)) {
         a.href = googleUrl;
-        a.textContent = RV.googleReviewUrl ? "Review on Google" : "Garagewala on Google";
+        a.textContent = RV.googleReviewUrl ? "Review on Google" : "Car Repair Wala on Google";
         a.target = "_blank"; a.rel = "noopener";
         a.hidden = false;
       }
@@ -516,7 +516,7 @@
         `Car: ${f.elements.car.value.trim() || "Not specified"}`,
         `Service: ${f.elements.service.value || "Not specified"}`,
         `My experience: ${text}`,
-        `Permission to publish display name, rating, car model, service and feedback on the Garagewala website: ${permission ? "YES" : "NO — private feedback only"}`].join("\n");
+        `Permission to publish display name, rating, car model, service and feedback on the Car Repair Wala website: ${permission ? "YES" : "NO — private feedback only"}`].join("\n");
       out.innerHTML = `<div class="notice"><strong>Ready to send — your feedback has not been sent yet.</strong><p>Open WhatsApp and press Send to deliver it to the garage. ${permission ? "Your review can be published after the garage checks it." : "You chose private feedback. It will not be published on the website."}</p><a class="btn btn--wa" data-review-send target="_blank" rel="noopener" href="${esc(waUrl(message))}">Open WhatsApp to send ${ICON.wa}</a></div>`;
       out.hidden = false;
       out.scrollIntoView({ block: "nearest", behavior: "smooth" });
