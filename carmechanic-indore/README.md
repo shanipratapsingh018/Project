@@ -1,6 +1,6 @@
-# Garagewala — Nice Car Mechanic · v1.8.0
+# Garagewala — Your Car. Our Care. · v1.8.1
 
-A ready-to-run static garage website branded **Garagewala · Nice Car Mechanic**: 22 responsive pages, 69-service price list,
+A ready-to-run static garage website branded **Garagewala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
 and rebuilding; a static hosting provider needs only the included `public/` files.
 

@@ -19,7 +19,7 @@ const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const WORKSHOP_PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "workshop-photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "1.8.0";
+const VERSION = "1.8.1";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -176,7 +176,7 @@ ${sprite}
   <div class="wrap">
     <a class="brand" href="index.html" aria-label="${esc(B.name)} home">${LOGO}${WORDMARK}</a>
     <button class="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">${ic("menu")}</button>
-    <nav class="nav" id="site-nav" aria-label="Main">${NAV.map(([h, l, k]) => `<a href="${h}" data-i18n="${k}"${navKey === h ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>
+    <nav class="nav" id="site-nav" aria-label="Main">${NAV.map(([h, l, k]) => `<a href="${h}"${h === "index.html" ? ' class="nav-home"' : ` data-i18n="${k}"`}${navKey === h ? ' aria-current="page"' : ""}>${h === "index.html" ? `${ic("home")}<span data-i18n="${k}">${l}</span>` : l}</a>`).join("")}</nav>
     <div class="header-actions">
       <button class="lang-toggle" type="button">हिंदी</button>
       <a class="btn btn--sm btn--ghost" href="tel:${B.phoneE164}" data-tel aria-label="Call ${esc(B.phoneDisplay)}">${ic("phone")}</a>
@@ -571,7 +571,7 @@ function servicesHub() {
     <div class="ticket-top"><span>GOOD TO GO.</span>${ic("wrench")}</div>
     <div class="ticket-art"><img src="assets/img/gallery/samples/engine-oil-change-after.jpg" width="800" height="600" alt="Illustrative example of a clean car engine after an oil service"></div>
     <div class="ticket-copy"><span class="eyebrow">A better garage experience</span><h2>Your car.<br>Our kind of work.</h2><div class="ticket-stats"><div><strong>${C.services.length}</strong><span>service options</span></div><div><strong>${C.categories.length}</strong><span>car categories</span></div><div>${ic("receipt")}<span>A quote<br>before repairs</span></div></div></div>
-    <div class="ticket-bottom">NICE CAR MECHANIC <span>·</span> GARAGEWALA</div>
+    <div class="ticket-bottom">YOUR CAR. OUR CARE. <span>·</span> GARAGEWALA</div>
   </aside>
 </div></section>
 <section class="care-section"><div class="wrap"><div class="service-section-heading"><div><span class="eyebrow">Start with the essentials</span><h2>Make maintenance<br>a good habit.</h2></div><p>Three levels of everyday care. Choose your car category below to compare estimates for these packages and every service.</p></div><div class="care-packages">${bundles}</div><p class="package-price-note">Indicative ranges for petrol cars with standard parts. Taxes as per final bill. Final quote after inspection.</p></div></section>
@@ -589,7 +589,7 @@ function servicesHub() {
   <div class="services-quote-band"><div>${ic("chat")}<h3>A strange noise? A warning light?</h3><p>You don’t need to know the repair name. Tell us what’s happening and we’ll help with the next step.</p></div><a class="btn btn--wa" data-wa="Help choosing a car service" href="https://wa.me/${B.whatsapp}">${ic("wa")}Talk to a mechanic</a></div>
 </div></section>
 </div>${ctaBand()}`;
-  return layout({ file: "services.html", title: `Car Services & Prices in Indore | ${B.name}`, desc: "Explore Garagewala car services, compare transparent price ranges, and find the right maintenance or repair for your car in Indore. Nice Car Mechanic.", body, ld: [offerLd], navKey: "services.html" });
+  return layout({ file: "services.html", title: `Car Services & Prices in Indore | ${B.name}`, desc: "Explore Garagewala car services, compare transparent price ranges, and find the right maintenance or repair for your car in Indore. Your Car. Our Care.", body, ld: [offerLd], navKey: "services.html" });
 }
 
 function bookingPage() {

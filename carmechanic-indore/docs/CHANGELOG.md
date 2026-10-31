@@ -1,3 +1,9 @@
+# v1.8.1 — Home navigation and brand tagline
+
+- Home navigation has a house icon, rounded orange treatment, active state, hover and keyboard focus styles.
+- The icon stays intact when switching English/Hindi; the mobile menu keeps a touch-sized Home control.
+- Garagewala's tagline is now Your Car. Our Care. · Indore in the header/footer and service-page brand copy.
+
 # v1.8.0 — Service Gallery and ten-photo carousel
 
 - Renamed Before & After to Service Gallery across navigation, footer, page title and homepage, removing the unsupported Real Car Transformations heading.
