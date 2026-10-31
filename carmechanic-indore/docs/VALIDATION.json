@@ -1,5 +1,5 @@
 {
-  "version": "1.9.2",
+  "version": "1.9.3",
   "date_ist": "2026-10-31",
   "validation": {
     "npm test": "passed: 276 approved rate figures and 41 unit/server/build checks",
@@ -25,5 +25,12 @@
     "short mobile screen": "passed: menu scroll and Contact navigation at 390x480",
     "anchor checks": "passed: calculator and review sections remain below the header at 390, 1121 and 1366px widths",
     "visual review": "passed: large-label light navigation rail and single-column mobile panel"
+  },
+  "validation_v1.9.3": {
+    "build": "passed: 22 pages rebuilt",
+    "local assets": "passed: 3 asset/source/font checks including reused logo backgrounds",
+    "branding checks": "passed: 417 checks across ten viewport widths and Home, About, Gallery and Contact; large logos, wordmark bounds, masthead above menu, decorative watermarks, footer layout, section anchors and short-screen navigation",
+    "utility links": "passed: Book and brand Home links at 320, 390 and 1366px",
+    "visual review": "passed: large desktop masthead, mobile masthead and About logo card"
   }
 }

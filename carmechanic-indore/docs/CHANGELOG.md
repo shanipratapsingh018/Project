@@ -1,3 +1,11 @@
+# v1.9.3 — Wide brand masthead and repeated logo
+
+- Garagewala is centred in a large, widely spaced masthead above the full menu, with a larger undistorted logo.
+- Added large footer branding and an About-page logo card.
+- Added faint decorative watermarks to hero backgrounds, service photos and the footer; decorations do not intercept clicks.
+- Updated mobile controls, scrollable navigation and sticky-header anchor spacing.
+- HTML logos, CSS watermarks and favicon share the unchanged logo URL for cache reuse.
+
 # v1.9.2 — Spacious navigation
 
 - Replaced the compact dark menu tiles with a light full-width navigation rail below the brand row.

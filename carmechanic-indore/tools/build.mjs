@@ -19,7 +19,7 @@ const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const WORKSHOP_PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "workshop-photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "1.9.2";
+const VERSION = "1.9.3";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -104,9 +104,9 @@ ${Object.entries(P).map(([k, d]) => `<symbol id="i-${k}" viewBox="0 0 24 24" fil
 <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8Z"/></symbol></defs></svg>`;
 const ic = (n, cls = "") => `<svg viewBox="0 0 24 24" ${cls ? `class="${cls}" ` : ""}aria-hidden="true"><use href="#i-${n}"/></svg>`;
 
-const LOGO = `<img class="brand-logo" src="assets/img/garagewala-logo.png?v=${VERSION}" alt="" width="48" height="48" aria-hidden="true">`;
+const LOGO = `<img class="brand-logo" src="assets/img/garagewala-logo.png" alt="" width="48" height="48" aria-hidden="true">`;
 const WORDMARK = `<span class="brand-copy"><span class="brand-name">Garage<span>wala</span></span><span class="brand-sub">${esc(B.tagline)}</span></span>`;
-const FAVICON = `assets/img/garagewala-logo.png?v=${VERSION}`;
+const FAVICON = "assets/img/garagewala-logo.png";
 
 /* ------------------------------ Layout ------------------------------ */
 const NAV = [
@@ -175,7 +175,7 @@ ${sprite}
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="index.html" aria-label="${esc(B.name)} home">${LOGO}${WORDMARK}</a>
-    <button class="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">${ic("menu")}</button>
+    <button class="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">${ic("menu")}<span>Menu</span></button>
     <nav class="nav" id="site-nav" aria-label="Main">${NAV.map(([h, l, k, icon]) => `<a href="${h}" class="nav-button${h === "index.html" ? " nav-home" : ""}"${navKey === h ? ' aria-current="page"' : ""}>${ic(icon)}<span data-i18n="${k}">${l}</span></a>`).join("")}</nav>
     <div class="header-actions">
       <button class="lang-toggle" type="button">हिंदी</button>
@@ -783,6 +783,7 @@ function aboutPage() {
     <p>For our workshop location, current opening hours and appointment availability, <a href="contact.html">contact us before visiting</a>.</p>
   </div>
   <div style="display:grid;gap:18px;align-content:start">
+    <div class="brand-stamp">${LOGO}${WORDMARK}</div>
     <div class="why" style="grid-template-columns:minmax(0,1fr)">
       <div>${ic("receipt")}<h3>Estimate first</h3><p>See the likely cost before you book.</p></div>
       <div>${ic("shield")}<h3>Your approval</h3><p>No extra work without your OK.</p></div>
