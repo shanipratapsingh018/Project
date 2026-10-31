@@ -1,4 +1,4 @@
-/* Public Supabase booking connection. Disabled until the owner completes setup. */
+/* Public Supabase booking connection. Enabled after owner deployment testing. */
 (function () {
   'use strict';
   var config=window.GW_BACKEND;
