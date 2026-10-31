@@ -1,5 +1,5 @@
 {
-  "version": "1.9.1",
+  "version": "1.9.2",
   "date_ist": "2026-10-31",
   "validation": {
     "npm test": "passed: 276 approved rate figures and 41 unit/server/build checks",
@@ -17,5 +17,13 @@
     "local assets": "passed: 3 asset/source/font checks",
     "menu checks": "passed: 264 checks at ten viewport widths across Home, Services and About plus all seven link destinations on mobile and desktop, including translated text, preserved icons, actual keyboard focus, selected-page semantics, touch sizes, bounds and no overflow",
     "visual review": "passed: desktop and two-column mobile navigation"
+  },
+  "validation_v1.9.2": {
+    "build": "passed: all 22 pages rebuilt",
+    "local assets": "passed: 3 asset/source/font checks",
+    "navigation checks": "passed: 256 checks at eleven viewport widths, all destinations on desktop/mobile, selected-page state, icon preservation, language switching, keyboard focus and no overflow",
+    "short mobile screen": "passed: menu scroll and Contact navigation at 390x480",
+    "anchor checks": "passed: calculator and review sections remain below the header at 390, 1121 and 1366px widths",
+    "visual review": "passed: large-label light navigation rail and single-column mobile panel"
   }
 }

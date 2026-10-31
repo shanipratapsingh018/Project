@@ -1,4 +1,4 @@
-# Garagewala — Your Car. Our Care. · v1.9.1
+# Garagewala — Your Car. Our Care. · v1.9.2
 
 A ready-to-run static garage website branded **Garagewala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving

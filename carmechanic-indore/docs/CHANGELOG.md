@@ -1,3 +1,10 @@
+# v1.9.2 — Spacious navigation
+
+- Replaced the compact dark menu tiles with a light full-width navigation rail below the brand row.
+- Larger labels, clearer icons, restrained borders, orange Home and selected-page highlights.
+- Mobile uses a readable single-column panel with direction arrows and bounded scrolling.
+- All navigation, language and keyboard behaviour remains available.
+
 # v1.9.1 — Icon button navigation
 
 - All seven main menu links are rounded icon buttons with charcoal/orange styling, hover and keyboard focus states.
