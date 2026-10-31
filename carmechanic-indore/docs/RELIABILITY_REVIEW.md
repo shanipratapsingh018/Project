@@ -31,7 +31,7 @@ self-contained delivery, honest customer content and basic deployment behavior.
 
 The owner clarified that the earlier Google review screenshots belonged to another garage.
 Both excerpts, the aggregate rating and the screenshot-permission bypass have been removed.
-The website invites genuine Garagewala feedback. The owner supplied the current Google
+The website invites genuine Car Repair Wala feedback. The owner supplied the current Google
 Business sharing link, https://share.google/WnVvAG5hBsKbOV8j9, and copied the complete
 shop address into the chat: Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road,
 Pawan Putra Nagar, Indore, Madhya Pradesh 452012. Both are connected across the public site.

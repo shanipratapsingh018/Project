@@ -1,9 +1,9 @@
-# Garagewala — Your Car. Our Care. · v2.1.0
+# Car Repair Wala — Your Car. Our Care. · v2.2.0
 
 Live website: https://shanipratapsingh018.github.io/Project/
 Services page: https://shanipratapsingh018.github.io/Project/services.html
 
-Naya version kholne ke liye URL ke end mein `?v=2.1.0` laga sakte ho.
+Naya version kholne ke liye URL ke end mein `?v=2.2.0` laga sakte ho.
 GitHub Pages static website hai; live update `gh-pages` branch par push hone ke baad automatically deploy hota hai.
 
 # Website kaise chalayein
@@ -32,7 +32,7 @@ Owner login footer se khulta hai: customers, job cards, invoices aur manual paym
 
 ## Reviews aur Google listing
 
-Doosre garage ke reviews aur unki rating hata di gayi hai. Abhi website genuine Garagewala
+Doosre garage ke reviews aur unki rating hata di gayi hai. Abhi website genuine Car Repair Wala
 customers se feedback maangti hai; Share Your Experience WhatsApp kholta hai.
 
 Address: Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012.
@@ -46,7 +46,7 @@ Invoices ke liye Admin → Settings → Use workshop address par click karein, b
 - Hours: roz subah 7:00 se raat 11:30 (IST).
 - Reviews page par form hai: naam, 1–5 stars, car/service aur feedback. Prepare ke baad WhatsApp mein Send dabana zaroori hai.
 - Publish permission optional hai; private feedback website par publish na karein. Approved, permitted reviews `reviews.js` mein add hote hain.
-- Owner ka Google share link alag "Garagewala on Google" button mein connected hai. Direct Ask for reviews URL milne par `googleReviewUrl` mein add karein.
+- Owner ka Google share link alag "Car Repair Wala on Google" button mein connected hai. Direct Ask for reviews URL milne par `googleReviewUrl` mein add karein.
 
 ## v1.8.0
 

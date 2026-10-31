@@ -1,4 +1,4 @@
-# Garagewala owner workspace · v2.1.0
+# Car Repair Wala owner workspace · v2.2.0
 
 The public connection settings now point to project `oraooxeefxcwmwgycrei`. **Database and owner-account setup still need to be completed and verified** through the owner's Supabase dashboard. The public site continues to use WhatsApp booking by default. Publishing the admin files does not publish customer records. The owner's email and password are not placed in public website files.
 
@@ -110,3 +110,16 @@ The customer vehicle and manual enquiry forms share the searchable make/model,
 year and fuel dropdowns. Missing makes/models can be entered manually; saved
 values outside the catalogue are preserved. This update uses the existing
 vehicle/booking tables. See [vehicle entry](VEHICLE_DROPDOWNS.md).
+
+## Car Repair Wala branding
+
+The public website and admin interface now use **Car Repair Wala**. To apply that
+name to future bills, sign in → Settings → **Use website name**, check the billing
+details confirmation and **Save settings**. Old-brand mentions in the invoice footer
+are updated by the same action while preserving the rest of its wording.
+Issued invoices retain their original supplier snapshots. Existing database and
+private-storage identifiers are kept compatible with stored records and files.
+
+The Google Business Profile link is retained. Change the listing's displayed
+business name through your own Google Business account if it still has the old
+name; website publishing does not edit Google's listing.

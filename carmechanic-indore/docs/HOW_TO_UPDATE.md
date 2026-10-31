@@ -1,4 +1,4 @@
-> v1.7.0: run `npm run build` after content edits. Add only genuine Garagewala customer reviews with owner approval and customer permission. Reviews and ratings from other garages are removed. The location link follows the owner-supplied Google Business Profile; a full-address Maps search is retained as a fallback.
+> v1.7.0: run `npm run build` after content edits. Add only genuine Car Repair Wala customer reviews with owner approval and customer permission. Reviews and ratings from other garages are removed. The location link follows the owner-supplied Google Business Profile; a full-address Maps search is retained as a fallback.
 
 # How to update prices, PIN codes, gallery photos and reviews
 
@@ -64,12 +64,12 @@ Square-ish photos work best: gallery tiles are shown 1:1 and cropped to fill.
 2. Publication permission is **optional and unchecked**. If the message says private feedback,
    do not publish it. All ratings follow the same process; do not redirect unhappy customers
    away from the public-review option.
-3. After checking a genuine Garagewala review and the customer's permission, add an entry:
+3. After checking a genuine Car Repair Wala review and the customer's permission, add an entry:
    `name`, `rating` (1–5), `service`, optional `vehicle` and `date`, `text` (their words),
    `source` (for this form, "Website via WhatsApp"), `isSample: false`, `approved: true`, `consent: true`.
    Remove personal contact details and keep `showSamples: false`.
 4. The owner-supplied Google sharing link is in `config.js → business.googleBusinessProfileUrl`; `googleProfileUrl` is an optional override. The separate Google button
-   is labelled "Garagewala on Google". It is not assumed to open the review composer.
+   is labelled "Car Repair Wala on Google". It is not assumed to open the review composer.
 5. Put an actual Google Business Profile → Ask for reviews URL in `googleReviewUrl` to enable
    the separate "Review on Google" action. Website feedback remains available.
 
@@ -89,7 +89,7 @@ are shown below each picture; source information remains in the manifest and alt
 Use `npm run test:gallery` to check navigation, wrapping, mobile widths and gallery actions.
 The gallery page keeps its `gallery.html` URL and comparison filters under its new name.
 Visible image example labels are removed by owner request; do not change source kinds or
-claim the pictured sample jobs were actually performed at Garagewala.
+claim the pictured sample jobs were actually performed at Car Repair Wala.
 
 In v1.9.0 the homepage slider is a direct child of the hero grid and spans both columns.
 The separate hero photo is removed. Home navigation uses the same orange colour on all pages.

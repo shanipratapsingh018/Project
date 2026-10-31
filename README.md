@@ -1,16 +1,16 @@
-# Garagewala — Your Car. Our Care. · v2.1.0
+# Car Repair Wala — Your Car. Our Care. · v2.2.0
 
 Live website: https://shanipratapsingh018.github.io/Project/
 
-Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=2.1.0
+Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=2.2.0
 
 The updated website is in **carmechanic-indore/**.
 The original Arduino temp.txt is preserved separately.
 
 ## Download
 
-- [Hosting-ready ZIP](downloads/garagewala-v2.1.0-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
-- [Complete source ZIP](downloads/garagewala-v2.1.0-source.zip) — on GitHub, click **Download raw**.
+- [Hosting-ready ZIP](downloads/car-repair-wala-v2.2.0-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
+- [Complete source ZIP](downloads/car-repair-wala-v2.2.0-source.zip) — on GitHub, click **Download raw**.
 - [Six AI-generated garage photos](downloads/garagewala-ai-garage-photos.zip) — original PNGs in one ZIP; illustrative scenes, not photos of the actual workshop.
 - Or choose **Code → Download ZIP** to download this whole branch.
 
@@ -33,7 +33,7 @@ Publication consent is optional, and feedback appears publicly only after the ga
 
 Bookings use WhatsApp by default. The production URL is configured; rebuilding preserves the live GitHub Pages URLs.
 
-Owner workspace: https://shanipratapsingh018.github.io/Project/admin/?v=2.1.0
+Owner workspace: https://shanipratapsingh018.github.io/Project/admin/?v=2.2.0
 
 Customer vehicles and manual enquiries have searchable brand/model dropdowns: 70 brands,
 847 models, year/fuel selection and manual choices for anything missing. Existing saved
@@ -49,12 +49,12 @@ Address: **Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan 
 Google location/profile: https://share.google/WnVvAG5hBsKbOV8j9.
 The address and location link are used on Home, About, Contact, every public-page footer and business structured data.
 The owner supplied the address text; Google sharing hosts could not be opened in this environment.
-Reviews from another garage and their rating remain removed; genuine Garagewala feedback is invited instead.
+Reviews from another garage and their rating remain removed; genuine Car Repair Wala feedback is invited instead.
 For future invoice addresses, use **Admin → Settings → Use workshop address**, review and save.
 [Location maintenance details](carmechanic-indore/docs/GOOGLE_BUSINESS_SETUP.md).
 
 Validation is recorded in [VALIDATION.json](carmechanic-indore/docs/VALIDATION.json).
 
-Service Gallery: https://shanipratapsingh018.github.io/Project/gallery.html?v=2.1.0
+Service Gallery: https://shanipratapsingh018.github.io/Project/gallery.html?v=2.2.0
 
 The homepage has a twenty-photo service slider beneath the calculator; Previous/Next and mobile swipe are supported. Gallery cards include Call Now.

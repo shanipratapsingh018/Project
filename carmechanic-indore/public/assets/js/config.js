@@ -10,8 +10,8 @@
   const RATE_CARD = (typeof module !== "undefined" && module.exports) ? require("./rate-card.js") : root.CMI_RATE_CARD;
   const CONFIG = {
     business: {
-      name: "Garagewala",
-      shortName: "Garagewala",
+      name: "Car Repair Wala",
+      shortName: "Car Repair Wala",
       tagline: "Your Car. Our Care. · Indore",
       city: "Indore",
       timeZone: "Asia/Kolkata",

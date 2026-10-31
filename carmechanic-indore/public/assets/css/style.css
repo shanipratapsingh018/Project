@@ -518,7 +518,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
   .brand svg { width: 30px; height: 30px; }
 }
 
-/* Garagewala: a service menu with clear prices and a recognisable workshop identity. */
+/* Car Repair Wala: a service menu with clear prices and a recognisable workshop identity. */
 .brand-copy { display: grid; gap: 4px; }
 .brand-logo { width: 46px; height: 46px; flex: none; object-fit: contain; }
 .brand-name { font-size: 1.65rem; letter-spacing: .035em; white-space: nowrap; }
@@ -783,11 +783,11 @@ main [id], #write-review, .pl-group { scroll-margin-top: calc(env(safe-area-inse
 .site-header .nav { grid-row: 2; }
 .hero .wrap, .page-hero > .wrap, .site-footer > .wrap { position: relative; z-index: 1; }
 .page-hero, .site-footer { position: relative; isolation: isolate; overflow: hidden; }
-.hero::after, .page-hero::before, .site-footer::before { content: ""; position: absolute; pointer-events: none; z-index: 0; background: url("../img/garagewala-logo.png") center / contain no-repeat; }
+.hero::after, .page-hero::before, .site-footer::before { content: ""; position: absolute; pointer-events: none; z-index: 0; background: url("../img/car-repair-wala-logo.png") center / contain no-repeat; }
 .hero::after { width: clamp(300px, 38vw, 520px); height: clamp(300px, 38vw, 520px); left: -60px; top: 100px; opacity: .065; }
 .page-hero::before { width: clamp(240px, 28vw, 400px); height: clamp(240px, 28vw, 400px); right: 24px; top: -24px; opacity: .075; }
 .site-footer::before { width: 420px; height: 420px; right: -20px; bottom: -30px; opacity: .07; }
-.service-slide::after { content: ""; position: absolute; top: 18px; right: 18px; width: clamp(56px, 8vw, 104px); aspect-ratio: 1; pointer-events: none; background: url("../img/garagewala-logo.png") center / contain no-repeat; opacity: .32; }
+.service-slide::after { content: ""; position: absolute; top: 18px; right: 18px; width: clamp(56px, 8vw, 104px); aspect-ratio: 1; pointer-events: none; background: url("../img/car-repair-wala-logo.png") center / contain no-repeat; opacity: .32; }
 .site-footer .brand { flex-wrap: wrap; gap: 14px; }
 .site-footer .brand-logo { width: 84px; height: 84px; }
 .site-footer .brand-name { font-size: 2.1rem; }
@@ -843,3 +843,5 @@ main [id], #write-review, .pl-group { scroll-margin-top: 16px; }
   .site-header .nav { position: static; inset: auto; grid-column: 1 / -1; grid-row: 3; padding: 8px; max-height: calc(100dvh - 200px); }
   .site-header .nav a.nav-button { min-height: 48px; padding-block: 12px; }
 }
+.brand-stamp .brand-name { font-size: clamp(1.6rem, 5vw, 2.15rem); letter-spacing: .015em; white-space: normal; line-height: 1.1; }
+.site-footer .brand-name { font-size: clamp(1.7rem, 5vw, 2.1rem); white-space: normal; line-height: 1.1; }

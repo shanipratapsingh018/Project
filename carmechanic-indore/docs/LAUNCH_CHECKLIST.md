@@ -13,7 +13,7 @@
 - [ ] Workshop photos (owner's own or licensed) in `assets/img/`
 - [ ] Warranty, payment, cancellation and liability text → terms.html / policies.html placeholders
 - [ ] Confirm whether emergency/breakdown repair is offered (page not created yet)
-- [ ] Collect genuine Garagewala customer reviews with permission; borrowed reviews and their rating were removed
+- [ ] Collect genuine Car Repair Wala customer reviews with permission; borrowed reviews and their rating were removed
 - [ ] Google review link → `reviews.js → googleReviewUrl`
 - [ ] Before/after photos of real jobs (same car, owner consent, plates blurred) → `gallery.js`
 - [ ] Confirm accident repair is offered (page is live) and whether emergency repair is offered (page is off)

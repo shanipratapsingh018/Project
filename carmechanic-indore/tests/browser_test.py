@@ -185,7 +185,7 @@ with sync_playwright() as p:
     # Reviews: genuine customer invitation, no borrowed testimonials
     pg.goto(BASE + "index.html"); pg.wait_for_load_state("networkidle")
     check(pg.locator("#reviews .review").count() == 0 and pg.locator("#reviews .tag--demo").count() == 0, "No reviews from another garage or sample testimonials")
-    check(pg.locator("#reviews [data-review-summary]").is_hidden() and pg.locator("#reviews .review-empty").is_visible(), "No borrowed Google rating; invite genuine Garagewala customers instead")
+    check(pg.locator("#reviews [data-review-summary]").is_hidden() and pg.locator("#reviews .review-empty").is_visible(), "No borrowed Google rating; invite genuine Car Repair Wala customers instead")
     check(pg.get_attribute("#reviews [data-share-review]", "href") == "reviews.html#write-review", "Website reviews link to the customer feedback form")
     check(pg.locator("#before-after .ba-card").count() == 4, "Homepage shows 4-card Before & After preview")
 

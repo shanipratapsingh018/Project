@@ -971,3 +971,4 @@ dialog::backdrop {
   font-size: 0.7rem;
   font-weight: 400;
 }
+.sidebar .brand strong { font-size: 1.02rem; line-height: 1.15; }

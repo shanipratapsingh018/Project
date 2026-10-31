@@ -1,5 +1,5 @@
 {
-  "version": "2.1.0",
+  "version": "2.2.0",
   "date_ist": "2026-10-31",
   "validation": {
     "npm test": "passed: 276 approved rate figures and 41 unit/server/build checks",
@@ -85,5 +85,20 @@
     "scope": "customer vehicle create/edit and manual enquiry create/edit; saved-vehicle labels in job-card/invoice selectors show year and fuel",
     "external_integration": "WhatsApp automation left aside at the owner request; catalogue needs no paid API or live third-party data source",
     "verification_limit": "browser writes used fictional HTTP fixtures, not real customer records; live Supabase is owner-managed"
+  },
+  "validation_v2.2.0": {
+    "brand": "Car Repair Wala",
+    "public_branding": "22 public pages audited: header/footer wordmarks, body copy, titles, SEO/AutoRepair names, image and logo paths contain no old public brand",
+    "customer_flows": "booking greetings, WhatsApp review consent, Google-profile button labels and Hindi branding updated",
+    "admin": "login, sidebar, top bar and print fallback updated; Use website name lets the owner explicitly update private invoice name and default footer",
+    "public_unit": "passed: 276 approved rate figures and 41 unit/server/build checks",
+    "admin_unit": "passed: 13 tests",
+    "admin_browser": "passed: 42 fictional mocked-response checks including explicit billing-name copying/save and historical supplier snapshot preservation",
+    "public_browser": "passed: all 22 pages on mobile/desktop plus existing booking, estimator, gallery and review flows",
+    "reliability": "passed: 41 checks",
+    "services": "passed: 35 checks; stale legacy-tagline expectation corrected to the already approved Your Car. Our Care. tagline",
+    "private_data": "existing private invoice names/records were not silently rewritten; owner Save settings is required for future bills",
+    "external_listing": "Google profile link retained; listing name changes are controlled in the owner Google Business account",
+    "compatibility": "private storage bucket and historical database IDs retained to preserve access to existing records and files"
   }
 }

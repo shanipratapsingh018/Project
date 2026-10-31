@@ -1,6 +1,6 @@
-# Garagewala — Your Car. Our Care. · v2.1.0
+# Car Repair Wala — Your Car. Our Care. · v2.2.0
 
-A ready-to-run static garage website branded **Garagewala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
+A ready-to-run static garage website branded **Car Repair Wala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
 and rebuilding; a static hosting provider needs only the included `public/` files.
 
@@ -152,7 +152,7 @@ adds timeout, duplicate submit, stale estimate, quantity handoff and review-sour
 - Prices: `public/assets/js/rate-card.js`, with reference CSV in `docs/rate-card/`. Run tests and rebuild after edits.
 - Address: Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012, as supplied by the owner. Coordinates have not been supplied.
 - Maps: `googleBusinessProfileUrl` is the current owner-supplied location link. `googleMapsSearchUrl` is a full-address search fallback. No review editor, coordinates or Google verification status is inferred.
-- Reviews: `public/assets/js/reviews.js` is empty. Earlier screenshots were confirmed to belong to another garage and were removed, including their rating. Add only genuine Garagewala customer feedback with approval and publication consent.
+- Reviews: `public/assets/js/reviews.js` is empty. Earlier screenshots were confirmed to belong to another garage and were removed, including their rating. Add only genuine Car Repair Wala customer feedback with approval and publication consent.
 - Photos: included sample illustrations are explicitly labelled. Add your own workshop photos or optionally run
   `npm run photos`, then rebuild. Stock photo credits and open-font licences remain included.
   The default delivered build makes no third-party asset requests.

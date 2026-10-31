@@ -1,4 +1,4 @@
-# Garagewala Google Business location · v2.0.2
+# Car Repair Wala Google Business location · v2.0.2
 
 The owner supplied this shop listing: https://share.google/WnVvAG5hBsKbOV8j9.
 It replaces the earlier sharing link. Google blocks this workspace from opening
@@ -46,3 +46,10 @@ until the owner supplies an actual Google Business Profile **Ask for reviews**
 link. Do not treat a location/profile link as a direct review composer, and do not
 publish another garage's reviews. Website feedback still uses the WhatsApp
 handoff and customer publication permission.
+
+## Brand name update
+
+Website branding is now **Car Repair Wala**. This site update changes the website
+labels and search-engine business data. The Google listing's own displayed name
+is managed through the owner's Google Business account; its verification status
+has not been changed or inferred by this code update.

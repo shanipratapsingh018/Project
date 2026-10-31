@@ -3,7 +3,7 @@
 import { readFile, readdir, writeFile } from "node:fs/promises";
 const directory = new URL("../supabase/migrations/", import.meta.url);
 const files = (await readdir(directory)).filter(name => name.endsWith(".sql")).sort();
-let sql = `-- Garagewala: initial database setup for a NEW Supabase project.
+let sql = `-- Car Repair Wala: initial database setup for a NEW Supabase project.
 -- Target project: oraooxeefxcwmwgycrei
 -- Run in Supabase Dashboard > SQL Editor, as the project administrator.
 -- If the two initial migrations have already succeeded, DO NOT run again.

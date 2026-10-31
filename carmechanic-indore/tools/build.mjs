@@ -19,7 +19,7 @@ const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const WORKSHOP_PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "workshop-photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "2.1.0";
+const VERSION = "2.2.0";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -40,7 +40,7 @@ function photo(id, { cls = "", sizes = "(max-width: 900px) 100vw, 50vw", eager =
   const p = PH_BY[id];
   if (!p) throw new Error("Unknown photo " + id);
   if (p.generated) {
-    return `<figure class="photo ${cls}" data-photo-id="${id}"><img src="assets/img/photos/garagewala-workshop-800.webp" srcset="assets/img/photos/garagewala-workshop-800.webp 800w, assets/img/photos/garagewala-workshop-1600.webp 1600w" sizes="${sizes}" alt="${esc(p.alt)}" width="1672" height="941" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"></figure>`;
+    return `<figure class="photo ${cls}" data-photo-id="${id}"><img src="assets/img/photos/car-repair-wala-workshop-800.webp" srcset="assets/img/photos/car-repair-wala-workshop-800.webp 800w, assets/img/photos/car-repair-wala-workshop-1600.webp 1600w" sizes="${sizes}" alt="${esc(p.alt)}" width="1672" height="941" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"></figure>`;
   }
   const local = (w) => `assets/img/photos/${p.id}-${w}.jpg`;
   if (!existsSync(join(ROOT, local(800))) || !existsSync(join(ROOT, local(1600)))) {
@@ -104,9 +104,9 @@ ${Object.entries(P).map(([k, d]) => `<symbol id="i-${k}" viewBox="0 0 24 24" fil
 <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8Z"/></symbol></defs></svg>`;
 const ic = (n, cls = "") => `<svg viewBox="0 0 24 24" ${cls ? `class="${cls}" ` : ""}aria-hidden="true"><use href="#i-${n}"/></svg>`;
 
-const LOGO = `<img class="brand-logo" src="assets/img/garagewala-logo.png" alt="" width="48" height="48" aria-hidden="true">`;
-const WORDMARK = `<span class="brand-copy"><span class="brand-name">Garage<span>wala</span></span><span class="brand-sub">${esc(B.tagline)}</span></span>`;
-const FAVICON = "assets/img/garagewala-logo.png";
+const LOGO = `<img class="brand-logo" src="assets/img/car-repair-wala-logo.png" alt="" width="48" height="48" aria-hidden="true">`;
+const WORDMARK = `<span class="brand-copy"><span class="brand-name">Car Repair <span>Wala</span></span><span class="brand-sub">${esc(B.tagline)}</span></span>`;
+const FAVICON = "assets/img/car-repair-wala-logo.png";
 
 /* ------------------------------ Layout ------------------------------ */
 const NAV = [
@@ -398,14 +398,14 @@ function hoursText() {
 
 function reviewForm() {
   return `<section class="band" id="write-review"><div class="wrap review-layout">
-  <div class="review-intro"><span class="eyebrow">Your experience matters</span><h2>Write your review</h2><p>Tell us what went well and what we can improve. All star ratings are welcome.</p><p>Fill in your feedback here, then send it to Garagewala on WhatsApp. Reviews appear on this website after the garage checks them and you allow publication.</p><p class="small muted">Please leave out phone numbers, vehicle registration numbers and other private details. <a href="privacy.html">Privacy policy</a></p><a class="btn btn--wa btn--sm" data-feedback-wa href="https://wa.me/${B.whatsapp}">Feedback on WhatsApp</a></div>
+  <div class="review-intro"><span class="eyebrow">Your experience matters</span><h2>Write your review</h2><p>Tell us what went well and what we can improve. All star ratings are welcome.</p><p>Fill in your feedback here, then send it to Car Repair Wala on WhatsApp. Reviews appear on this website after the garage checks them and you allow publication.</p><p class="small muted">Please leave out phone numbers, vehicle registration numbers and other private details. <a href="privacy.html">Privacy policy</a></p><a class="btn btn--wa btn--sm" data-feedback-wa href="https://wa.me/${B.whatsapp}">Feedback on WhatsApp</a></div>
   <div class="review-form-card" data-review-enhanced hidden>
   <form data-review-form>
     <div class="field"><label for="r-name">Display name *</label><input id="r-name" name="name" autocomplete="name" maxlength="60" required placeholder="The name you want shown with your review"></div>
     <fieldset class="review-rating"><legend>Your rating *</legend><div class="review-rating-options">${[1,2,3,4,5].map(n => `<label class="chip"><input type="radio" name="rating" value="${n}" required aria-label="${n} ${n === 1 ? "star" : "stars"}"><span>${n} ★</span></label>`).join("")}</div></fieldset>
     <div class="grid-2"><div class="field"><label for="r-car">Car model (optional)</label><input id="r-car" name="car" maxlength="80" placeholder="e.g. Swift"></div><div class="field"><label for="r-service">Service (optional)</label><select id="r-service" name="service"><option value="">Choose a service</option>${["Car servicing","Engine repair","Suspension & steering","Brakes & clutch","Car AC service","Denting & painting","Car washing & detailing","Other"].map(s => `<option>${esc(s)}</option>`).join("")}</select></div></div>
     <div class="field"><label for="r-text">Your experience *</label><textarea id="r-text" name="experience" minlength="20" maxlength="1500" rows="5" required aria-describedby="r-hint" placeholder="Tell us about the service you received and anything we could improve."></textarea><span class="hint" id="r-hint">20–1,500 characters. Honest feedback of any rating is welcome.</span></div>
-    <label class="review-consent"><input type="checkbox" name="consent"><span>You may publish my display name, rating, car model, service and feedback on the Garagewala website. Leave unchecked to send private feedback only.</span></label>
+    <label class="review-consent"><input type="checkbox" name="consent"><span>You may publish my display name, rating, car model, service and feedback on the Car Repair Wala website. Leave unchecked to send private feedback only.</span></label>
     <p class="small muted">Your review reaches the garage only after you press Send in WhatsApp. It is not posted to Google or published automatically.</p>
     <div class="hero-ctas"><button class="btn" type="submit">Prepare my review ${ic("arrow")}</button><button class="btn btn--outline" type="reset">Clear</button></div>
     <div data-review-result role="status" aria-live="polite" hidden></div>
@@ -420,7 +420,7 @@ function reviewsSection(full = false) {
   <div class="notice" data-review-summary hidden></div>
   <div class="reviews reviews--six" data-reviews></div>
   <div class="share-box"><div><h3>Serviced your car with us?</h3><p>Tell us how it went. With your permission we'll publish your review here.</p></div>
-    <div class="hero-ctas"><a class="btn" data-share-review href="reviews.html#write-review">${ic("star")}Write a website review</a><a class="btn btn--outline" data-google-review ${B.googleBusinessProfileUrl ? `href="${esc(B.googleBusinessProfileUrl)}" target="_blank" rel="noopener noreferrer"` : "hidden"}>${B.googleBusinessProfileUrl ? "Garagewala on Google" : "Review on Google"}</a><a class="btn btn--wa" data-feedback-wa href="https://wa.me/${B.whatsapp}">${ic("wa")}Feedback on WhatsApp</a></div></div>
+    <div class="hero-ctas"><a class="btn" data-share-review href="reviews.html#write-review">${ic("star")}Write a website review</a><a class="btn btn--outline" data-google-review ${B.googleBusinessProfileUrl ? `href="${esc(B.googleBusinessProfileUrl)}" target="_blank" rel="noopener noreferrer"` : "hidden"}>${B.googleBusinessProfileUrl ? "Car Repair Wala on Google" : "Review on Google"}</a><a class="btn btn--wa" data-feedback-wa href="https://wa.me/${B.whatsapp}">${ic("wa")}Feedback on WhatsApp</a></div></div>
   ${full ? "" : `<p style="margin-top:20px"><a href="reviews.html">More about our reviews →</a></p>`}
 </div></section>`;
 }
@@ -498,7 +498,7 @@ function homepage() {
 </div></section>
 
 <section class="band band--dark"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">Why us</span><h2 data-i18n="sec.why">Why choose Garagewala</h2><p>No surprise bills. You see the estimate first, approve the quote, and get every line itemised.</p></div>
+  <div class="section-head"><span class="eyebrow">Why us</span><h2 data-i18n="sec.why">Why choose Car Repair Wala</h2><p>No surprise bills. You see the estimate first, approve the quote, and get every line itemised.</p></div>
   <div class="why">${why}</div>
 </div></section>
 
@@ -533,7 +533,7 @@ ${faqBlock(C.faqs)}
 </div></section>
 ${ctaBand()}`;
   return layout({
-    file: "index.html", title: "Car Service & Repair in Indore | Garagewala",
+    file: "index.html", title: "Car Service & Repair in Indore | Car Repair Wala",
     desc: "Multi-brand car mechanic in Indore. Get an instant car service cost estimate, book on WhatsApp, and pickup & drop in listed areas.",
     body, ld: [faqLd(C.faqs)], navKey: "index.html"
   });
@@ -563,7 +563,7 @@ function servicesHub() {
 <div data-service-explorer>
 <section class="services-hero"><div class="wrap services-hero-layout">
   <div class="services-hero-copy"><p class="crumbs"><a href="index.html">Home</a> / Services &amp; prices</p>
-    <span class="eyebrow">Garagewala service menu · Indore</span>
+    <span class="eyebrow">Car Repair Wala service menu · Indore</span>
     <h1>Good care.<br><span>Clear prices.</span></h1>
     <p>From an oil change to a fresh coat of paint. Find the right care for your car, see the estimate, and approve the quote before we pick up a spanner.</p>
     <div class="hero-ctas"><a class="btn" href="#service-menu">Explore services ${ic("arrow")}</a><a class="services-hero-link" href="estimate.html">Build my estimate ${ic("receipt")}</a></div>
@@ -573,12 +573,12 @@ function servicesHub() {
     <div class="ticket-top"><span>GOOD TO GO.</span>${ic("wrench")}</div>
     <div class="ticket-art"><img src="assets/img/gallery/samples/engine-oil-change-after.jpg" width="800" height="600" alt="Illustrative example of a clean car engine after an oil service"></div>
     <div class="ticket-copy"><span class="eyebrow">A better garage experience</span><h2>Your car.<br>Our kind of work.</h2><div class="ticket-stats"><div><strong>${C.services.length}</strong><span>service options</span></div><div><strong>${C.categories.length}</strong><span>car categories</span></div><div>${ic("receipt")}<span>A quote<br>before repairs</span></div></div></div>
-    <div class="ticket-bottom">YOUR CAR. OUR CARE. <span>·</span> GARAGEWALA</div>
+    <div class="ticket-bottom">YOUR CAR. OUR CARE. <span>·</span> CAR REPAIR WALA</div>
   </aside>
 </div></section>
 <section class="care-section"><div class="wrap"><div class="service-section-heading"><div><span class="eyebrow">Start with the essentials</span><h2>Make maintenance<br>a good habit.</h2></div><p>Three levels of everyday care. Choose your car category below to compare estimates for these packages and every service.</p></div><div class="care-packages">${bundles}</div><p class="package-price-note">Indicative ranges for petrol cars with standard parts. Taxes as per final bill. Final quote after inspection.</p></div></section>
 <section class="service-menu-section" id="service-menu"><div class="wrap">
-  <div class="service-section-heading"><div><span class="eyebrow">The Garagewala service menu</span><h2>What does your car need?</h2></div><a class="service-inline-link" href="estimate.html">Not sure? Build an estimate ${ic("arrow")}</a></div>
+  <div class="service-section-heading"><div><span class="eyebrow">The Car Repair Wala service menu</span><h2>What does your car need?</h2></div><a class="service-inline-link" href="estimate.html">Not sure? Build an estimate ${ic("arrow")}</a></div>
   <div class="service-explorer-tools" data-explorer-tools hidden>
     <div class="service-controls"><div class="service-search-field"><label for="service-search">Find a service</label><div>${ic("scan")}<input id="service-search" type="search" data-services-search placeholder="Try AC, battery, brakes…" maxlength="120" autocomplete="off"></div></div><div class="service-car-field"><label for="service-car">Prices for your car</label><select id="service-car" data-services-car>${C.categories.map((c) => `<option value="${c.id}">${esc(c.label)}</option>`).join("")}</select></div></div>
     <div class="service-filters" role="group" aria-label="Filter services by category"><button class="on" type="button" data-service-filter="all" aria-pressed="true">All services <span>${C.services.length}</span></button>${groups.map((g) => `<button type="button" data-service-filter="${esc(g.group)}" aria-pressed="false">${ic(g.icon)}${esc(g.group)}</button>`).join("")}</div>
@@ -591,7 +591,7 @@ function servicesHub() {
   <div class="services-quote-band"><div>${ic("chat")}<h3>A strange noise? A warning light?</h3><p>You don’t need to know the repair name. Tell us what’s happening and we’ll help with the next step.</p></div><a class="btn btn--wa" data-wa="Help choosing a car service" href="https://wa.me/${B.whatsapp}">${ic("wa")}Talk to a mechanic</a></div>
 </div></section>
 </div>${ctaBand()}`;
-  return layout({ file: "services.html", title: `Car Services & Prices in Indore | ${B.name}`, desc: "Explore Garagewala car services, compare transparent price ranges, and find the right maintenance or repair for your car in Indore. Your Car. Our Care.", body, ld: [offerLd], navKey: "services.html" });
+  return layout({ file: "services.html", title: `Car Services & Prices in Indore | ${B.name}`, desc: "Explore Car Repair Wala car services, compare transparent price ranges, and find the right maintenance or repair for your car in Indore. Your Car. Our Care.", body, ld: [offerLd], navKey: "services.html" });
 }
 
 function bookingPage() {
@@ -647,7 +647,7 @@ function bookingPage() {
     </div>
   </div>
 </div></section>`;
-  return layout({ file: "booking.html", title: "Book a Car Service in Indore | Garagewala", desc: "Book car servicing or repair in Indore online or on WhatsApp. Choose services, pickup and drop, and a preferred time.", body, navKey: "booking.html" });
+  return layout({ file: "booking.html", title: "Book a Car Service in Indore | Car Repair Wala", desc: "Book car servicing or repair in Indore online or on WhatsApp. Choose services, pickup and drop, and a preferred time.", body, navKey: "booking.html" });
 }
 
 function pickupPage() {
@@ -667,12 +667,12 @@ function pickupPage() {
   </ol>
   <p>Read the full <a href="policies.html">pickup, drop and cancellation policy</a>.</p>
 </div></section>${ctaBand("Book a pickup")}`;
-  return layout({ file: "pickup-drop.html", title: "Car Pickup & Drop Service in Indore | Garagewala", desc: "Free car pickup and drop for servicing in listed Indore areas. Check your locality or PIN code before you book.", body, navKey: "pickup-drop.html" });
+  return layout({ file: "pickup-drop.html", title: "Car Pickup & Drop Service in Indore | Car Repair Wala", desc: "Free car pickup and drop for servicing in listed Indore areas. Check your locality or PIN code before you book.", body, navKey: "pickup-drop.html" });
 }
 
 function contactPage() {
   const body = `
-<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Contact</p><span class="eyebrow">Contact</span><h1>Contact Garagewala</h1><p>The fastest way to reach us is WhatsApp. Send your car model and the problem, and we'll reply with next steps.</p></div></section>
+<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Contact</p><span class="eyebrow">Contact</span><h1>Contact Car Repair Wala</h1><p>The fastest way to reach us is WhatsApp. Send your car model and the problem, and we'll reply with next steps.</p></div></section>
 <section class="band band--white"><div class="wrap two-col">
   <div class="prose">
     <h2 style="margin-top:0">Phone &amp; WhatsApp</h2><p class="phone-line" style="color:var(--ink);font-size:1.4rem" data-phone>${esc(B.phoneDisplay)}</p>
@@ -682,7 +682,7 @@ function contactPage() {
   </div>
   <div class="side-card"><a class="btn btn--block" href="tel:${B.phoneE164}" data-tel>${ic("phone")}Call now</a><a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a><a class="btn btn--outline btn--block" href="booking.html">${ic("calendar")}Booking form</a>${mapLink()}</div>
 </div></section>`;
-  return layout({ file: "contact.html", title: "Contact | Garagewala — Car Mechanic in Indore", desc: "Call or WhatsApp Garagewala for car service, repair quotes and pickup and drop bookings.", body, navKey: "contact.html" });
+  return layout({ file: "contact.html", title: "Contact | Car Repair Wala — Car Mechanic in Indore", desc: "Call or WhatsApp Car Repair Wala for car service, repair quotes and pickup and drop bookings.", body, navKey: "contact.html" });
 }
 
 function legalPage(file, title, h1, sections, desc) {
@@ -691,7 +691,7 @@ function legalPage(file, title, h1, sections, desc) {
   return layout({ file, title, desc, body });
 }
 const PH = (t) => `<p>${t}</p>`;
-const terms = legalPage("terms.html", "Terms & Conditions | Garagewala", "Terms & conditions", [
+const terms = legalPage("terms.html", "Terms & Conditions | Car Repair Wala", "Terms & conditions", [
   ["Estimates", `<p>Prices shown on this website are indicative ranges for planning only. The final price is given in a quotation after the vehicle is inspected.</p>`],
   ["Approval before work", `<p>We start work only after you approve the quotation. If additional repairs are found, we contact you with the reason and cost, and proceed only with your approval.</p>`],
   ["Bills and parts", `<p>You receive an itemised bill listing labour and each part separately, including the parts grade used. Replaced parts can be shown to you on request.</p>`],
@@ -699,16 +699,16 @@ const terms = legalPage("terms.html", "Terms & Conditions | Garagewala", "Terms 
   ["Warranty", PH("Any applicable parts or workmanship warranty, exclusions and claim procedure will be stated in your quotation or invoice. Please ask before approving work; this website does not promise a fixed warranty period.")],
   ["Payment", PH("Confirm accepted payment methods and when payment is due with the garage before approving work. This website does not collect payments.")],
   ["Liability", PH("Before handover, remove valuables and record the vehicle condition and belongings with the garage. Agree any road-test, custody and handover arrangements before work. Nothing here limits rights available under applicable law.")]
-], "Terms and conditions for car service and repair bookings with Garagewala.");
-const privacy = legalPage("privacy.html", "Privacy Policy | Garagewala", "Privacy policy", [
+], "Terms and conditions for car service and repair bookings with Car Repair Wala.");
+const privacy = legalPage("privacy.html", "Privacy Policy | Car Repair Wala", "Privacy policy", [
   ["What we collect", `<p>When you request an estimate or booking we may collect your name, mobile number, car details, optional registration number, service needs, and pickup address and PIN code if you request pickup. We do not ask for payment card details, ID documents or other sensitive information on this website.</p>`],
   ["How it's used", `<p>To contact you about your enquiry, arrange pickup and service, and send your quotation and bill. Feedback you send through the review form is used to respond to your experience. Your display name, rating, car model, service and feedback are published only if you choose the optional publication permission and the garage approves the review. Private feedback is not published.</p>`],
   ["WhatsApp", `<p>If you use the WhatsApp buttons, your message is sent through WhatsApp and is subject to WhatsApp's own privacy policy.</p>`],
   ["Images", `<p>Images and fonts are served with this website. Stock photos, where used, are credited. External services such as WhatsApp or Google receive connection information when you follow their links.</p>`],
-  ["Storage", `<p>The cost estimator runs in your browser. Booking details you send are kept only as long as needed for your service and records.</p><p>The estimator temporarily keeps its booking handoff in session storage in this browser tab; closing the tab clears that session. Language preference is saved locally. In the default WhatsApp mode, no booking API is called. If online booking storage is enabled, submitted contact, vehicle and service details are stored in Garagewala's private Supabase database for authorised owner access. Private job files and billing records may also be stored there. Technical request identifiers and short-lived rate limits help prevent duplicate requests and abuse. Contact the garage about access, correction, deletion and record retention; billing records may need to be retained for legal requirements.</p>`],
+  ["Storage", `<p>The cost estimator runs in your browser. Booking details you send are kept only as long as needed for your service and records.</p><p>The estimator temporarily keeps its booking handoff in session storage in this browser tab; closing the tab clears that session. Language preference is saved locally. In the default WhatsApp mode, no booking API is called. If online booking storage is enabled, submitted contact, vehicle and service details are stored in Car Repair Wala's private Supabase database for authorised owner access. Private job files and billing records may also be stored there. Technical request identifiers and short-lived rate limits help prevent duplicate requests and abuse. Contact the garage about access, correction, deletion and record retention; billing records may need to be retained for legal requirements.</p>`],
   ["Your choices", `<p>Ask us at any time to see or delete the details we hold about you by contacting <span data-phone>${esc(B.phoneDisplay)}</span>.</p>`]
-], "How Garagewala handles customer data from estimates and bookings.");
-const policies = legalPage("policies.html", "Cancellation, Pickup & Billing Policy | Garagewala", "Cancellation, pickup & billing", [
+], "How Car Repair Wala handles customer data from estimates and bookings.");
+const policies = legalPage("policies.html", "Cancellation, Pickup & Billing Policy | Car Repair Wala", "Cancellation, pickup & billing", [
   ["Indicative estimates", `<p><strong>All estimates are indicative until the car is inspected.</strong> The quotation after inspection is the price you approve.</p>`],
   ["Additional repairs", `<p>If more work is needed, we send the details and cost first. Nothing extra is done without your confirmation.</p>`],
   ["Itemised final bill", `<p>The final bill lists labour, each part, consumables and any taxes separately.</p>`],
@@ -716,7 +716,7 @@ const policies = legalPage("policies.html", "Cancellation, Pickup & Billing Poli
   ["Cancellation", PH("To cancel or reschedule, call or WhatsApp the garage as early as possible. Confirm any charges for work, diagnosis or transport already authorised before approving that work.")]
 ], "Cancellation, pickup and drop, additional repair approval and billing policy.");
 
-const notFound = layout({ file: "404.html", title: "Page not found | Garagewala", desc: "Page not found.", body: `<section class="page-hero"><div class="wrap"><h1>Page not found</h1><p>The page you're looking for doesn't exist. Try the cost estimator or message us on WhatsApp.</p><div class="hero-ctas"><a class="btn" href="index.html">Go to homepage</a><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">WhatsApp us</a></div></div></section>` });
+const notFound = layout({ file: "404.html", title: "Page not found | Car Repair Wala", desc: "Page not found.", body: `<section class="page-hero"><div class="wrap"><h1>Page not found</h1><p>The page you're looking for doesn't exist. Try the cost estimator or message us on WhatsApp.</p><div class="hero-ctas"><a class="btn" href="index.html">Go to homepage</a><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">WhatsApp us</a></div></div></section>` });
 
 /* ------------------------------ New pages (v1.1) ------------------------------ */
 function estimatePage() {
@@ -738,7 +738,7 @@ function estimatePage() {
   </aside>
 </div></section>
 ${ctaBand()}`;
-  return layout({ file: "estimate.html", title: "Car Service Cost Calculator Indore | Garagewala", desc: "Estimate your car service or repair cost in Indore. Pick your car and services to see labour, parts and time ranges, then book on WhatsApp.", body, navKey: "estimate.html" });
+  return layout({ file: "estimate.html", title: "Car Service Cost Calculator Indore | Car Repair Wala", desc: "Estimate your car service or repair cost in Indore. Pick your car and services to see labour, parts and time ranges, then book on WhatsApp.", body, navKey: "estimate.html" });
 }
 
 function galleryPage() {
@@ -749,12 +749,12 @@ function galleryPage() {
   <div class="ba-grid" id="ba-all" data-gallery></div>
 </div></section>
 ${ctaBand("Want a result like this for your car?")}`;
-  return layout({ file: "gallery.html", title: "Service Gallery | Garagewala", desc: "Explore car servicing, denting, painting, cleaning, suspension and mechanical repairs in the Garagewala service gallery.", body, navKey: "gallery.html" });
+  return layout({ file: "gallery.html", title: "Service Gallery | Car Repair Wala", desc: "Explore car servicing, denting, painting, cleaning, suspension and mechanical repairs in the Car Repair Wala service gallery.", body, navKey: "gallery.html" });
 }
 
 function reviewsPage() {
   const body = `
-<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Reviews</p><span class="eyebrow">Reviews</span><h1>Customer reviews</h1><p>Had your car serviced at Garagewala? Share your experience. We’ll publish genuine customer feedback here with permission.</p></div></section>
+<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Reviews</p><span class="eyebrow">Reviews</span><h1>Customer reviews</h1><p>Had your car serviced at Car Repair Wala? Share your experience. We’ll publish genuine customer feedback here with permission.</p></div></section>
 ${reviewsSection(true)}
 ${reviewForm()}
 <section class="band"><div class="wrap prose">
@@ -765,12 +765,12 @@ ${reviewForm()}
     <li>We do not publish customer phone numbers, addresses or other private contact details.</li>
   </ul>
 </div></section>`;
-  return layout({ file: "reviews.html", title: "Customer Reviews | Garagewala", desc: "Reviews from Garagewala customers and how to share your own feedback on car servicing and repairs.", body, navKey: "reviews.html" });
+  return layout({ file: "reviews.html", title: "Customer Reviews | Car Repair Wala", desc: "Reviews from Car Repair Wala customers and how to share your own feedback on car servicing and repairs.", body, navKey: "reviews.html" });
 }
 
 function aboutPage() {
   const body = `
-<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / About us</p><span class="eyebrow">About us</span><h1>About Garagewala</h1><p>A local multi-brand garage in ${esc(B.city)} for servicing, maintenance and repairs, built around clear estimates and your approval at every step.</p></div></section>
+<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / About us</p><span class="eyebrow">About us</span><h1>About Car Repair Wala</h1><p>A local multi-brand garage in ${esc(B.city)} for servicing, maintenance and repairs, built around clear estimates and your approval at every step.</p></div></section>
 <section class="band band--white"><div class="wrap two-col">
   <div class="prose">
     <h2 style="margin-top:0">How we work</h2>
@@ -797,7 +797,7 @@ function aboutPage() {
     <a class="btn btn--outline btn--block" href="reviews.html#write-review">${ic("star")}Write a website review</a>
   </div>
 </div></section>`;
-  return layout({ file: "about.html", title: "About Us | Garagewala — Multi-brand Car Garage", desc: "About Garagewala, a multi-brand car service and repair garage in Indore focused on transparent estimates and customer approval.", body, navKey: "about.html" });
+  return layout({ file: "about.html", title: "About Us | Car Repair Wala — Multi-brand Car Garage", desc: "About Car Repair Wala, a multi-brand car service and repair garage in Indore focused on transparent estimates and customer approval.", body, navKey: "about.html" });
 }
 
 /* ------------------------------ Write ------------------------------ */
@@ -813,7 +813,7 @@ for (const file of ["accident-repair-indore.html", "emergency-car-repair-indore.
 for (const [f, html] of Object.entries(pages)) writeFileSync(join(ROOT, f), html);
 // A small generated public data file lets the owner copy the workshop address
 // into private invoice settings without loading pricing or duplicating data.
-writeFileSync(join(ROOT, "assets/js/workshop-details.js"), `/* Generated by tools/build.mjs from config.js; public business details only. */\nwindow.GW_WORKSHOP = Object.freeze(${JSON.stringify({ addressText: addressText(), googleProfileUrl: B.googleBusinessProfileUrl })});\n`);
+writeFileSync(join(ROOT, "assets/js/workshop-details.js"), `/* Generated by tools/build.mjs from config.js; public business details only. */\nwindow.GW_WORKSHOP = Object.freeze(${JSON.stringify({ name: B.name, invoiceFooter: `Thank you for choosing ${B.name}.`, addressText: addressText(), googleProfileUrl: B.googleBusinessProfileUrl })});\n`);
 
 const today = new Date().toISOString().slice(0, 10);
 const indexable = Object.keys(pages).filter((f) => f !== "404.html");
