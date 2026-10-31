@@ -820,3 +820,26 @@ main [id], #write-review, .pl-group { scroll-margin-top: calc(env(safe-area-inse
   .site-header .brand-sub { font-size: .47rem; }
   .site-header .header-actions .btn { padding-inline: 12px; }
 }
+
+/* Compact header stays in document flow and scrolls away with the page. */
+.site-header { position: relative; top: auto; }
+.site-header > .wrap { max-width: 1200px; padding-top: 8px; padding-bottom: 8px; gap: 10px 20px; }
+.site-header .brand { min-height: 64px; gap: 16px; }
+.site-header .brand-logo { width: 64px; height: 64px; }
+.site-header .brand-copy { gap: 4px; }
+.site-header .brand-name { font-size: clamp(2.6rem, 4.2vw, 3.2rem); letter-spacing: .1em; }
+.site-header .brand-sub { font-size: .62rem; letter-spacing: .18em; }
+.site-header .header-actions { align-self: center; }
+.site-header .nav { padding: 4px; }
+.site-header .nav a.nav-button { min-height: 48px; padding-block: 8px; }
+main [id], #write-review, .pl-group { scroll-margin-top: 16px; }
+@media (max-width: 1120px) {
+  .site-header > .wrap { padding: 8px 16px; gap: 8px 12px; }
+  .site-header .brand { min-height: 0; padding: 0; gap: 10px; }
+  .site-header .brand-logo { width: clamp(44px, 7vw, 56px); height: clamp(44px, 7vw, 56px); }
+  .site-header .brand-name { font-size: clamp(1.6rem, 4.2vw, 2.4rem); letter-spacing: .06em; }
+  .site-header .brand-sub { font-size: .47rem; letter-spacing: .1em; }
+  .site-header .menu-btn { min-height: 44px; }
+  .site-header .nav { position: static; inset: auto; grid-column: 1 / -1; grid-row: 3; padding: 8px; max-height: calc(100dvh - 200px); }
+  .site-header .nav a.nav-button { min-height: 48px; padding-block: 12px; }
+}

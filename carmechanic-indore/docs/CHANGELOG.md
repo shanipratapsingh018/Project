@@ -1,3 +1,9 @@
+# v1.9.4 — Compact scrolling header
+
+- Reduced masthead text/logo sizes, spacing and menu height; aligned the header within a narrower 1200px container.
+- Removed sticky positioning so the entire header scrolls away naturally and content stays unobstructed.
+- Reset section-anchor offsets for the non-sticky header, while retaining the mobile menu, repeated logos and watermarks.
+
 # v1.9.3 — Wide brand masthead and repeated logo
 
 - Garagewala is centred in a large, widely spaced masthead above the full menu, with a larger undistorted logo.
