@@ -19,7 +19,7 @@ const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const WORKSHOP_PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "workshop-photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "1.9.0";
+const VERSION = "1.9.1";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -110,13 +110,13 @@ const FAVICON = `assets/img/garagewala-logo.png?v=${VERSION}`;
 
 /* ------------------------------ Layout ------------------------------ */
 const NAV = [
-  ["index.html", "Home", "nav.home"],
-  ["services.html", "Services & Prices", "nav.services"],
-  ["estimate.html", "Cost Calculator", "nav.calc"],
-  ["gallery.html", "Service Gallery", "nav.gallery"],
-  ["reviews.html", "Reviews", "nav.reviews"],
-  ["about.html", "About Us", "nav.about"],
-  ["contact.html", "Contact", "nav.contact"]
+  ["index.html", "Home", "nav.home", "home"],
+  ["services.html", "Services & Prices", "nav.services", "wrench"],
+  ["estimate.html", "Cost Calculator", "nav.calc", "receipt"],
+  ["gallery.html", "Service Gallery", "nav.gallery", "image"],
+  ["reviews.html", "Reviews", "nav.reviews", "star"],
+  ["about.html", "About Us", "nav.about", "info"],
+  ["contact.html", "Contact", "nav.contact", "phone"]
 ];
 // A landmark search is kept separate from an actual Google Business Profile.
 const addressText = () => B.address ? [B.address.street, B.address.locality, B.city, B.address.pincode].filter(Boolean).join(", ") : "";
@@ -176,7 +176,7 @@ ${sprite}
   <div class="wrap">
     <a class="brand" href="index.html" aria-label="${esc(B.name)} home">${LOGO}${WORDMARK}</a>
     <button class="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">${ic("menu")}</button>
-    <nav class="nav" id="site-nav" aria-label="Main">${NAV.map(([h, l, k]) => `<a href="${h}"${h === "index.html" ? ' class="nav-home"' : ` data-i18n="${k}"`}${navKey === h ? ' aria-current="page"' : ""}>${h === "index.html" ? `${ic("home")}<span data-i18n="${k}">${l}</span>` : l}</a>`).join("")}</nav>
+    <nav class="nav" id="site-nav" aria-label="Main">${NAV.map(([h, l, k, icon]) => `<a href="${h}" class="nav-button${h === "index.html" ? " nav-home" : ""}"${navKey === h ? ' aria-current="page"' : ""}>${ic(icon)}<span data-i18n="${k}">${l}</span></a>`).join("")}</nav>
     <div class="header-actions">
       <button class="lang-toggle" type="button">हिंदी</button>
       <a class="btn btn--sm btn--ghost" href="tel:${B.phoneE164}" data-tel aria-label="Call ${esc(B.phoneDisplay)}">${ic("phone")}</a>

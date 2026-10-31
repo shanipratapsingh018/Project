@@ -1,5 +1,5 @@
 {
-  "version": "1.9.0",
+  "version": "1.9.1",
   "date_ist": "2026-10-31",
   "validation": {
     "npm test": "passed: 276 approved rate figures and 41 unit/server/build checks",
@@ -10,5 +10,12 @@
   },
   "photos": "Ten new repair/service scenes added to the existing ten; all twenty are generated illustrations with original source metadata retained.",
   "layout": "One slider spans both homepage columns below the introduction and calculator. The separate homepage workshop image is removed.",
-  "branding": "Home retains the same orange treatment on all pages; aria-current still identifies the current page."
+  "branding": "Home retains the same orange treatment on all pages; aria-current still identifies the current page.",
+  "previous_full_suite_version": "1.9.0",
+  "validation_v1.9.1": {
+    "build": "passed: all 22 pages rebuilt",
+    "local assets": "passed: 3 asset/source/font checks",
+    "menu checks": "passed: 264 checks at ten viewport widths across Home, Services and About plus all seven link destinations on mobile and desktop, including translated text, preserved icons, actual keyboard focus, selected-page semantics, touch sizes, bounds and no overflow",
+    "visual review": "passed: desktop and two-column mobile navigation"
+  }
 }

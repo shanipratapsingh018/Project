@@ -1,3 +1,9 @@
+# v1.9.1 — Icon button navigation
+
+- All seven main menu links are rounded icon buttons with charcoal/orange styling, hover and keyboard focus states.
+- Selected pages have an accent border and shaded background; Home keeps its permanent orange treatment.
+- Mobile and smaller laptop menus display a two-column button grid, and language changes preserve all icons.
+
 # v1.9.0 — One full-width slider and twenty service photos
 
 - Removed the separate homepage workshop image; one carousel spans both columns below the introduction/calculator.
