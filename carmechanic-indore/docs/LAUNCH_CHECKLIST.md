@@ -6,8 +6,9 @@
 - [ ] Add prices for the 20 "Price on request" services when ready (see `docs/DEMO_CONTENT.md`)
 - [ ] Review the fuel / parts-grade / older-car adjustments in `config.js → pricing`
 - [ ] Confirm the 16 covered pickup PIN codes in `service-areas.js`, especially the outlying villages in 452016 / 452020, and decide on 452004 / 452008
-- [x] Landmark address supplied: Front of Regional Park, Indore
-- [ ] Owner to confirm exact Google Maps entrance pin, postal code and working hours
+- [x] Complete shop address and PIN supplied: Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012
+- [x] Owner-supplied Google Business link connected; daily hours and PIN confirmed
+- [ ] Exact entrance coordinates remain unverified
 - [ ] Logo approval (current mark is a concept: hex nut + gauge needle)
 - [ ] Workshop photos (owner's own or licensed) in `assets/img/`
 - [ ] Warranty, payment, cancellation and liability text → terms.html / policies.html placeholders
@@ -28,7 +29,8 @@
 
 ## 3. Local SEO
 - [ ] Create/verify Google Business Profile (category "Auto repair shop"), same name/phone as site; add website link
-- [ ] Set `googleBusinessProfileUrl` and `googleAnalyticsId`; rebuild
+- [x] Set owner-supplied `googleBusinessProfileUrl` and rebuild
+- [ ] Optional: configure `googleAnalyticsId`
 - [ ] Google Search Console: verify domain, submit `/sitemap.xml`
 - [ ] Check structured data with Google's Rich Results Test
 - [ ] List on JustDial / Sulekha with identical name and phone (NAP consistency)

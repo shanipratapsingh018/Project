@@ -1,5 +1,5 @@
 {
-  "version": "2.0.1",
+  "version": "2.0.2",
   "date_ist": "2026-10-31",
   "validation": {
     "npm test": "passed: 276 approved rate figures and 41 unit/server/build checks",
@@ -62,5 +62,17 @@
     "live_supabase_verification": "not completed: environment proxy rejected CONNECT to the project host with HTTP 403; no Supabase API response was obtained",
     "activation": "owner must run database migrations, create an Auth user and grant owner membership; public key cannot perform project administration",
     "privacy": "owner email/password excluded from public website files"
+  },
+  "validation_v2.0.2": {
+    "address": "Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012",
+    "profile": "https://share.google/WnVvAG5hBsKbOV8j9",
+    "source": "Address text and business URL supplied directly by the owner; Google sharing host blocked by workspace policy",
+    "public_build": "passed: 22 pages; 25 visible address placements; footer and business structured data audited on every page; old profile link removed from public pages",
+    "public_unit": "passed: 276 rate figures and 41 unit/server/build checks",
+    "public_browser": "passed: all 22 pages on desktop/mobile plus estimator, booking, gallery and review interactions",
+    "public_reliability": "passed: 41 checks including full address/PIN, Google profile and structured data",
+    "admin_unit": "passed: 9 tests",
+    "admin_browser": "passed: 27 mocked-response checks, including private billing details preserved on open, explicit address copy, review before saving and issued-invoice snapshot preservation",
+    "billing_address": "Owner action required: Settings > Use workshop address > review and confirm > Save settings. Live private Supabase profile not changed by the deployment."
   }
 }

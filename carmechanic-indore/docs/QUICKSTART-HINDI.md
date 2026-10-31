@@ -1,9 +1,9 @@
-# Garagewala — Nice Car Mechanic
+# Garagewala — Your Car. Our Care. · v2.0.2
 
 Live website: https://shanipratapsingh018.github.io/Project/
 Services page: https://shanipratapsingh018.github.io/Project/services.html
 
-Naya version kholne ke liye URL ke end mein `?v=garagewala-1.6` laga sakte ho.
+Naya version kholne ke liye URL ke end mein `?v=2.0.2` laga sakte ho.
 GitHub Pages static website hai; live update `gh-pages` branch par push hone ke baad automatically deploy hota hai.
 
 # Website kaise chalayein
@@ -28,18 +28,17 @@ GitHub Pages static website hai; live update `gh-pages` branch par push hone ke 
 
 Customer form bharta hai; website WhatsApp message taiyar karti hai. Customer ko
 WhatsApp mein Send dabana hota hai. Uske baad garage slot aur final quote confirm karta hai.
-Website mein abhi payment, database ya admin dashboard nahi hai.
+Owner login footer se khulta hai: customers, job cards, invoices aur manual payments manage kar sakte hain. Online payment collection abhi enabled nahi hai.
 
 ## Reviews aur Google listing
 
 Doosre garage ke reviews aur unki rating hata di gayi hai. Abhi website genuine Garagewala
 customers se feedback maangti hai; Share Your Experience WhatsApp kholta hai.
 
-Address: Front of Regional Park, Indore. Maps button landmark-address search hai, verified
-Garagewala Google listing nahi. Apne Google account se https://business.google.com/create
-par Garagewala ki apni listing create/claim aur verify karo. Kisi aur garage ka profile claim
-ya rename mat karo. Exact entrance pin, postal code aur hours owner ko fill karne hain.
-Verification ke baad Maps sharing aur Ask for reviews links website mein connect kiye ja sakte hain.
+Address: Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012.
+Google location link: https://share.google/WnVvAG5hBsKbOV8j9. Apni existing listing ki verification Google account mein check karein.
+Address, PIN aur Google location website par updated hain. Direct Ask for reviews link alag se add hota hai.
+Invoices ke liye Admin → Settings → Use workshop address par click karein, billing details check karke confirmation box tick karein aur Save settings dabayein.
 
 ## v1.7.0 updates
 

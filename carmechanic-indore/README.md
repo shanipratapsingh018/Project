@@ -1,4 +1,4 @@
-# Garagewala — Your Car. Our Care. · v2.0.1
+# Garagewala — Your Car. Our Care. · v2.0.2
 
 A ready-to-run static garage website branded **Garagewala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
@@ -22,7 +22,7 @@ No `npm install`, framework, database, API key or external font/image server is 
 Open the address printed by the command in your browser. `PORT=9090 npm start` changes
 the port; use `HOST=0.0.0.0` only when deliberately exposing your development server.
 
-This describes the public website. The new private owner workspace requires a Supabase project; the owner's public project URL/key are configured, and database/account activation remains pending.
+This describes the public website. The private owner workspace uses the configured Supabase project and requires an authorised owner account.
 
 ## Private owner workspace
 
@@ -31,10 +31,10 @@ It includes customers and vehicles, manual and website enquiries, job cards and 
 private job attachments, itemised invoices, printing/Save as PDF, payment records and billing settings.
 Owner membership is checked by database policies. Invoice amounts and payment balances are checked by SQL functions.
 
-**Backend activation is pending.** Public connection settings point to project `oraooxeefxcwmwgycrei`,
-and the admin shows its login form. The owner must complete the database migrations, create an Auth user
-and grant owner membership in Supabase before login can access private records. Website bookings continue
-through WhatsApp. No fake password or customer database is supplied.
+Public connection settings point to project `oraooxeefxcwmwgycrei`. Login requires the database migrations,
+an Auth user and owner membership; the owner has reported completing initial database setup.
+Website bookings continue through WhatsApp until the booking endpoint is separately enabled.
+No fake password or customer database is supplied.
 Follow [the admin setup guide](docs/ADMIN_SETUP.md) for migrations, owner creation and optional booking intake.
 Only the project URL and public publishable/anon key belong in `backend-config.js`; never include a secret key.
 
@@ -105,11 +105,13 @@ published. No review is automatically stored or displayed publicly. The garage c
 and adds permitted customer reviews to `public/assets/js/reviews.js`; see `docs/HOW_TO_UPDATE.md`.
 All ratings follow the same workflow. Editing clears stale prepared messages.
 
-The owner supplied `https://share.google/Zot7dWX2M9FAUQRIX`; a separate **Garagewala on Google**
-button opens that link. It is not treated as a direct review-writing URL. Its redirect destination
-could not be checked from this cloud environment because Google sharing hosts are blocked.
-The Maps address-search link is still separate. Set `googleReviewUrl` only when an actual
-Ask for reviews URL is available; the website feedback form stays available alongside Google.
+The owner supplied `https://share.google/WnVvAG5hBsKbOV8j9` as the shop's Google Business
+location. Location and Google profile buttons use it across the site, including without JavaScript.
+The complete owner-supplied workshop address is **Shop No. 1, Sobhag Bagh, Pipliya Rau,
+Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012**.
+It appears on Home, About, Contact, every page footer and in business structured data.
+Google sharing hosts are blocked in this workspace; the address was supplied directly by the owner.
+Set `googleReviewUrl` only when an actual Ask for reviews URL is available.
 
 ## Tests
 
@@ -144,8 +146,8 @@ adds timeout, duplicate submit, stale estimate, quantity handoff and review-sour
 
 - Business contact details, vehicle models, timezone and pricing adjustments: `public/assets/js/config.js`.
 - Prices: `public/assets/js/rate-card.js`, with reference CSV in `docs/rate-card/`. Run tests and rebuild after edits.
-- Address: Front of Regional Park, Indore, as supplied by the owner. No PIN or coordinates were supplied.
-- Maps: `googleMapsSearchUrl` searches that landmark address. It is deliberately separate from `googleBusinessProfileUrl`; no Garagewala Google listing or review editor has been created or verified.
+- Address: Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012, as supplied by the owner. Coordinates have not been supplied.
+- Maps: `googleBusinessProfileUrl` is the current owner-supplied location link. `googleMapsSearchUrl` is a full-address search fallback. No review editor, coordinates or Google verification status is inferred.
 - Reviews: `public/assets/js/reviews.js` is empty. Earlier screenshots were confirmed to belong to another garage and were removed, including their rating. Add only genuine Garagewala customer feedback with approval and publication consent.
 - Photos: included sample illustrations are explicitly labelled. Add your own workshop photos or optionally run
   `npm run photos`, then rebuild. Stock photo credits and open-font licences remain included.

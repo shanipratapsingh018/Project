@@ -31,9 +31,12 @@ self-contained delivery, honest customer content and basic deployment behavior.
 
 The owner clarified that the earlier Google review screenshots belonged to another garage.
 Both excerpts, the aggregate rating and the screenshot-permission bypass have been removed.
-The website now invites genuine Garagewala feedback. No Garagewala Google listing has been
-created or verified; the owner must complete Google Business Profile signup and verification.
-The supplied Regional Park address is shown as a landmark; the Maps search is not a verified listing.
+The website invites genuine Garagewala feedback. The owner supplied the current Google
+Business sharing link, https://share.google/WnVvAG5hBsKbOV8j9, and copied the complete
+shop address into the chat: Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road,
+Pawan Putra Nagar, Indore, Madhya Pradesh 452012. Both are connected across the public site.
+Google blocks this workspace from opening sharing links, so its ownership-verification
+status, coordinates and Google ratings have not been independently established.
 
 ## Validation
 

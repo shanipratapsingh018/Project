@@ -1,4 +1,4 @@
-> v1.7.0: run `npm run build` after content edits. Add only genuine Garagewala customer reviews with owner approval and customer permission. Reviews and ratings from other garages are removed. The Maps address search is separate from an actual Google Business Profile.
+> v1.7.0: run `npm run build` after content edits. Add only genuine Garagewala customer reviews with owner approval and customer permission. Reviews and ratings from other garages are removed. The location link follows the owner-supplied Google Business Profile; a full-address Maps search is retained as a fallback.
 
 # How to update prices, PIN codes, gallery photos and reviews
 
@@ -68,7 +68,7 @@ Square-ish photos work best: gallery tiles are shown 1:1 and cropped to fill.
    `name`, `rating` (1–5), `service`, optional `vehicle` and `date`, `text` (their words),
    `source` (for this form, "Website via WhatsApp"), `isSample: false`, `approved: true`, `consent: true`.
    Remove personal contact details and keep `showSamples: false`.
-4. The owner-supplied Google sharing link is in `googleProfileUrl`. The separate Google button
+4. The owner-supplied Google sharing link is in `config.js → business.googleBusinessProfileUrl`; `googleProfileUrl` is an optional override. The separate Google button
    is labelled "Garagewala on Google". It is not assumed to open the review composer.
 5. Put an actual Google Business Profile → Ask for reviews URL in `googleReviewUrl` to enable
    the separate "Review on Google" action. Website feedback remains available.

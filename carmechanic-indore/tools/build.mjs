@@ -19,7 +19,7 @@ const GALLERY = require(join(ROOT, "assets/js/gallery.js"));
 const PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "photos.json"), "utf8"));
 const WORKSHOP_PHOTOS = JSON.parse(readFileSync(join(ROOT, "..", "tools", "workshop-photos.json"), "utf8"));
 const B = C.business;
-const VERSION = "2.0.1";
+const VERSION = "2.0.2";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -118,12 +118,12 @@ const NAV = [
   ["about.html", "About Us", "nav.about", "info"],
   ["contact.html", "Contact", "nav.contact", "phone"]
 ];
-// A landmark search is kept separate from an actual Google Business Profile.
-const addressText = () => B.address ? [B.address.street, B.address.locality, B.city, B.address.pincode].filter(Boolean).join(", ") : "";
+// Use the owner's exact address everywhere; a Maps search remains a fallback.
+const addressText = () => B.address ? [B.address.street, B.address.locality, B.city, [B.state, B.address.pincode].filter(Boolean).join(" ")].filter(Boolean).join(", ") : "";
 function mapLink(compact = false) {
   const href = B.googleBusinessProfileUrl || B.googleMapsSearchUrl;
   if (!href) return "";
-  const label = B.googleBusinessProfileUrl ? "View workshop on Google Maps" : "Search address on Google Maps";
+  const label = B.googleBusinessProfileUrl ? "View workshop on Google" : "Search address on Google Maps";
   return `<a class="${compact ? "" : "btn btn--outline btn--block"}" data-map-link href="${esc(href)}" target="_blank" rel="noopener noreferrer">${compact ? "" : ic("pin")}${label}</a>`;
 }
 const BACK_HOME = `<a class="back-home" href="index.html">${'<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg>'}<span data-i18n="back.home">Back to Home</span></a>`;
@@ -132,7 +132,7 @@ function businessLd() {
     "@context": "https://schema.org", "@type": "AutoRepair", name: B.name, url: url("index.html"),
     telephone: B.phoneE164, areaServed: { "@type": "City", name: B.city },
     address: B.address
-      ? { "@type": "PostalAddress", streetAddress: B.address.street, addressLocality: B.city, addressRegion: B.state, ...(B.address.pincode ? { postalCode: B.address.pincode } : {}), addressCountry: B.country }
+      ? { "@type": "PostalAddress", streetAddress: [B.address.street, B.address.locality].filter(Boolean).join(", "), addressLocality: B.city, addressRegion: B.state, ...(B.address.pincode ? { postalCode: B.address.pincode } : {}), addressCountry: B.country }
       : { "@type": "PostalAddress", addressLocality: B.city, addressRegion: B.state, addressCountry: B.country },
     description: "Multi-brand car servicing, maintenance, diagnostics and repairs in Indore with transparent estimates."
   };
@@ -420,7 +420,7 @@ function reviewsSection(full = false) {
   <div class="notice" data-review-summary hidden></div>
   <div class="reviews reviews--six" data-reviews></div>
   <div class="share-box"><div><h3>Serviced your car with us?</h3><p>Tell us how it went. With your permission we'll publish your review here.</p></div>
-    <div class="hero-ctas"><a class="btn" data-share-review href="reviews.html#write-review">${ic("star")}Write a website review</a><a class="btn btn--outline" data-google-review hidden>Review on Google</a><a class="btn btn--wa" data-feedback-wa href="https://wa.me/${B.whatsapp}">${ic("wa")}Feedback on WhatsApp</a></div></div>
+    <div class="hero-ctas"><a class="btn" data-share-review href="reviews.html#write-review">${ic("star")}Write a website review</a><a class="btn btn--outline" data-google-review ${B.googleBusinessProfileUrl ? `href="${esc(B.googleBusinessProfileUrl)}" target="_blank" rel="noopener noreferrer"` : "hidden"}>${B.googleBusinessProfileUrl ? "Garagewala on Google" : "Review on Google"}</a><a class="btn btn--wa" data-feedback-wa href="https://wa.me/${B.whatsapp}">${ic("wa")}Feedback on WhatsApp</a></div></div>
   ${full ? "" : `<p style="margin-top:20px"><a href="reviews.html">More about our reviews →</a></p>`}
 </div></section>`;
 }
@@ -780,6 +780,7 @@ function aboutPage() {
     <p>Periodic servicing, AC, brakes and clutch, suspension and steering, battery and electrical faults, diagnostics, denting and painting, detailing and pre-purchase inspections — for most car brands sold in India.</p>
     <h2>Talk to us</h2>
     <p>Tell us about your car and the problem you’re facing. We’ll confirm whether we can help, explain the next steps and share a quotation before work starts.</p>
+    ${B.address ? `<h2>Visit our workshop</h2><p data-workshop-address>${esc(addressText())}</p>${mapLink(true)}` : ""}
     <h2>Workshop services</h2>
     ${photo("workshop-cars", { sizes: "(max-width: 900px) 100vw, 60vw" })}
     <p>For our workshop location, current opening hours and appointment availability, <a href="contact.html">contact us before visiting</a>.</p>
@@ -810,6 +811,9 @@ for (const file of ["accident-repair-indore.html", "emergency-car-repair-indore.
   if (!pages[file] && existsSync(join(ROOT, file))) unlinkSync(join(ROOT, file));
 }
 for (const [f, html] of Object.entries(pages)) writeFileSync(join(ROOT, f), html);
+// A small generated public data file lets the owner copy the workshop address
+// into private invoice settings without loading pricing or duplicating data.
+writeFileSync(join(ROOT, "assets/js/workshop-details.js"), `/* Generated by tools/build.mjs from config.js; public business details only. */\nwindow.GW_WORKSHOP = Object.freeze(${JSON.stringify({ addressText: addressText(), googleProfileUrl: B.googleBusinessProfileUrl })});\n`);
 
 const today = new Date().toISOString().slice(0, 10);
 const indexable = Object.keys(pages).filter((f) => f !== "404.html");

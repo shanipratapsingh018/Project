@@ -1,4 +1,4 @@
-# Garagewala — Your Car. Our Care. · v2.0.1
+# Garagewala — Your Car. Our Care. · v2.0.2
 
 Live website: https://shanipratapsingh018.github.io/Project/
 
@@ -9,8 +9,8 @@ The original Arduino temp.txt is preserved separately.
 
 ## Download
 
-- [Hosting-ready ZIP](downloads/garagewala-v2.0.1-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
-- [Complete source ZIP](downloads/garagewala-v2.0.1-source.zip) — on GitHub, click **Download raw**.
+- [Hosting-ready ZIP](downloads/garagewala-v2.0.2-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
+- [Complete source ZIP](downloads/garagewala-v2.0.2-source.zip) — on GitHub, click **Download raw**.
 - [Six AI-generated garage photos](downloads/garagewala-ai-garage-photos.zip) — original PNGs in one ZIP; illustrative scenes, not photos of the actual workshop.
 - Or choose **Code → Download ZIP** to download this whole branch.
 
@@ -37,14 +37,17 @@ Owner workspace: https://shanipratapsingh018.github.io/Project/admin/
 
 The private admin interface, database migrations and booking endpoint are included for customers,
 vehicles, bookings, job cards, invoices and manual payment tracking. The public Supabase URL/key are configured.
-**Database and owner-account activation are pending**; complete the [admin setup](carmechanic-indore/docs/ADMIN_SETUP.md)
-before signing in. A combined SQL Editor setup file is included. Website bookings still use WhatsApp.
+Login requires the [admin setup](carmechanic-indore/docs/ADMIN_SETUP.md) and an authorised owner account.
+The owner has reported completing initial database setup. Website bookings still use WhatsApp.
 No subscription has been purchased, no secret keys are included, and no real customer records are stored in this repository.
 
-Address: Front of Regional Park, Indore. The Google Maps button searches the landmark area;
-the owner-supplied Google share link is connected separately for profile access.
-Its redirect destination and Google verification could not be checked from this environment. Reviews from another garage and their
-rating were removed after the owner's correction. Genuine Garagewala feedback is invited instead.
+Address: **Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012**.
+Google location/profile: https://share.google/WnVvAG5hBsKbOV8j9.
+The address and location link are used on Home, About, Contact, every public-page footer and business structured data.
+The owner supplied the address text; Google sharing hosts could not be opened in this environment.
+Reviews from another garage and their rating remain removed; genuine Garagewala feedback is invited instead.
+For future invoice addresses, use **Admin → Settings → Use workshop address**, review and save.
+[Location maintenance details](carmechanic-indore/docs/GOOGLE_BUSINESS_SETUP.md).
 
 Validation is recorded in [VALIDATION.json](carmechanic-indore/docs/VALIDATION.json).
 

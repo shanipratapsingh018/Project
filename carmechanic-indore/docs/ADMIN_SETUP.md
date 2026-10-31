@@ -1,4 +1,4 @@
-# Garagewala owner workspace · v2.0.1
+# Garagewala owner workspace · v2.0.2
 
 The public connection settings now point to project `oraooxeefxcwmwgycrei`. **Database and owner-account setup still need to be completed and verified** through the owner's Supabase dashboard. The public site continues to use WhatsApp booking by default. Publishing the admin files does not publish customer records. The owner's email and password are not placed in public website files.
 
@@ -93,3 +93,13 @@ python3 tests/admin_test.py
 The bundled official Supabase client is pinned in `admin-app/package-lock.json`; no runtime CDN is required. Commit the built `public/admin/` files. The root static server does not require admin build dependencies.
 
 `npm --prefix admin-app run test:database` runs against an isolated local PostgreSQL 16 Docker container named `garagewala-db-test`. It creates disposable test databases and stubs Supabase Auth/Storage roles; never point it at production. See `admin-app/tests/database.mjs`. Browser tests mock HTTP responses using fictional records. These checks do **not** establish that your live Supabase Auth, email delivery, Edge Function or Storage service is configured correctly. Verify those after connecting your own project.
+
+## Updating the workshop address for invoices
+
+The public workshop address and Google location are maintained in `config.js`.
+The site build generates `workshop-details.js` so admin Settings can show the same
+address. Choose **Use workshop address**, check the billing-details confirmation
+and **Save settings** to write it to your private business profile. This requires
+your owner session. Copying the text does not save automatically; legal billing
+details remain under owner control. Newly issued invoices use the saved profile,
+and existing issued invoices keep their original snapshots.

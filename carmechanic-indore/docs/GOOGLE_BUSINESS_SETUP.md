@@ -1,32 +1,48 @@
-> v1.7.0 update: The owner supplied https://share.google/Zot7dWX2M9FAUQRIX.
-> It is connected as a separate "Garagewala on Google" button via `reviews.js → googleProfileUrl`.
-> The redirect destination could not be checked in this environment; no direct-review URL,
-> ownership verification or Google rating is inferred. The address-search link remains separate.
-> The owner confirmed daily hours: 7:00 AM–11:30 PM IST.
+# Garagewala Google Business location · v2.0.2
 
-# Garagewala: create your own Google Business Profile
+The owner supplied this shop listing: https://share.google/WnVvAG5hBsKbOV8j9.
+It replaces the earlier sharing link. Google blocks this workspace from opening
+sharing URLs, so the address below was copied into the chat by the owner.
+This code update does not establish Google's ownership-verification status,
+fetch ratings or create a new Google listing.
 
-No Google listing has been created or verified by this code change. The website currently
-links to a **landmark search** on Google Maps, not to a registered Garagewala business profile.
-The earlier review screenshots belonged to another garage and have been removed.
+Workshop address:
 
-The owner must sign in with their own Google account at https://business.google.com/create.
-Search for the actual Garagewala business first. Claim it only if it is your business; otherwise
-create a new listing. Do not claim or rename another garage's existing profile.
+**Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012**
 
-Ready details:
+Phone: +91 89659 57978. Hours: every day, 7:00 AM–11:30 PM IST.
+Website: https://shanipratapsingh018.github.io/Project/
 
-- Business name: Garagewala (use the real name displayed on your business signage).
-- Category: Auto repair shop, or the closest available category for your actual service.
-- Address supplied by owner: Front of Regional Park, Indore, Madhya Pradesh, India.
-- Phone: +91 89659 57978, as configured on the website; confirm it is the correct business number.
-- Website: https://shanipratapsingh018.github.io/Project/
+## Website locations
 
-Enter the exact street/shop address and postal code yourself and place the pin at your actual
-workshop entrance. These details were not supplied and have not been guessed. Enter only real
-working hours. Complete whatever ownership/location verification Google requests.
+- The full address is in Home → Contact, Contact → Workshop and About → Visit our workshop.
+- The footer carries the full address and Google location link on all 22 public pages.
+- AutoRepair structured data on all 22 pages includes the supplied street/locality,
+  city, region and PIN, and links to the owner's profile with `sameAs`.
+- Workshop location buttons use the supplied profile link. The optional Maps-search
+  fallback searches the complete address rather than the old landmark.
+- Home, Reviews and About Google profile buttons use the same central profile URL.
+  They work in the generated HTML and with JavaScript.
 
-After Google verification, obtain the business's Maps sharing URL and its **Ask for reviews**
-link. Put the actual profile URL in `business.googleBusinessProfileUrl` and the review link in
-`public/assets/js/reviews.js → googleReviewUrl`, then rebuild and deploy. Keep the landmark
-search separate. Do not put account passwords, verification codes or OAuth tokens in these files.
+Edit `public/assets/js/config.js → business.address` and
+`business.googleBusinessProfileUrl`, then run `npm run build`.
+The build also writes the small public `workshop-details.js` used by admin Settings.
+Do not invent an entrance pin, coordinates or Place ID.
+
+## Billing address
+
+Private invoice settings remain in the owner's Supabase database. To apply this
+address to future invoices, sign in → Settings → **Use workshop address**,
+review the billing details, check the confirmation box and **Save settings**.
+Copying the text does not save automatically. Existing issued invoices retain
+the supplier address saved when they were issued. Customer and pickup addresses
+are separate records and are not workshop-address fields.
+
+## Google reviews
+
+The Google button follows `business.googleBusinessProfileUrl`. An optional
+`reviews.js → googleProfileUrl` can override it. `googleReviewUrl` stays empty
+until the owner supplies an actual Google Business Profile **Ask for reviews**
+link. Do not treat a location/profile link as a direct review composer, and do not
+publish another garage's reviews. Website feedback still uses the WhatsApp
+handoff and customer publication permission.
