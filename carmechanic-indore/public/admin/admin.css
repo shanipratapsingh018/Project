@@ -940,3 +940,34 @@ dialog::backdrop {
 :where(.brand) {
   text-decoration: none;
 }
+.vehicle-fields {
+  display: grid;
+  gap: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+  min-width: 0;
+  background: #f8f9f5;
+}
+.vehicle-fields-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.vehicle-fields-head strong {
+  font-size: 0.9rem;
+}
+.vehicle-fields-head span {
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+.vehicle-fields > p {
+  margin: 0;
+  line-height: 1.5;
+}
+.vehicle-fields label small {
+  font-size: 0.7rem;
+  font-weight: 400;
+}

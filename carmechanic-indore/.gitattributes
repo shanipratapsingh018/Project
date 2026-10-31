@@ -1,0 +1,2 @@
+# Bundled SDK strings contain meaningful whitespace inside template literals.
+public/admin/admin.js linguist-generated=true whitespace=-blank-at-eol

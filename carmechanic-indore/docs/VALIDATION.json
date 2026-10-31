@@ -1,5 +1,5 @@
 {
-  "version": "2.0.2",
+  "version": "2.1.0",
   "date_ist": "2026-10-31",
   "validation": {
     "npm test": "passed: 276 approved rate figures and 41 unit/server/build checks",
@@ -74,5 +74,16 @@
     "admin_unit": "passed: 9 tests",
     "admin_browser": "passed: 27 mocked-response checks, including private billing details preserved on open, explicit address copy, review before saving and issued-invoice snapshot preservation",
     "billing_address": "Owner action required: Settings > Use workshop address > review and confirm > Save settings. Live private Supabase profile not changed by the deployment."
+  },
+  "validation_v2.1.0": {
+    "vehicle_catalogue": "70 brands and 847 models; includes every existing public-site vehicle, older cars and imports; manual entries support missing makes/models",
+    "public_unit": "passed: 276 approved rate figures and 41 unit/server/build checks",
+    "admin_unit": "passed: 13 tests, including catalogue uniqueness/field lengths, public-site compatibility, alias searches and IST year rollover",
+    "admin_browser": "passed: 41 fictional mocked-response checks, including dependent models, catalogue search, manual entries, mobile layout, saved out-of-catalogue values, year/fuel preservation, stale-model prevention and existing private billing flows",
+    "public_reliability": "passed: 41 checks for booking, reviews, address and Google location",
+    "database": "existing make/model/year/fuel fields used; no schema migration required; current owner permissions and issued-invoice snapshots preserved",
+    "scope": "customer vehicle create/edit and manual enquiry create/edit; saved-vehicle labels in job-card/invoice selectors show year and fuel",
+    "external_integration": "WhatsApp automation left aside at the owner request; catalogue needs no paid API or live third-party data source",
+    "verification_limit": "browser writes used fictional HTTP fixtures, not real customer records; live Supabase is owner-managed"
   }
 }

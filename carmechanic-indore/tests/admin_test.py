@@ -28,7 +28,8 @@ try:
         pg.screenshot(path=str(OUT/'setup-desktop.png'),full_page=True);pg.close()
         state={'owner':True,'fail':False}
         customers=[{'id':cid,'name':'Fictional Customer','mobile':'9000000000','address':'Test billing address','state_code':'23','email':'','gstin':None,'notes':'','archived':False,'version':1,'vehicle_count':1,'created_at':'2026-10-31T00:00:00Z'}]
-        vehicle={'id':vid,'customer_id':cid,'make':'Test','model':'Test car','registration':'MP09TEST','fuel':'petrol','year':2025,'version':1}
+        vehicle={'id':vid,'customer_id':cid,'make':'Test','model':'Test car','registration':'MP09TEST','fuel':'petrol','year':2050,'version':1}
+        vehicles=[vehicle];bookings=[]
         profile={'id':True,'invoice_name':'Garagewala','phone':'8965957978','address':'Test garage address','state_code':'23','gstin':None,'billing_ready':True,'invoice_prefix':'GW','invoice_footer':'Thank you','version':1}
         iid='55555555-5555-4555-8555-555555555555'
         invoice={'id':iid,'customer_id':cid,'customer_name':'Fictional Customer','mobile':'9000000000','number':'GW/2026-27/0001','status':'issued','issue_date':'2026-10-31','due_date':None,'tax_mode':'none','supply_state':'23','total_paise':100001,'subtotal_paise':100001,'discount_paise':0,'cgst_paise':0,'sgst_paise':0,'igst_paise':0,'paid_paise':0,'due_paise':100001,'version':3,'supplier_snapshot':{'name':'Garagewala','address':'Test garage address','phone':'8965957978','footer':'Thank you'},'buyer_snapshot':{'name':'Fictional <img onerror=x>','mobile':'9000000000','address':'Test billing address'},'vehicle_snapshot':{'make':'Test','model':'Test car','registration':'MP09TEST'}}
@@ -58,10 +59,19 @@ try:
                 if table=='customers':
                     if req.method=='POST':customers.append({**customers[0],**data,'id':'99999999-9999-4999-8999-999999999999'})
                     return send([{'id':cid}] if req.method=='PATCH' else {'id':cid},201)
+                if table=='vehicles':
+                    if req.method=='POST':
+                        record={**data,'id':'aaaaaaaa-aaaa-4aaa-8aaa-'+str(len(vehicles)).zfill(12),'version':1};vehicles.append(record);return send({'id':record['id']},201)
+                    record=next(v for v in vehicles if v['id']==parse_qs(url.query)['id'][0][3:]);record.update(data);record['version']+=1;return send([{'id':record['id']}])
+                if table=='bookings':
+                    if req.method=='POST':
+                        record={**data,'id':'bbbbbbbb-bbbb-4bbb-8bbb-'+str(len(bookings)).zfill(12),'reference':'GW-B000001','version':1,'job_id':None};bookings.append(record);return send({'id':record['id']},201)
+                    record=next(b for b in bookings if b['id']==parse_qs(url.query)['id'][0][3:]);record.update(data);record['version']+=1;return send([{'id':record['id']}])
                 if table=='garage_profile':
                     profile.update(data);profile['version']+=1;return send([{'id':True}])
                 return send({'id':vid},201)
-            data=customers if table in ['customers','admin_customers'] else [vehicle] if table=='vehicles' else [profile] if table=='garage_profile' else [invoice] if table=='admin_invoices' else invoice_items if table=='invoice_items' else payments if table in ['payments','admin_payments'] else []
+            data=customers if table in ['customers','admin_customers'] else vehicles if table=='vehicles' else [profile] if table=='garage_profile' else [invoice] if table=='admin_invoices' else invoice_items if table=='invoice_items' else payments if table in ['payments','admin_payments'] else bookings if table in ['bookings','admin_bookings'] else []
+            if req.method=='GET' and 'id' in parse_qs(url.query):data=[r for r in data if str(r.get('id')).lower()==parse_qs(url.query)['id'][0][3:].lower()]
             single='application/vnd.pgrst.object+json' in req.headers.get('accept','')
             return send(data[0] if single and data else data,extra={'content-range':f'0-{max(0,len(data)-1)}/{len(data)}'})
         ctx.route('https://test.supabase.co/**',route_api)
@@ -79,7 +89,38 @@ try:
         state['fail']=False;pg.get_by_role('button',name='Save changes',exact=True).click();expect(pg.locator('#editor')).not_to_be_visible();expect(pg.get_by_text('<img src=x onerror=alert(1)>',exact=True)).to_be_visible()
         check(writes[-1][1]['name']=='<img src=x onerror=alert(1)>','Enabled form submits actual values instead of empty disabled fields')
         check(pg.locator('main img[src=x]').count()==0,'Customer HTML renders as text without execution')
-        pg.get_by_role('button',name='Bookings',exact=True).click();pg.get_by_role('button',name='+ Add enquiry',exact=True).click();pg.get_by_label('Customer name',exact=True).fill('Test caller');pg.get_by_label('Mobile number',exact=True).fill('9000000002');pg.get_by_label('Car model',exact=True).fill('Test car');pg.get_by_label('Requested services',exact=False).fill('Brake service');pg.get_by_role('button',name='Save changes',exact=True).click();expect(pg.locator('#editor')).not_to_be_visible();check(writes[-1][1]['source']=='call' and writes[-1][1]['services']==['Brake service'],'Call enquiry records entered number and services')
+        vehicle_shots=Path('/workspace/website-review/vehicles-v2.1.0');vehicle_shots.mkdir(parents=True,exist_ok=True)
+        def open_customer():
+            pg.locator('tbody tr').filter(has_text='Fictional Customer').get_by_role('button',name='Open',exact=True).click()
+            expect(pg.get_by_role('button',name='+ Add vehicle',exact=True)).to_be_visible()
+        open_customer();pg.get_by_role('button',name='+ Add vehicle',exact=True).click()
+        check(pg.locator('[data-vehicle-brand] option').count()>=72 and pg.get_by_label('Car model',exact=True).is_disabled(),'New vehicle offers the full brand dropdown and waits for a brand before models')
+        pg.get_by_label('Search make or model',exact=True).fill('Maruti Swift');pg.get_by_label('Matching vehicles',exact=True).select_option(label='Maruti Suzuki · Swift')
+        check(pg.get_by_label('Brand',exact=True).input_value()=='maruti' and pg.get_by_label('Car model',exact=True).input_value()=='Swift','Catalogue search fills the corresponding make and model')
+        pg.get_by_label('Year (optional)',exact=True).select_option('2022');pg.get_by_label('Fuel',exact=True).select_option('cng');pg.get_by_label('Registration (optional)',exact=True).fill('mp09ab1234');pg.get_by_label('Vehicle notes',exact=True).fill('VXi, manual transmission')
+        pg.locator('#editor').screenshot(path=str(vehicle_shots/'new-vehicle-desktop.png'))
+        pg.get_by_role('button',name='Save changes',exact=True).click();expect(pg.locator('#editor')).not_to_be_visible()
+        check(writes[-1][0]=='vehicles' and all(writes[-1][1][k]==v for k,v in {'make':'Maruti Suzuki','model':'Swift','year':2022,'fuel':'cng','registration':'MP09AB1234'}.items()),'Vehicle save sends readable make/model, numeric year, fuel and normalised registration')
+        check(set(writes[-1][1])=={'customer_id','make','model','year','fuel','registration','notes'},'Search controls and catalogue IDs are excluded from database writes')
+        open_customer();pg.locator('#editor .detail-list li').filter(has_text='Test Test car').get_by_role('button',name='Edit',exact=True).click()
+        check(pg.get_by_label('Brand',exact=True).input_value()=='gw:saved' and pg.get_by_label('Car model',exact=True).input_value()=='gw:saved' and pg.get_by_label('Year (optional)',exact=True).input_value()=='2050','Saved unlisted vehicles and unusual supported years stay selectable')
+        pg.get_by_label('Vehicle notes',exact=True).fill('Notes-only edit');pg.get_by_role('button',name='Save changes',exact=True).click();expect(pg.locator('#editor')).not_to_be_visible()
+        check(all(writes[-1][1][k]==v for k,v in {'make':'Test','model':'Test car','year':2050,'fuel':'petrol'}.items()),'Editing notes preserves saved vehicle details outside the catalogue')
+        open_customer();pg.get_by_role('button',name='+ Add vehicle',exact=True).click();pg.get_by_label('Search make or model',exact=True).fill('unknown-brand-1234')
+        expect(pg.locator('[data-vehicle-search-status]')).to_contain_text('No matches')
+        pg.get_by_label('Brand',exact=True).select_option('gw:custom');pg.get_by_label('Other brand name',exact=True).fill('Unlisted Motors');pg.get_by_label('Car model',exact=True).select_option('gw:custom');pg.get_by_label('Other model name',exact=True).fill('<img src=x onerror=alert(1)>');pg.get_by_label('Year (optional)',exact=True).select_option('gw:custom');pg.get_by_label('Other year',exact=True).fill('2035');pg.get_by_label('Fuel',exact=True).select_option('electric')
+        pg.set_viewport_size({'width':390,'height':844});check(pg.evaluate('document.documentElement.scrollWidth<=innerWidth') and pg.locator('[data-vehicle-fields]').evaluate('e=>e.scrollWidth<=e.clientWidth'),'Vehicle dropdowns and manual fields fit mobile screens')
+        pg.locator('#editor').screenshot(path=str(vehicle_shots/'new-vehicle-mobile.png'));pg.get_by_role('button',name='Save changes',exact=True).click();expect(pg.locator('#editor')).not_to_be_visible();pg.set_viewport_size({'width':1366,'height':900})
+        check(writes[-1][1]['make']=='Unlisted Motors' and writes[-1][1]['year']==2035 and writes[-1][1]['fuel']=='electric','Manual brand, model and year entries support cars missing from the list')
+        open_customer();pg.locator('#editor .detail-list li').filter(has_text='Unlisted Motors').get_by_role('button',name='Edit',exact=True).click()
+        check(pg.locator('#editor img[src=x]').count()==0 and pg.get_by_label('Car model',exact=True).locator('option:checked').text_content()=='<img src=x onerror=alert(1)> (saved)','Unlisted saved names are escaped in dropdown options')
+        pg.get_by_role('button',name='Cancel',exact=True).click()
+        pg.get_by_role('button',name='Bookings',exact=True).click();pg.get_by_role('button',name='+ Add enquiry',exact=True).click();pg.get_by_label('Customer name',exact=True).fill('Test caller');pg.get_by_label('Mobile number',exact=True).fill('9000000002');pg.get_by_label('Brand',exact=True).select_option('hyundai');pg.get_by_label('Car model',exact=True).select_option('i20');pg.get_by_label('Year (optional)',exact=True).select_option('2016');pg.get_by_label('Fuel',exact=True).select_option('diesel');pg.get_by_label('Requested services',exact=False).fill('Brake service');pg.get_by_role('button',name='Save changes',exact=True).click();expect(pg.locator('#editor')).not_to_be_visible();check(writes[-1][1]['source']=='call' and writes[-1][1]['services']==['Brake service'],'Call enquiry records entered number and services')
+        check(writes[-1][1]['make']=='Hyundai' and writes[-1][1]['model']=='i20' and writes[-1][1]['year']==2016 and writes[-1][1]['fuel']=='diesel','Manual enquiries use the same full vehicle dropdowns')
+        pg.get_by_role('button',name='Open',exact=True).click();pg.get_by_role('button',name='Edit enquiry',exact=True).click();check(pg.get_by_label('Year (optional)',exact=True).input_value()=='2016' and pg.get_by_label('Fuel',exact=True).input_value()=='diesel','Editing an enquiry restores its saved year and fuel')
+        pg.get_by_label('Brand',exact=True).select_option('toyota');check(pg.get_by_label('Car model',exact=True).input_value()=='','Changing make clears the previous make’s model')
+        before=len(writes);pg.get_by_role('button',name='Save changes',exact=True).click();check(pg.locator('#editor').is_visible() and len(writes)==before,'A model must be selected again after changing make')
+        pg.get_by_label('Car model',exact=True).select_option('Fortuner');pg.get_by_role('button',name='Save changes',exact=True).click();expect(pg.locator('#editor')).not_to_be_visible();check(writes[-1][1]['make']=='Toyota' and writes[-1][1]['model']=='Fortuner' and writes[-1][1]['year']==2016,'Enquiry edits save the selected make/model without losing the year')
         pg.get_by_role('button',name='Invoices',exact=True).click();pg.get_by_role('button',name='+ Draft invoice',exact=True).click();expect(pg.locator('select[name=customer_id] option')).to_have_count(3);pg.select_option('select[name=customer_id]',cid);pg.get_by_label('Item / labour description',exact=True).fill('Oil service');pg.locator('[data-item=price]').fill('1000.01');pg.locator('[data-item=quantity]').fill('1.125');expect(pg.locator('[data-total]')).to_contain_text('1,125.01');pg.get_by_role('button',name='Save draft',exact=True).click();expect(pg.locator('#editor')).not_to_be_visible();check(writes[-1][1]['p_items'][0]['unit_price_paise']==100001,'Invoice submits integer paise for server calculation')
         pg.get_by_role('button',name='Job cards',exact=True).click();pg.get_by_role('button',name='+ Create job card',exact=True).click();pg.select_option('select[name=customer_id]',cid);pg.get_by_role('button',name='+ Add task',exact=True).click();pg.get_by_label('Task description',exact=True).fill('Inspect front suspension');pg.get_by_role('button',name='Save changes',exact=True).click();expect(pg.locator('#editor')).not_to_be_visible();check(writes[-1][1]['tasks']==[{'description':'Inspect front suspension','done':False}],'Job card saves task checklist and pending approval')
         pg.get_by_role('button',name='Settings',exact=True).click();expect(pg.get_by_role('heading',name='Garage settings')).to_be_visible();check(pg.get_by_label('GSTIN · registered business only',exact=True).input_value()=='','No GST registration is invented')

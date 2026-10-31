@@ -1,4 +1,4 @@
-# Garagewala owner workspace · v2.0.2
+# Garagewala owner workspace · v2.1.0
 
 The public connection settings now point to project `oraooxeefxcwmwgycrei`. **Database and owner-account setup still need to be completed and verified** through the owner's Supabase dashboard. The public site continues to use WhatsApp booking by default. Publishing the admin files does not publish customer records. The owner's email and password are not placed in public website files.
 
@@ -103,3 +103,10 @@ and **Save settings** to write it to your private business profile. This require
 your owner session. Copying the text does not save automatically; legal billing
 details remain under owner control. Newly issued invoices use the saved profile,
 and existing issued invoices keep their original snapshots.
+
+## Vehicle entry
+
+The customer vehicle and manual enquiry forms share the searchable make/model,
+year and fuel dropdowns. Missing makes/models can be entered manually; saved
+values outside the catalogue are preserved. This update uses the existing
+vehicle/booking tables. See [vehicle entry](VEHICLE_DROPDOWNS.md).

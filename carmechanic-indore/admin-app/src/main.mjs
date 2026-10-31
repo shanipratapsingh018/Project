@@ -10,6 +10,11 @@ import {
   message,
 } from "./core.mjs";
 import { printInvoice } from "./print.mjs";
+import {
+  vehicleFieldsHtml,
+  mountVehicleFields,
+  readVehicleFields,
+} from "./vehicle-picker.mjs";
 const app = document.querySelector("#app"),
   dialog = document.querySelector("#editor");
 const settings = backendConfig(window.GW_BACKEND);
@@ -50,7 +55,8 @@ let client,
   filter = "",
   rows = [],
   epoch = 0,
-  recoveryRequested = new URLSearchParams(location.hash.slice(1)).get("type") === "recovery",
+  recoveryRequested =
+    new URLSearchParams(location.hash.slice(1)).get("type") === "recovery",
   idleTimer;
 const take = 25;
 const check = ({ data, error }) => {
@@ -481,7 +487,7 @@ async function customerDetail(id) {
   if (!owner || generation !== epoch) return;
   modal(
     c.name,
-    `<div class="actions"><a class="btn" href="tel:+91${e(c.mobile)}">Call ${e(c.mobile)}</a><a class="btn" target="_blank" rel="noopener noreferrer" href="https://wa.me/91${e(c.mobile)}">WhatsApp</a>${btn("Edit customer", "edit")}${btn("+ Add vehicle", "vehicle")}</div><p class="small muted" style="margin-top:1rem">${e(c.address || "No billing address added.")}<br>${e(c.email)} ${c.gstin ? `· GSTIN ${e(c.gstin)}` : ""}</p><p class="small">${e(c.notes)}</p><h3 class="detail-title">Vehicles</h3><ul class="detail-list">${vehicles.data.map((v) => `<li><span>${e(v.make)} ${e(v.model)} · ${e(v.registration || "Registration pending")}</span>${btn("Edit", `vehicle:${v.id}`)}</li>`).join("") || "<li>No vehicles yet.</li>"}</ul><h3 class="detail-title">Recent job cards (latest 20)</h3><ul class="detail-list">${jobs.data.map((j) => `<li><span>${e(j.reference)} · ${e(j.status.replaceAll("_", " "))}</span>${btn("Open", `job:${j.id}`)}</li>`).join("") || "<li>No jobs yet.</li>"}</ul><h3 class="detail-title">Recent invoices (latest 20)</h3><ul class="detail-list">${invoices.data.map((i) => `<li><span>${e(i.number || "Draft")} · ${money(i.total_paise)} · ${e(i.status)}</span>${btn("Open", `invoice:${i.id}`)}</li>`).join("") || "<li>No invoices yet.</li>"}</ul>`,
+    `<div class="actions"><a class="btn" href="tel:+91${e(c.mobile)}">Call ${e(c.mobile)}</a><a class="btn" target="_blank" rel="noopener noreferrer" href="https://wa.me/91${e(c.mobile)}">WhatsApp</a>${btn("Edit customer", "edit")}${btn("+ Add vehicle", "vehicle")}</div><p class="small muted" style="margin-top:1rem">${e(c.address || "No billing address added.")}<br>${e(c.email)} ${c.gstin ? `· GSTIN ${e(c.gstin)}` : ""}</p><p class="small">${e(c.notes)}</p><h3 class="detail-title">Vehicles</h3><ul class="detail-list">${vehicles.data.map((v) => `<li><span>${e(v.make)} ${e(v.model)} · ${e(v.year || "Year unknown")} · ${e(v.fuel)} · ${e(v.registration || "Registration pending")}</span>${btn("Edit", `vehicle:${v.id}`)}</li>`).join("") || "<li>No vehicles yet.</li>"}</ul><h3 class="detail-title">Recent job cards (latest 20)</h3><ul class="detail-list">${jobs.data.map((j) => `<li><span>${e(j.reference)} · ${e(j.status.replaceAll("_", " "))}</span>${btn("Open", `job:${j.id}`)}</li>`).join("") || "<li>No jobs yet.</li>"}</ul><h3 class="detail-title">Recent invoices (latest 20)</h3><ul class="detail-list">${invoices.data.map((i) => `<li><span>${e(i.number || "Draft")} · ${money(i.total_paise)} · ${e(i.status)}</span>${btn("Open", `invoice:${i.id}`)}</li>`).join("") || "<li>No invoices yet.</li>"}</ul>`,
   );
   dialog.querySelectorAll("[data-action]").forEach(
     (b) =>
@@ -498,30 +504,30 @@ async function customerDetail(id) {
   );
 }
 function editVehicle(customer, row = {}) {
-  formModal(
+  const form = formModal(
     "Vehicle · " + customer.name,
-    `<div class="grid">${field("make", "Brand", row.make, "text", 'maxlength="60"')}${field("model", "Model", row.model, "text", 'required maxlength="80"')}${field("registration", "Registration (optional)", row.registration, "text", 'maxlength="20" pattern="[A-Z0-9 -]{3,20}"')}${field("year", "Year (optional)", row.year, "number", 'min="1950" max="2100"')}${dropdown("fuel", "Fuel", ["petrol", "diesel", "cng", "electric", "hybrid", "other"], row.fuel || "other")}${area("notes", "Vehicle notes", row.notes, 1000)}</div>`,
-    (data) =>
+    `<div class="grid">${vehicleFieldsHtml(row)}${area("notes", "Vehicle notes", row.notes, 1000)}</div>`,
+    (data, currentForm) =>
       write("vehicles", row, {
         ...data,
         customer_id: customer.id,
-        registration: data.registration.trim().toUpperCase() || null,
-        year: data.year ? Number(data.year) : null,
+        ...readVehicleFields(currentForm),
       }),
   );
+  mountVehicleFields(form, row);
 }
 function bookingFields(row) {
-  return `<div class="grid">${field("name", "Customer name", row.name, "text", 'required minlength="2" maxlength="120"')}${field("mobile", "Mobile number", row.mobile, "tel", 'required pattern="[6-9][0-9]{9}" maxlength="10"')}${field("make", "Brand", row.make, "text", 'maxlength="60"')}${field("model", "Car model", row.model, "text", 'required maxlength="80"')}${field("registration", "Registration (optional)", row.registration, "text", 'maxlength="20" pattern="[A-Z0-9 -]{3,20}"')}${dropdown("source", "Enquiry source", ["call", "whatsapp", "walk_in"], row.source || "call")}${dropdown("contact_method", "Preferred contact", ["call", "whatsapp"], row.contact_method || "whatsapp")}${field("preferred_date", "Preferred date", row.preferred_date, "date")}${field("preferred_time", "Preferred time", row.preferred_time, "text", 'maxlength="60"')}${dropdown("status", "Status", statuses.bookings, row.status || "new")}${area("services", "Requested services · one per line", (row.services || []).join("\n"), 2000)}${area("notes", "Enquiry notes", row.notes, 3000)}</div>`;
+  return `<div class="grid">${field("name", "Customer name", row.name, "text", 'required minlength="2" maxlength="120"')}${field("mobile", "Mobile number", row.mobile, "tel", 'required pattern="[6-9][0-9]{9}" maxlength="10"')}${vehicleFieldsHtml(row)}${dropdown("source", "Enquiry source", ["call", "whatsapp", "walk_in"], row.source || "call")}${dropdown("contact_method", "Preferred contact", ["call", "whatsapp"], row.contact_method || "whatsapp")}${field("preferred_date", "Preferred date", row.preferred_date, "date")}${field("preferred_time", "Preferred time", row.preferred_time, "text", 'maxlength="60"')}${dropdown("status", "Status", statuses.bookings, row.status || "new")}${area("services", "Requested services · one per line", (row.services || []).join("\n"), 2000)}${area("notes", "Enquiry notes", row.notes, 3000)}</div>`;
 }
 function editBooking(row = {}) {
-  formModal(
+  const form = formModal(
     row.id ? "Edit enquiry" : "Add enquiry",
     bookingFields(row),
-    (data) =>
+    (data, currentForm) =>
       write("bookings", row, {
         ...data,
         source: row.source === "website" ? "website" : data.source,
-        registration: data.registration.trim().toUpperCase() || null,
+        ...readVehicleFields(currentForm),
         preferred_date: data.preferred_date || null,
         services: data.services
           .split("\n")
@@ -529,6 +535,7 @@ function editBooking(row = {}) {
           .filter(Boolean),
       }),
   );
+  mountVehicleFields(form, row);
 }
 async function bookingDetail(id) {
   const generation = epoch,
@@ -536,7 +543,7 @@ async function bookingDetail(id) {
   if (!owner || generation !== epoch) return;
   modal(
     b.reference,
-    `<div class="actions">${badge(b.status)}${btn("Edit enquiry", "edit")}${btn(b.job_id ? "Open job card" : "Create job card", "convert", "primary")}</div><h3 class="detail-title">Customer & vehicle</h3><p><strong>${e(b.name)}</strong> · ${e(b.mobile)}<br>${e(b.make)} ${e(b.model)} · ${e(b.registration || "Registration pending")}</p><p class="small muted">${e(b.source)} enquiry · Contact by ${e(b.contact_method)} · ${e(b.preferred_date || "Date to confirm")} ${e(b.preferred_time)}</p><h3 class="detail-title">Requested services</h3><p>${b.services.map(e).join(", ") || "To confirm"}</p><p class="small">${e(b.notes)}</p>${b.pickup ? `<div class="notice">Pickup requested: ${e(b.address)} · ${e(b.pin)}</div>` : ""}${b.estimate_text ? `<p class="small muted">Customer estimate: ${e(b.estimate_text)}. Confirm pricing before work.</p>` : ""}${errorBox}`,
+    `<div class="actions">${badge(b.status)}${btn("Edit enquiry", "edit")}${btn(b.job_id ? "Open job card" : "Create job card", "convert", "primary")}</div><h3 class="detail-title">Customer & vehicle</h3><p><strong>${e(b.name)}</strong> · ${e(b.mobile)}<br>${e(b.make)} ${e(b.model)} · ${e(b.year || "Year unknown")} · ${e(b.fuel)} · ${e(b.registration || "Registration pending")}</p><p class="small muted">${e(b.source)} enquiry · Contact by ${e(b.contact_method)} · ${e(b.preferred_date || "Date to confirm")} ${e(b.preferred_time)}</p><h3 class="detail-title">Requested services</h3><p>${b.services.map(e).join(", ") || "To confirm"}</p><p class="small">${e(b.notes)}</p>${b.pickup ? `<div class="notice">Pickup requested: ${e(b.address)} · ${e(b.pin)}</div>` : ""}${b.estimate_text ? `<p class="small muted">Customer estimate: ${e(b.estimate_text)}. Confirm pricing before work.</p>` : ""}${errorBox}`,
   );
   dialog.querySelector("[data-action=edit]").onclick = () => editBooking(b);
   dialog.querySelector("[data-action=convert]").onclick = async (event) => {
@@ -574,7 +581,7 @@ async function customerPicker(form, current, vehicle) {
         ["", "No vehicle selected"],
         ...result.map((v) => [
           v.id,
-          `${v.make} ${v.model} · ${v.registration || "No registration"}`,
+          `${v.make} ${v.model} · ${v.year || "Year unknown"} · ${v.fuel} · ${v.registration || "No registration"}`,
         ]),
       ],
       selected,
@@ -738,15 +745,13 @@ async function jobDetail(id) {
       );
       try {
         check(
-          await client
-            .from("job_files")
-            .insert({
-              job_id: id,
-              object_path: path,
-              label: file.name.slice(0, 160),
-              mime: file.type,
-              bytes: file.size,
-            }),
+          await client.from("job_files").insert({
+            job_id: id,
+            object_path: path,
+            label: file.name.slice(0, 160),
+            mime: file.type,
+            bytes: file.size,
+          }),
         );
       } catch (err) {
         await client.storage.from("garagewala-private").remove([path]);
@@ -946,11 +951,13 @@ function settingsPage(content, p) {
     : "";
   content.innerHTML = `<div class="page-head"><div><p class="eyebrow">Invoice identity</p><h1>Garage settings</h1><p>Use your legal billing details. These are separate from public website content.</p></div></div><section class="panel"><form class="fields" id="profile"><fieldset class="fields"><div class="grid">${field("invoice_name", "Invoice / business name", p.invoice_name, "text", 'required minlength="2" maxlength="120"')}${field("phone", "Business mobile", p.phone, "tel", 'required pattern="[6-9][0-9]{9}" maxlength="10"')}${area("address", "Full legal billing address", p.address, 600)}${workshopAddressCard}${field("state_code", "State code (MP = 23)", p.state_code, "text", 'required pattern="(0[1-9]|[12][0-9]|3[0-8])" maxlength="2"')}${field("gstin", "GSTIN · registered business only", p.gstin, "text", 'maxlength="15" pattern="[0-9A-Z]{15}"')}${field("invoice_prefix", "Invoice prefix", p.invoice_prefix, "text", 'required pattern="[A-Z0-9-]{1,8}" maxlength="8"')}${area("invoice_footer", "Invoice footer", p.invoice_footer, 500)}<label class="check full"><input type="checkbox" name="billing_ready" ${p.billing_ready ? "checked" : ""}>I have checked the billing name, address and tax registration details.</label></div><div class="notice">Leave GSTIN empty if you are not GST registered. No GST is the default. Invoice numbers follow the Indian financial year; issued details are saved as a snapshot.</div>${errorBox}<div class="form-actions"><button class="btn primary">Save settings</button></div></fieldset></form></section><section class="panel"><h2>Privacy & access</h2><p class="small muted">Only accounts listed as owners in the database can access records. There is no public sign-up. Your session is kept in memory and signs out after 20 minutes of inactivity. Reloading requires a fresh login.</p><p class="small muted">Use Supabase’s dashboard to manage owners and exports. Follow the backup and account recovery steps in the setup guide.</p></section>`;
   const form = content.querySelector("#profile");
-  content.querySelector("[data-use-workshop-address]")?.addEventListener("click", () => {
-    form.elements.address.value = workshopAddress;
-    form.elements.billing_ready.checked = false;
-    form.elements.address.focus();
-  });
+  content
+    .querySelector("[data-use-workshop-address]")
+    ?.addEventListener("click", () => {
+      form.elements.address.value = workshopAddress;
+      form.elements.billing_ready.checked = false;
+      form.elements.address.focus();
+    });
   form.onsubmit = async (event) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(form)),
@@ -1042,7 +1049,14 @@ else {
       event === "PASSWORD_RECOVERY" ||
       event === "INITIAL_SESSION"
     ) {
-      setTimeout(() => authenticate(session, event === "PASSWORD_RECOVERY" || recoveryRequested), 0);
+      setTimeout(
+        () =>
+          authenticate(
+            session,
+            event === "PASSWORD_RECOVERY" || recoveryRequested,
+          ),
+        0,
+      );
     } else if (event === "TOKEN_REFRESHED" && !session) {
       lock();
       authPage("Your session expired.");

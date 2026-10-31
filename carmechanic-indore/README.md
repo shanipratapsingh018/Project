@@ -1,4 +1,4 @@
-# Garagewala — Your Car. Our Care. · v2.0.2
+# Garagewala — Your Car. Our Care. · v2.1.0
 
 A ready-to-run static garage website branded **Garagewala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form and WhatsApp booking. Node.js 18+ is needed for local serving
@@ -30,6 +30,10 @@ Open https://shanipratapsingh018.github.io/Project/admin/ or the **Owner login**
 It includes customers and vehicles, manual and website enquiries, job cards and customer approval,
 private job attachments, itemised invoices, printing/Save as PDF, payment records and billing settings.
 Owner membership is checked by database policies. Invoice amounts and payment balances are checked by SQL functions.
+
+Vehicle forms now have searchable dropdowns for 70 brands and 847 models, dependent model selection,
+year and fuel choices, saved-value preservation and manual entries for missing vehicles. The same
+picker is used for customer vehicles and manual enquiries. See [vehicle dropdowns](docs/VEHICLE_DROPDOWNS.md).
 
 Public connection settings point to project `oraooxeefxcwmwgycrei`. Login requires the database migrations,
 an Auth user and owner membership; the owner has reported completing initial database setup.

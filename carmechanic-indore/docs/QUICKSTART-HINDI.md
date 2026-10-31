@@ -1,9 +1,9 @@
-# Garagewala — Your Car. Our Care. · v2.0.2
+# Garagewala — Your Car. Our Care. · v2.1.0
 
 Live website: https://shanipratapsingh018.github.io/Project/
 Services page: https://shanipratapsingh018.github.io/Project/services.html
 
-Naya version kholne ke liye URL ke end mein `?v=2.0.2` laga sakte ho.
+Naya version kholne ke liye URL ke end mein `?v=2.1.0` laga sakte ho.
 GitHub Pages static website hai; live update `gh-pages` branch par push hone ke baad automatically deploy hota hai.
 
 # Website kaise chalayein
@@ -60,3 +60,9 @@ source information data files mein sahi rakhi gayi hai.
 Homepage se alag workshop photo hata di hai. Ab introduction aur calculator ke neeche
 ek hi full-width slider hai, total 20 service/repair photos ke saath. Next/Previous aur
 mobile swipe pehle jaise hain. Home button ka orange rang har page par same hai.
+
+## Admin vehicle selection
+
+Customers → Open customer → Add vehicle mein brand/model search ya dropdown use karein.
+Bookings → Add enquiry mein bhi wahi fields hain. Year aur fuel select karein; vehicle
+list mein na mile to Other brand / Other model se naam type karke save kar sakte hain.
