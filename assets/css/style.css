@@ -721,3 +721,23 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
 @media (max-width: 1180px) { .nav a.nav-home { align-self: flex-start; justify-content: flex-start; min-height: 44px; min-width: 116px; padding: 10px 16px; } }
 
 @media (max-width: 640px) { .service-slide { aspect-ratio: 4 / 3; } }
+
+/* Icon buttons for the main menu. */
+.site-header > .wrap { max-width: 1480px; gap: 14px; }
+.nav { gap: 6px; }
+.nav a.nav-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 9px 10px; border: 1px solid #414850; border-radius: 13px; background: linear-gradient(155deg, #2b3036, #1d2126); color: #e7ebef; font: 600 .82rem/1.2 var(--f-body); text-decoration: none; white-space: nowrap; box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 3px 8px rgba(0,0,0,.12); transition: border-color .15s, background .15s, box-shadow .15s; }
+.nav-button svg { width: 16px; height: 16px; flex: none; color: #ff9a5f; }
+.nav a.nav-button:hover { background: linear-gradient(155deg, #3c3028, #27221f); border-color: #ff9a5f; color: #fff; box-shadow: 0 3px 14px rgba(255,107,26,.14); }
+.nav a.nav-button:not(.nav-home)[aria-current="page"] { color: #fff; border-color: #ff9a5f; background: linear-gradient(135deg, #543423, #30271f); box-shadow: inset 0 1px 0 rgba(255,193,148,.12), 0 0 0 1px rgba(255,107,26,.14); }
+.nav a.nav-button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.nav a.nav-button.nav-home, .nav a.nav-button.nav-home:hover { border-radius: 999px; border-color: #ffab72; background: linear-gradient(135deg, #ff9a4c, #ff6b1a); color: #241004; box-shadow: 0 3px 14px rgba(255,107,26,.2), inset 0 1px 0 rgba(255,255,255,.25); }
+.nav-button.nav-home svg { color: inherit; }
+@media (max-width: 1280px) {
+  .site-header .nav { display: none; position: absolute; inset: 100% 0 auto; margin: 0; padding: 14px 16px 18px; background: #141619; border-bottom: 1px solid var(--steel); grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .site-header .nav.open { display: grid; }
+  .site-header .menu-btn { display: inline-grid; place-items: center; margin-left: auto; }
+  .site-header .header-actions .btn { display: none; }
+  .nav a.nav-button, .nav a.nav-button.nav-home { align-self: stretch; justify-content: flex-start; min-height: 48px; min-width: 0; padding: 12px; border-radius: 13px; }
+  .nav-button span { min-width: 0; white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) { .nav a.nav-button { transition: none; } }
