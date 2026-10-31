@@ -644,7 +644,7 @@
     const pre = F.draft(C, store.get("cmi-booking"));
     try { const qs = new URLSearchParams(location.search).get("service"); if (qs && Object.hasOwn(svcById, qs) && !(pre.services || []).includes(qs)) { pre.services = [qs]; delete pre.estimate; } } catch (e) {}
     const steps = $$("[data-bstep]", root);
-    let step = 0, sending = false;
+    let step = 0, sending = false, requestSignature = "", requestId = "";
     const f = $("form", root);
     const brand = $("#b-brand", f), model = $("#b-model", f), modelOther = $("#b-model-other", f), year = $("#b-year", f);
     fillBrands(brand); fillModels(model, ""); fillYears(year);
@@ -817,7 +817,13 @@
         try {
           const endpoint = new URL(B.bookingEndpoint, location.href);
           if (endpoint.protocol !== "https:" && !(endpoint.origin === location.origin && endpoint.protocol === "http:")) throw new Error("Unsafe endpoint");
-          const res = await fetch(endpoint.href, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(p), signal: controller.signal, referrerPolicy: "no-referrer" });
+          const body = JSON.stringify(p);
+          const headers = { "Content-Type": "application/json", ...(B.bookingHeaders || {}) };
+          if (B.bookingIdempotency) {
+            if (requestSignature !== body) { requestSignature = body; requestId = crypto.randomUUID(); }
+            headers["X-Idempotency-Key"] = requestId;
+          }
+          const res = await fetch(endpoint.href, { method: "POST", headers, body, signal: controller.signal, referrerPolicy: "no-referrer", credentials: "omit" });
           if (!res.ok) throw new Error("HTTP " + res.status);
           f.hidden = true; store.remove("cmi-booking");
           out.innerHTML = `<div class="success"><div class="status status--ok"><div><strong>Request received.</strong>We'll contact you on ${esc(p.mobile)} to confirm the slot and quotation. Your booking is confirmed only after we call or message you.</div></div></div>`;
