@@ -12,7 +12,7 @@
     business: {
       name: "Garagewala",
       shortName: "Garagewala",
-      tagline: "Nice Car Mechanic · Indore",
+      tagline: "Your Car. Our Care. · Indore",
       city: "Indore",
       timeZone: "Asia/Kolkata",
       state: "Madhya Pradesh",

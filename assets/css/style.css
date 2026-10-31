@@ -711,3 +711,11 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
 .service-slider-controls [data-slide-prev] svg { transform: rotate(180deg); }
 .service-slider-controls [data-slide-count] { color: var(--fog); font: 500 .78rem var(--f-mono); white-space: nowrap; }
 .service-swipe-hint { padding: 12px 20px; font-size: .85rem; color: var(--fog); }
+
+/* Home remains easy to find on every page. */
+.nav a.nav-home { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 12px; border: 1px solid rgba(255,139,66,.5); border-radius: 999px; background: rgba(255,107,26,.08); color: #ffb07b; font-weight: 600; transition: background .15s, border-color .15s, box-shadow .15s; }
+.nav-home svg { width: 18px; height: 18px; flex: none; }
+.nav a.nav-home:hover { background: rgba(255,107,26,.18); border-color: #ff9a58; color: #fff; }
+.nav a.nav-home[aria-current="page"] { background: linear-gradient(135deg, #ff9a4c, #ff6b1a); color: #241004; border-color: #ffab72; box-shadow: 0 3px 14px rgba(255,107,26,.2), inset 0 1px 0 rgba(255,255,255,.25); }
+.nav a.nav-home:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (max-width: 1180px) { .nav a.nav-home { align-self: flex-start; justify-content: flex-start; min-height: 44px; min-width: 116px; padding: 10px 16px; } }
