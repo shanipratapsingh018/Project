@@ -109,6 +109,7 @@ ${Object.entries(P).map(([k, d]) => `<symbol id="i-${k}" viewBox="0 0 24 24" fil
 const ic = (n, cls = "") => `<svg viewBox="0 0 24 24" ${cls ? `class="${cls}" ` : ""}aria-hidden="true"><use href="#i-${n}"/></svg>`;
 
 const LOGO = `<img class="brand-logo" src="assets/img/car-repair-wala-logo.png" alt="" width="48" height="48" aria-hidden="true">`;
+const HOME_LOGO = `<img class="brand-logo" src="assets/img/car-repair-wala-header.svg" alt="" width="96" height="72" aria-hidden="true">`;
 const WORDMARK = `<span class="brand-copy"><span class="brand-name">Car Repair <span>Wala</span></span><span class="brand-sub">${esc(B.tagline)}</span></span>`;
 const FAVICON = "assets/img/car-repair-wala-logo.png";
 
@@ -168,7 +169,7 @@ ${siteUrl ? `<meta property="og:url" content="${esc(url(file))}">` : ""}
 <meta property="og:locale" content="en_IN">
 <link rel="icon" href="${FAVICON}">
 <link rel="stylesheet" href="assets/css/fonts.css?v=${VERSION}">
-<link rel="stylesheet" href="assets/css/style.css?v=${VERSION}">${file === "index.html" ? '\n<link rel="stylesheet" href="assets/css/home-header.css?v=2">' : ""}
+<link rel="stylesheet" href="assets/css/style.css?v=${VERSION}">${file === "index.html" ? '\n<link rel="stylesheet" href="assets/css/home-header.css?v=3">' : ""}
 ${file === "404.html" ? `<base href="${siteUrl ? esc(siteUrl) + "/" : "/"}">` : ""}
 ${IMG_FALLBACK_JS}
 ${lds}
@@ -178,13 +179,13 @@ ${sprite}
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header${file === "index.html" ? " home-header" : ""}">
   <div class="wrap">
-    <a class="brand" href="index.html" aria-label="${esc(B.name)} home">${LOGO}${WORDMARK}</a>
+    <a class="brand" href="index.html" aria-label="${esc(B.name)} home">${file === "index.html" ? HOME_LOGO : LOGO}${WORDMARK}</a>
     <button class="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">${ic("menu")}<span>Menu</span></button>
     <nav class="nav" id="site-nav" aria-label="Main">${NAV.map(([h, l, k, icon]) => `<a href="${h}" class="nav-button${h === "index.html" ? " nav-home" : ""}"${navKey === h ? ' aria-current="page"' : ""}>${ic(icon)}<span data-i18n="${k}">${l}</span></a>`).join("")}</nav>
     <div class="header-actions">
       <button class="lang-toggle" type="button">हिंदी</button>
       <a class="btn btn--sm btn--ghost" href="tel:${B.phoneE164}" data-tel aria-label="Call ${esc(B.phoneDisplay)}">${ic("phone")}</a>
-      <a class="btn btn--sm" href="booking.html"${navKey === "booking.html" ? ' aria-current="page"' : ""}>${ic("calendar")}<span data-i18n="nav.book">Book</span></a>
+      <a class="btn btn--sm" href="booking.html"${navKey === "booking.html" ? ' aria-current="page"' : ""}>${ic("calendar")}<span data-i18n="${file === "index.html" ? "cta.book" : "nav.book"}">${file === "index.html" ? "Book Service" : "Book"}</span></a>
     </div>
   </div>
 </header>
