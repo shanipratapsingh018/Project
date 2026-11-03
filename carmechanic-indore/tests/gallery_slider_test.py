@@ -39,6 +39,8 @@ try:
             check(page.locator('.hero-art').count() == 0 and page.locator('[data-workshop-slider]').count() == 1, f'{width}px: one slider without the separate photo')
             check(slider.evaluate('s => {const w=s.parentElement.getBoundingClientRect();const c=getComputedStyle(s.parentElement);return Math.abs(s.getBoundingClientRect().width-(w.width-parseFloat(c.paddingLeft)-parseFloat(c.paddingRight)))<2;}'), f'{width}px: slider spans the full content width')
             home_style=page.locator('.nav-home').evaluate('e=>{const c=getComputedStyle(e);return [c.backgroundImage,c.backgroundColor,c.color,c.borderColor];}')
+            header_metrics='e=>{const b=e.querySelector(".brand"),n=e.querySelector(".nav");return [e.offsetHeight,b.getBoundingClientRect().left,getComputedStyle(e.querySelector(".brand-name")).fontSize,getComputedStyle(n).backgroundImage,getComputedStyle(n).borderRadius];}'
+            header_style=page.locator('.site-header').evaluate(header_metrics)
             sources = set()
             for i in range(20):
                 photo = slider.locator('[data-slide] img').nth(i)
@@ -71,7 +73,10 @@ try:
                 check(True, 'Resizing keeps the selected photo')
                 page.set_viewport_size({'width': width, 'height': 900})
             page.goto(base + 'gallery.html'); page.wait_for_load_state('networkidle')
-            check(page.locator('.nav-home').evaluate('e=>{const c=getComputedStyle(e);return [c.backgroundImage,c.backgroundColor,c.color,c.borderColor];}') == home_style, f'{width}px: Home button colour is identical on another page')
+            current=page.locator('.nav a[aria-current="page"]')
+            check(current.count()==1 and current.get_attribute('href')=='gallery.html' and current.evaluate('e=>{const c=getComputedStyle(e);return [c.backgroundImage,c.backgroundColor,c.color,c.borderColor];}')==home_style, f'{width}px: only the current gallery link gets the selected style')
+            check(page.locator('.nav-home').get_attribute('aria-current') is None and page.locator('.nav-home').evaluate('e=>{const c=getComputedStyle(e);return [c.backgroundImage,c.backgroundColor,c.color,c.borderColor];}')!=home_style, f'{width}px: Home is not selected on another page')
+            check(page.locator('.site-header').evaluate(header_metrics)==header_style, f'{width}px: header size, branding and navigation style stay consistent between pages')
             check(page.locator('h1').text_content() == 'Service Gallery', f'{width}px: gallery is renamed')
             calls = page.locator('main [data-call-now]')
             check(calls.count() == 20 and all(h == 'tel:+918965957978' for h in calls.evaluate_all('els=>els.map(e=>e.getAttribute("href"))')), f'{width}px: gallery header and all nineteen cards have Call Now')
