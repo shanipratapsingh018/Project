@@ -1,6 +1,6 @@
 # Car Repair Wala Google Business location · v2.0.2
 
-The owner supplied this shop listing: https://share.google/WnVvAG5hBsKbOV8j9.
+The owner supplied this shop listing: https://share.google/xKw37sHP3Pm3QmCXr.
 It replaces the earlier sharing link. Google blocks this workspace from opening
 sharing URLs, so the address below was copied into the chat by the owner.
 This code update does not establish Google's ownership-verification status,
@@ -8,7 +8,7 @@ fetch ratings or create a new Google listing.
 
 Workshop address:
 
-**Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012**
+**17, AB Rd, Choithram Mandi, Indore, Madhya Pradesh 452012**
 
 Phone: +91 89659 57978. Hours: every day, 7:00 AM–11:30 PM IST.
 Website: https://shanipratapsingh018.github.io/Project/

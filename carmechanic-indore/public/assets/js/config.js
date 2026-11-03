@@ -21,12 +21,12 @@
       phoneE164: "+918965957978",
       whatsapp: "918965957978",
       email: null,             // e.g. "hello@yourdomain.in" — leave null to hide
-      address: { street: "Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road", locality: "Pawan Putra Nagar", pincode: "452012" }, // full workshop address and PIN supplied by the owner
+      address: { street: "17, AB Rd", locality: "Choithram Mandi", pincode: "452012" }, // full workshop address and PIN supplied by the owner
       geo: null,               // { lat, lng } — only real workshop coordinates
       hours: [{ days: "Mo-Su", label: "Every day (Monday–Sunday)", open: "07:00", close: "23:30" }], // owner-confirmed, India time
       siteUrl: "https://shanipratapsingh018.github.io/Project", // replace with your domain (used for canonical URLs & sitemap)
-      googleBusinessProfileUrl: "https://share.google/WnVvAG5hBsKbOV8j9", // owner-supplied shop listing; redirect could not be read from this workspace
-      googleMapsSearchUrl: "https://www.google.com/maps/search/?api=1&query=Shop%20No.%201%2C%20Sobhag%20Bagh%2C%20Pipliya%20Rau%2C%20Opp.%20Regional%20Park%20Road%2C%20Pawan%20Putra%20Nagar%2C%20Indore%2C%20Madhya%20Pradesh%20452012", // full-address fallback; listing URL above is preferred
+      googleBusinessProfileUrl: "https://share.google/xKw37sHP3Pm3QmCXr", // owner-supplied shop listing; redirect could not be read from this workspace
+      googleMapsSearchUrl: "https://www.google.com/maps/search/?api=1&query=17%2C%20AB%20Rd%2C%20Choithram%20Mandi%2C%20Indore%2C%20Madhya%20Pradesh%20452012", // full-address fallback; listing URL above is preferred
       googleAnalyticsId: null,  // e.g. "G-XXXXXXX"
       bookingTimeoutMs: 15000,  // stop waiting after 15s; WhatsApp fallback remains available
       bookingEndpoint: null     // e.g. "https://api.yourdomain.in/bookings" — null = WhatsApp fallback

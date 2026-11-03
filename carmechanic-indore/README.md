@@ -117,10 +117,9 @@ published. No review is automatically stored or displayed publicly. The garage c
 and adds permitted customer reviews to `public/assets/js/reviews.js`; see `docs/HOW_TO_UPDATE.md`.
 All ratings follow the same workflow. Editing clears stale prepared messages.
 
-The owner supplied `https://share.google/WnVvAG5hBsKbOV8j9` as the shop's Google Business
+The owner supplied `https://share.google/xKw37sHP3Pm3QmCXr` as the shop's Google Business
 location. Location and Google profile buttons use it across the site, including without JavaScript.
-The complete owner-supplied workshop address is **Shop No. 1, Sobhag Bagh, Pipliya Rau,
-Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012**.
+The complete owner-supplied workshop address is **17, AB Rd, Choithram Mandi, Indore, Madhya Pradesh 452012**.
 It appears on Home, About, Contact, every page footer and in business structured data.
 Google sharing hosts are blocked in this workspace; the address was supplied directly by the owner.
 Set `googleReviewUrl` only when an actual Ask for reviews URL is available.
@@ -158,7 +157,7 @@ adds timeout, duplicate submit, stale estimate, quantity handoff and review-sour
 
 - Business contact details, vehicle models, timezone and pricing adjustments: `public/assets/js/config.js`.
 - Prices: `public/assets/js/rate-card.js`, with reference CSV in `docs/rate-card/`. Run tests and rebuild after edits.
-- Address: Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012, as supplied by the owner. Coordinates have not been supplied.
+- Address: 17, AB Rd, Choithram Mandi, Indore, Madhya Pradesh 452012, as supplied by the owner. Coordinates have not been supplied.
 - Maps: `googleBusinessProfileUrl` is the current owner-supplied location link. `googleMapsSearchUrl` is a full-address search fallback. No review editor, coordinates or Google verification status is inferred.
 - Reviews: `public/assets/js/reviews.js` is empty. Earlier screenshots were confirmed to belong to another garage and were removed, including their rating. Add only genuine Car Repair Wala customer feedback with approval and publication consent.
 - Photos: included sample illustrations are explicitly labelled. Add your own workshop photos or optionally run

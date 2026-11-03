@@ -35,8 +35,8 @@ Owner login footer se khulta hai: customers, job cards, invoices aur manual paym
 Doosre garage ke reviews aur unki rating hata di gayi hai. Abhi website genuine Car Repair Wala
 customers se feedback maangti hai; Share Your Experience WhatsApp kholta hai.
 
-Address: Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012.
-Google location link: https://share.google/WnVvAG5hBsKbOV8j9. Apni existing listing ki verification Google account mein check karein.
+Address: 17, AB Rd, Choithram Mandi, Indore, Madhya Pradesh 452012.
+Google location link: https://share.google/xKw37sHP3Pm3QmCXr. Apni existing listing ki verification Google account mein check karein.
 Address, PIN aur Google location website par updated hain. Direct Ask for reviews link alag se add hota hai.
 Invoices ke liye Admin → Settings → Use workshop address par click karein, billing details check karke confirmation box tick karein aur Save settings dabayein.
 

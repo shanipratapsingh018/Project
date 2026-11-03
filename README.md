@@ -48,8 +48,8 @@ The owner completed initial database setup and demonstrated successful deployed-
 Direct booking storage is enabled for the main Book Service form.
 No subscription has been purchased, no secret keys are included, and no real customer records are stored in this repository.
 
-Address: **Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012**.
-Google location/profile: https://share.google/WnVvAG5hBsKbOV8j9.
+Address: **17, AB Rd, Choithram Mandi, Indore, Madhya Pradesh 452012**.
+Google location/profile: https://share.google/xKw37sHP3Pm3QmCXr.
 The address and location link are used on Home, About, Contact, every public-page footer and business structured data.
 The owner supplied the address text; Google sharing hosts could not be opened in this environment.
 Reviews from another garage and their rating remain removed; genuine Car Repair Wala feedback is invited instead.

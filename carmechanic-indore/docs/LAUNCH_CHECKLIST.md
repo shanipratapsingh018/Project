@@ -6,7 +6,7 @@
 - [ ] Add prices for the 20 "Price on request" services when ready (see `docs/DEMO_CONTENT.md`)
 - [ ] Review the fuel / parts-grade / older-car adjustments in `config.js → pricing`
 - [ ] Confirm the 16 covered pickup PIN codes in `service-areas.js`, especially the outlying villages in 452016 / 452020, and decide on 452004 / 452008
-- [x] Complete shop address and PIN supplied: Shop No. 1, Sobhag Bagh, Pipliya Rau, Opp. Regional Park Road, Pawan Putra Nagar, Indore, Madhya Pradesh 452012
+- [x] Complete shop address and PIN supplied: 17, AB Rd, Choithram Mandi, Indore, Madhya Pradesh 452012
 - [x] Owner-supplied Google Business link connected; daily hours and PIN confirmed
 - [ ] Exact entrance coordinates remain unverified
 - [ ] Logo approval (current mark is a concept: hex nut + gauge needle)
