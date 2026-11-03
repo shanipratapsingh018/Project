@@ -32,9 +32,27 @@
   white-space: nowrap;
 }
 .site-header .brand-sub {
-  font-size: .58rem;
-  letter-spacing: .16em;
-  color: #abb3bd;
+  position: relative;
+  padding-left: 24px;
+  color: #d4dae2;
+  font: 600 clamp(.75rem, 1.05vw, .86rem)/1.5 var(--f-body);
+  letter-spacing: .11em;
+  white-space: nowrap;
+}
+.site-header .brand-sub::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(50% - 1px);
+  width: 15px;
+  height: 2px;
+  border-radius: 2px;
+  background: #ff8b44;
+  box-shadow: 0 0 8px rgba(255, 139, 68, .2);
+}
+.site-header .brand-care {
+  color: #ffab76;
+  font-weight: 700;
 }
 .site-header .header-actions {
   grid-column: 2;
@@ -121,7 +139,8 @@
   .site-header .brand { grid-column: 1 / -1; gap: 12px; }
   .site-header .brand-logo { width: 48px; height: 48px; }
   .site-header .brand-name { font-size: clamp(1.65rem, 5.5vw, 2.75rem); }
-  .site-header .brand-sub { font-size: .48rem; letter-spacing: .12em; }
+  .site-header .brand-sub { padding-left: 18px; font-size: .68rem; letter-spacing: .06em; }
+  .site-header .brand-sub::before { width: 11px; }
   .site-header .brand-copy { gap: 5px; }
   .site-header .menu-btn {
     display: inline-flex;
