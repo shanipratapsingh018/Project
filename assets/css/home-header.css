@@ -1,0 +1,51 @@
+/* Let the home-page name fill its own row above the navigation. */
+.home-header > .wrap {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px 16px;
+  padding-top: 18px;
+  padding-bottom: 12px;
+}
+.home-header .brand {
+  min-height: 0;
+  padding: 0;
+  gap: clamp(10px, 2vw, 24px);
+  justify-content: flex-start;
+}
+.home-header .brand-logo {
+  width: clamp(44px, 8vw, 96px);
+  height: clamp(44px, 8vw, 96px);
+}
+.home-header .brand-copy {
+  flex: 1;
+  container-type: inline-size;
+  gap: 8px;
+}
+.home-header .brand-name {
+  display: block;
+  font-size: 14cqi;
+  line-height: .95;
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+.home-header .brand-sub {
+  font-size: clamp(.45rem, 1vw, .75rem);
+  letter-spacing: .18em;
+}
+.home-header .nav { grid-column: 1; grid-row: 2; }
+.home-header .nav a.nav-button {
+  padding-inline: 7px;
+  font-size: .88rem;
+  gap: 6px;
+  white-space: normal;
+}
+.home-header .header-actions {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: center;
+}
+@media (max-width: 1120px) {
+  .home-header > .wrap { gap: 12px; padding-top: 14px; }
+  .home-header .brand-copy { gap: 6px; }
+  .home-header .nav { grid-column: 1 / -1; grid-row: 3; }
+  .home-header .nav a.nav-button { font-size: 1rem; }
+}
