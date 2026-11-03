@@ -168,7 +168,7 @@ ${siteUrl ? `<meta property="og:url" content="${esc(url(file))}">` : ""}
 <meta property="og:locale" content="en_IN">
 <link rel="icon" href="${FAVICON}">
 <link rel="stylesheet" href="assets/css/fonts.css?v=${VERSION}">
-<link rel="stylesheet" href="assets/css/style.css?v=${VERSION}">
+<link rel="stylesheet" href="assets/css/style.css?v=${VERSION}">${file === "index.html" ? '\n<link rel="stylesheet" href="assets/css/home-header.css?v=1">' : ""}
 ${file === "404.html" ? `<base href="${siteUrl ? esc(siteUrl) + "/" : "/"}">` : ""}
 ${IMG_FALLBACK_JS}
 ${lds}
@@ -176,7 +176,7 @@ ${lds}
 <body>
 ${sprite}
 <a class="skip" href="#main">Skip to content</a>
-<header class="site-header">
+<header class="site-header${file === "index.html" ? " home-header" : ""}">
   <div class="wrap">
     <a class="brand" href="index.html" aria-label="${esc(B.name)} home">${LOGO}${WORDMARK}</a>
     <button class="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">${ic("menu")}<span>Menu</span></button>
