@@ -24,7 +24,7 @@
       address: { street: "17, AB Rd", locality: "Choithram Mandi", pincode: "452012" }, // full workshop address and PIN supplied by the owner
       geo: null,               // { lat, lng } — only real workshop coordinates
       hours: [{ days: "Mo-Su", label: "Every day (Monday–Sunday)", open: "07:00", close: "23:30" }], // owner-confirmed, India time
-      siteUrl: "https://shanipratapsingh018.github.io/Project", // replace with your domain (used for canonical URLs & sitemap)
+      siteUrl: "https://carrepairwala.co.in", // replace with your domain (used for canonical URLs & sitemap)
       googleBusinessProfileUrl: "https://share.google/xKw37sHP3Pm3QmCXr", // owner-supplied shop listing; redirect could not be read from this workspace
       googleMapsSearchUrl: "https://www.google.com/maps/search/?api=1&query=17%2C%20AB%20Rd%2C%20Choithram%20Mandi%2C%20Indore%2C%20Madhya%20Pradesh%20452012", // full-address fallback; listing URL above is preferred
       googleAnalyticsId: null,  // e.g. "G-XXXXXXX"

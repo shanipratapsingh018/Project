@@ -1,5 +1,7 @@
 # Car Repair Wala owner workspace · v2.2.1
 
+For the prepared custom-domain transition, see [carrepairwala.co.in setup](CUSTOM_DOMAIN.md), including booking origins and password-reset redirect settings.
+
 The public connection settings point to project `oraooxeefxcwmwgycrei`. The owner has completed database and owner-account setup and demonstrated successful deployed-function tests. The main booking form now saves online requests through the deployed Edge Function; WhatsApp buttons remain a separate handoff. The setup steps below are retained for new installations. Publishing the admin files does not publish customer records. The owner's email and password are not placed in public website files.
 
 Open [this project's SQL Editor](https://supabase.com/dashboard/project/oraooxeefxcwmwgycrei/sql/new) and use [the combined database setup file](../supabase/setup-admin.sql) for a new project. It contains the same two reviewed initial migrations, without account credentials. Use Supabase's dashboard to create the owner Auth user and grant owner membership as described below.
