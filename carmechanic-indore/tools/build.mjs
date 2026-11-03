@@ -168,7 +168,7 @@ ${siteUrl ? `<meta property="og:url" content="${esc(url(file))}">` : ""}
 <meta property="og:locale" content="en_IN">
 <link rel="icon" href="${FAVICON}">
 <link rel="stylesheet" href="assets/css/fonts.css?v=${VERSION}">
-<link rel="stylesheet" href="assets/css/style.css?v=${VERSION}">${file === "index.html" ? '\n<link rel="stylesheet" href="assets/css/home-header.css?v=2">' : ""}
+<link rel="stylesheet" href="assets/css/style.css?v=${VERSION}">${file === "index.html" ? '\n<link rel="stylesheet" href="assets/css/home-header.css?v=4">' : ""}
 ${file === "404.html" ? `<base href="${siteUrl ? esc(siteUrl) + "/" : "/"}">` : ""}
 ${IMG_FALLBACK_JS}
 ${lds}
