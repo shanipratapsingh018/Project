@@ -109,7 +109,7 @@ ${Object.entries(P).map(([k, d]) => `<symbol id="i-${k}" viewBox="0 0 24 24" fil
 const ic = (n, cls = "") => `<svg viewBox="0 0 24 24" ${cls ? `class="${cls}" ` : ""}aria-hidden="true"><use href="#i-${n}"/></svg>`;
 
 const LOGO = `<img class="brand-logo" src="assets/img/car-repair-wala-logo.png" alt="" width="48" height="48" aria-hidden="true">`;
-const WORDMARK = `<span class="brand-copy"><span class="brand-name">Car Repair <span>Wala</span></span><span class="brand-sub">${esc(B.tagline)}</span></span>`;
+const WORDMARK = `<span class="brand-copy"><span class="brand-name">Car Repair <span>Wala</span></span><span class="brand-sub">${esc(B.tagline).replace("Our Care.", '<span class="brand-care">Our Care.</span>')}</span></span>`;
 const FAVICON = "assets/img/car-repair-wala-logo.png";
 
 /* ------------------------------ Layout ------------------------------ */
@@ -169,7 +169,7 @@ ${siteUrl ? `<meta property="og:url" content="${esc(url(file))}">` : ""}
 <link rel="icon" href="${FAVICON}">
 <link rel="stylesheet" href="assets/css/fonts.css?v=${VERSION}">
 <link rel="stylesheet" href="assets/css/style.css?v=${VERSION}">
-<link rel="stylesheet" href="assets/css/header.css?v=1">
+<link rel="stylesheet" href="assets/css/header.css?v=2">
 ${file === "404.html" ? `<base href="${siteUrl ? esc(siteUrl) + "/" : "/"}">` : ""}
 ${IMG_FALLBACK_JS}
 ${lds}
