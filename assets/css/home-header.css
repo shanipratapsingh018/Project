@@ -1,12 +1,24 @@
-/* A balanced masthead and a separate, full-width navigation bar. */
+/* Carbon texture, metallic wordmark and understated navigation. */
 .home-header {
-  background: #141619;
-  border-bottom: 1px solid #2c3137;
+  position: relative;
+  isolation: isolate;
+  border-bottom: 0;
+  background-color: #101215;
+  background-image: linear-gradient(115deg, rgba(9, 10, 12, .75), rgba(15, 17, 20, .2) 55%, rgba(8, 9, 11, .9)), repeating-conic-gradient(#24272b 0% 25%, #16181c 0% 50%);
+  background-size: auto, 6px 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
+}
+.home-header::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  background: linear-gradient(90deg, #292d34, #ed762f 44%, #a84c21 76%, #292d34);
 }
 .home-header > .wrap {
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 14px 24px;
-  padding-block: 18px 12px;
+  gap: 18px 24px;
+  padding-block: 24px 8px;
 }
 .home-header .brand {
   grid-column: 1;
@@ -14,110 +26,140 @@
   width: auto;
   min-height: 0;
   padding: 0;
-  gap: 14px;
+  gap: 18px;
   justify-content: flex-start;
 }
-.home-header .brand-logo { width: 58px; height: 58px; }
-.home-header .brand-copy {
-  display: grid;
-  min-width: 0;
-  gap: 7px;
-  text-align: left;
+.home-header .brand-logo {
+  width: 100px;
+  height: 76px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(255, 111, 28, .24));
 }
+.home-header .brand-copy { display: grid; min-width: 0; gap: 7px; text-align: left; }
 .home-header .brand-name {
   display: block;
+  color: #e5e5e4;
   font-size: clamp(2rem, 4.2vw, 3.5rem);
   line-height: 1;
-  letter-spacing: .045em;
+  letter-spacing: .025em;
   white-space: nowrap;
+  filter: drop-shadow(0 2px 1px #000);
+}
+.home-header .brand-name span { color: #ff7b25; }
+@supports (background-clip: text) {
+  .home-header .brand-name {
+    background: linear-gradient(180deg, #fff 5%, #d3d4d4 48%, #93979b 54%, #e7e7e6 95%);
+    background-clip: text;
+    color: transparent;
+  }
+  .home-header .brand-name span {
+    background: linear-gradient(180deg, #ffb46b, #ff7621 55%, #d94d05);
+    background-clip: text;
+    color: transparent;
+  }
 }
 .home-header .brand-sub {
-  font-size: .58rem;
+  color: #bcbec2;
+  font: 500 clamp(.6rem, 1.05vw, .82rem)/1.3 var(--f-body);
   letter-spacing: .16em;
-  color: #abb3bd;
 }
-.home-header .header-actions {
-  grid-column: 2;
-  grid-row: 1;
-  gap: 10px;
-  align-self: center;
-}
+.home-header .header-actions { grid-column: 2; grid-row: 1; gap: 12px; align-self: center; }
 .home-header .header-actions .btn,
 .home-header .lang-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  border-radius: 11px;
+  min-height: 52px;
+  border: 1px solid #424750;
+  border-radius: 999px;
+  color: #dddfe2;
+  background: linear-gradient(160deg, #30353d, #171a1f);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .09), 0 3px 8px rgba(0, 0, 0, .25);
 }
-.home-header .lang-toggle { padding-inline: 12px; background: #1d2126; }
-.home-header .header-actions .btn--ghost {
-  width: 44px;
-  padding: 0;
-  border: 1px solid #3b424b;
-  background: #1d2126;
-}
+.home-header .lang-toggle { min-width: 66px; padding-inline: 16px; font-size: 1rem; }
+.home-header .header-actions .btn--ghost { width: 52px; padding: 0; }
 .home-header .header-actions a[href="booking.html"] {
+  gap: 9px;
   padding-inline: 22px;
-  box-shadow: 0 4px 14px rgba(255, 107, 26, .18);
+  border-color: #ed762e;
+  color: #fff1e8;
+  background: linear-gradient(180deg, #c8530c 0%, #a33b04 54%, #762701 100%);
+  box-shadow: inset 0 1px 2px rgba(255, 218, 166, .4), 0 0 0 3px rgba(255, 114, 27, .09), 0 0 22px rgba(255, 100, 13, .25);
+  font: 600 .95rem/1 var(--f-body);
+  letter-spacing: .025em;
+}
+.home-header .header-actions a[href="booking.html"]:hover {
+  background: linear-gradient(180deg, #e56515, #a43c04);
+  box-shadow: inset 0 1px 2px rgba(255, 218, 166, .4), 0 0 26px rgba(255, 100, 13, .4);
 }
 .home-header .menu-btn { display: none; }
 .home-header .nav {
   grid-column: 1 / -1;
   grid-row: 2;
-  display: grid;
+  display: flex;
   position: static;
   inset: auto;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 6px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(18px, 2.3vw, 32px);
   margin: 0;
-  padding: 6px;
+  padding: 0;
   max-height: none;
-  border: 1px solid #363c44;
-  border-radius: 16px;
-  background: linear-gradient(180deg, #252a30, #1d2126);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .035), 0 8px 20px rgba(0, 0, 0, .12);
-}
-.home-header .nav a.nav-button,
-.home-header .nav a.nav-button.nav-home {
-  gap: 6px;
-  min-height: 44px;
-  padding: 10px 6px;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  color: #e4e8ed;
-  font-size: clamp(.82rem, 1.1vw, .93rem);
-  line-height: 1.2;
-  white-space: nowrap;
-}
-.home-header .nav-button svg { width: 18px; height: 18px; color: #ff9457; }
-.home-header .nav a.nav-button::after { content: none; }
-.home-header .nav a.nav-button:hover {
-  border-color: #4b535e;
-  background: #323943;
-  color: #fff;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   box-shadow: none;
 }
+.home-header .nav a.nav-button,
 .home-header .nav a.nav-button.nav-home,
+.home-header .nav a.nav-button:hover,
 .home-header .nav a.nav-button.nav-home:hover {
-  border-color: #ff9855;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #ff9651, #ff6b1a);
-  color: #221106;
-  box-shadow: 0 3px 10px rgba(255, 107, 26, .18);
+  position: relative;
+  gap: 0;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 0 16px;
+  border: 0;
+  border-radius: 0;
+  color: #c7c9ce;
+  background: transparent;
+  box-shadow: none;
+  font: 400 clamp(.9rem, 1.3vw, 1.05rem)/1.3 var(--f-body);
+  white-space: nowrap;
+  transition: color .18s ease;
 }
-.home-header .nav a.nav-button.nav-home svg { color: currentColor; }
+.home-header .nav a.nav-button svg { display: none; }
+.home-header .nav a.nav-button::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 4px;
+  width: auto;
+  height: 3px;
+  margin: 0;
+  border: 0;
+  border-radius: 3px;
+  background: #ff934f;
+  box-shadow: 0 0 12px rgba(255, 115, 35, .45);
+  opacity: 1;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .18s ease;
+}
+.home-header .nav a.nav-button:hover,
+.home-header .nav a.nav-button[aria-current="page"],
+.home-header .nav a.nav-button.nav-home:hover { color: #ffa269; }
+.home-header .nav a.nav-button:hover::after,
+.home-header .nav a.nav-button[aria-current="page"]::after { transform: scaleX(1); }
 .home-header .nav a.nav-button:focus-visible,
-.home-header .nav a.nav-button.nav-home:focus-visible {
-  outline: 2px solid #ffad7d;
-  outline-offset: 2px;
-}
+.home-header .nav a.nav-button.nav-home:focus-visible { outline: 2px solid #ffad7d; outline-offset: 4px; }
 @media (max-width: 1023px) {
-  .home-header > .wrap { gap: 14px 16px; padding: 16px; }
+  .home-header > .wrap { gap: 14px 12px; padding: 16px; }
   .home-header .brand { grid-column: 1 / -1; gap: 12px; }
-  .home-header .brand-logo { width: 48px; height: 48px; }
+  .home-header .brand-logo { width: 64px; height: 48px; }
   .home-header .brand-name { font-size: clamp(1.65rem, 5.5vw, 2.75rem); }
-  .home-header .brand-sub { font-size: .48rem; letter-spacing: .12em; }
+  .home-header .brand-sub { font-size: .6rem; letter-spacing: .1em; }
   .home-header .brand-copy { gap: 5px; }
   .home-header .menu-btn {
     display: inline-flex;
@@ -130,33 +172,56 @@
     width: auto;
     min-height: 44px;
     margin: 0;
-    padding-inline: 14px;
-    border: 1px solid #3b424b;
-    border-radius: 11px;
-    background: #252a30;
+    padding-inline: 12px;
+    border: 1px solid #424750;
+    border-radius: 999px;
+    background: linear-gradient(160deg, #30353d, #171a1f);
   }
   .home-header .menu-btn[aria-expanded="true"] { border-color: #ff9457; color: #ffad7d; }
   .home-header .menu-btn svg { width: 20px; height: 20px; }
   .home-header .header-actions { grid-column: 2; grid-row: 2; gap: 8px; }
+  .home-header .header-actions .btn, .home-header .lang-toggle { min-height: 44px; }
+  .home-header .lang-toggle { min-width: 44px; padding-inline: 10px; font-size: .88rem; }
+  .home-header .header-actions .btn--ghost { width: 44px; }
+  .home-header .header-actions a[href="booking.html"] { padding-inline: 16px; font-size: .82rem; }
   .home-header .nav {
     display: none;
     grid-row: 3;
-    grid-template-columns: minmax(0, 1fr);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    padding: 8px 14px;
     max-height: min(65dvh, 480px);
     overflow-y: auto;
+    border: 1px solid #353a42;
+    border-radius: 16px;
+    background: rgba(16, 18, 22, .92);
   }
-  .home-header .nav.open { display: grid; }
+  .home-header .nav.open { display: flex; }
   .home-header .nav a.nav-button,
-  .home-header .nav a.nav-button.nav-home {
+  .home-header .nav a.nav-button.nav-home,
+  .home-header .nav a.nav-button:hover,
+  .home-header .nav a.nav-button.nav-home:hover {
     justify-content: flex-start;
+    gap: 12px;
     min-height: 48px;
-    padding: 12px 14px;
+    padding: 12px 0;
     font-size: 1rem;
     white-space: normal;
   }
+  .home-header .nav a.nav-button svg { display: block; width: 18px; height: 18px; color: #ff9457; }
+  .home-header .nav a.nav-button::after { bottom: 0; height: 2px; }
 }
 @media (max-width: 480px) {
-  .home-header .brand-logo { width: 40px; height: 40px; }
+  .home-header .brand { gap: 10px; }
+  .home-header .brand-logo { width: 52px; height: 44px; }
+  .home-header .brand-sub { font-size: .54rem; letter-spacing: .06em; }
   .home-header .header-actions .btn--ghost { display: none; }
-  .home-header .header-actions a[href="booking.html"] { padding-inline: 16px; }
+  .home-header .menu-btn { gap: 6px; padding-inline: 10px; }
+  .home-header .header-actions a[href="booking.html"] { gap: 7px; padding-inline: 12px; font-size: .75rem; }
+  .home-header .header-actions a[href="booking.html"] svg { width: 17px; height: 17px; }
+  .home-header:lang(hi) .header-actions a[href="booking.html"] { font-size: .7rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-header .nav a.nav-button, .home-header .nav a.nav-button::after { transition: none; }
 }
