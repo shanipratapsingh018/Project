@@ -77,7 +77,7 @@ try:
         check('Website estimate:' not in unquote(pg.locator('[data-b-wa]').get_attribute('href')),'Stale price is absent from the final booking message');pg.close()
 
         requests=[]
-        def success(route): requests.append(route.request.post_data_json);route.fulfill(status=201,content_type='application/json',body='{"id":"test-only"}')
+        def success(route): requests.append(route.request.post_data_json);route.fulfill(status=201,content_type='application/json',body='{"received":true}')
         pg=page(api=success);fill(pg);next(pg)
         expect(pg.locator('[data-b-result]')).to_contain_text('Request received.')
         check(len(requests)==1 and requests[0]['serviceItems']==[{'id':'GS-01','qty':1}],'Successful API submission includes stable service IDs and quantities')

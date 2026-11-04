@@ -157,7 +157,7 @@ try:
             validation=subprocess.run(['node','--input-type=module','-e','import {validateBooking} from "./supabase/functions/submit-booking/handler.mjs"; import {readFileSync} from "node:fs"; process.stdout.write(JSON.stringify(validateBooking(JSON.parse(readFileSync(0,"utf8")))));'],cwd=ROOT,input=route.request.post_data,text=True,capture_output=True)
             assert validation.returncode==0,validation.stderr
             assert json.loads(validation.stdout)['contactMethod']=='call'
-            submissions.append((route.request.headers,route.request.post_data_json));route.fulfill(status=503 if len(submissions)==1 else 200,content_type='application/json',headers={'Access-Control-Allow-Origin':'*'},body='{}' if len(submissions)==1 else '{"received":true}')
+            submissions.append((route.request.headers,route.request.post_data_json));route.fulfill(status=503 if len(submissions)==1 else 200,content_type='application/json',headers={'Access-Control-Allow-Origin':'*'},body='{}' if len(submissions)==1 else json.dumps({'received':True,'requestId':route.request.headers['x-idempotency-key']}))
         public_ctx.route('https://test.supabase.co/functions/v1/submit-booking',intake)
         pg=public_ctx.new_page();pg.goto(base+'booking.html')
         next_step=lambda:pg.locator('[data-b-next]').click()

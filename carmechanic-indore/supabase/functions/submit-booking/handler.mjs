@@ -2,7 +2,7 @@
 const uuid =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const fuelTypes = ["petrol", "diesel", "cng", "electric", "hybrid", "other"];
-export function validateBooking(p) {
+export function validateBooking(p, now = new Date()) {
   if (!p || typeof p !== "object" || Array.isArray(p))
     throw new Error("Invalid request");
   const text = (key, max, required = false) => {
@@ -36,10 +36,13 @@ export function validateBooking(p) {
   const fuel = text("fuel", 20).toLowerCase() || "other";
   if (!fuelTypes.includes(fuel)) throw new Error("Check fuel");
   const date = text("date", 10);
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(now);
+  const today = ["year", "month", "day"].map(key => parts.find(part => part.type === key).value).join("-");
   if (
     date &&
     (!/^\d{4}-\d{2}-\d{2}$/.test(date) ||
-      new Date(date + "T00:00:00Z").toISOString().slice(0, 10) !== date)
+      !Number.isFinite(Date.parse(date + "T00:00:00Z")) ||
+      new Date(date + "T00:00:00Z").toISOString().slice(0, 10) !== date || date < today)
   )
     throw new Error("Check date");
   const pickup = p.pickup === "yes" ? "yes" : "no",
@@ -50,6 +53,10 @@ export function validateBooking(p) {
     throw new Error("Pickup address and PIN required");
   // Estimates sent by a browser are indicative. They never become invoice totals.
   const estimate = typeof p.estimate === "string" ? text("estimate", 160) : "";
+  const partsGrade = text("partsGrade", 20);
+  const category = text("category", 20);
+  if (partsGrade && !["economy", "standard", "genuine"].includes(partsGrade)) throw new Error("Check parts grade");
+  if (category && !["hatchback", "sedan", "suv", "luxury"].includes(category)) throw new Error("Check vehicle category");
   return {
     name,
     mobile,
@@ -67,9 +74,11 @@ export function validateBooking(p) {
     address,
     pin,
     estimate,
+    partsGrade,
+    category,
   };
 }
-export function createHandler({ origins, save, hash }) {
+export function createHandler({ origins, save, hash, now = () => new Date() }) {
   return async (request) => {
     const origin = request.headers.get("origin") || "";
     const allowed = origins.includes(origin);
@@ -126,7 +135,7 @@ export function createHandler({ origins, save, hash }) {
       }
       let data;
       try {
-        data = validateBooking(JSON.parse(new TextDecoder().decode(bytes)));
+        data = validateBooking(JSON.parse(new TextDecoder().decode(bytes)), now());
       } catch {
         return respond(400, {
           error: "Check the booking details and try again",

@@ -1,6 +1,6 @@
 # End-to-end checks in headless Chromium.
 # Run from project root:  python3 tests/browser_test.py   (needs: pip install playwright && playwright install chromium)
-import http.server, threading, functools, os, sys, urllib.parse, shutil
+import http.server, threading, functools, os, sys, urllib.parse, shutil, json
 from playwright.sync_api import sync_playwright
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "public")
@@ -55,7 +55,7 @@ with sync_playwright() as p:
         cors = {"Access-Control-Allow-Origin":"*", "Access-Control-Allow-Headers":"*", "Access-Control-Allow-Methods":"POST,OPTIONS"}
         if route.request.method == "OPTIONS": return route.fulfill(status=204,headers=cors)
         booking_requests.append((route.request.headers,route.request.post_data_json))
-        route.fulfill(status=200,content_type="application/json",headers=cors,body='{"received":true,"requestId":"fixture-only"}')
+        route.fulfill(status=200,content_type="application/json",headers=cors,body=json.dumps({'received':True,'requestId':route.request.headers['x-idempotency-key']}))
     # Intercept the actual configured function; never submit fixture details to production.
     ctx.route("https://oraooxeefxcwmwgycrei.supabase.co/functions/v1/submit-booking",booking_intake)
     pg = ctx.new_page()

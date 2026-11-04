@@ -87,7 +87,7 @@ const booking = {
   model: "Test car",
   fuel: "Petrol",
   services: ["Oil change"],
-  date: "2026-11-01",
+  date: today(),
   pickup: "no",
 };
 test("public intake allows only validated booking fields", () => {

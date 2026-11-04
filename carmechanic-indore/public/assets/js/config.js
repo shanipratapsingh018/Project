@@ -91,7 +91,7 @@
       { id: "other", name: "Other brand", models: [] }
     ],
 
-    yearRange: { from: 2005 }, // to = current year (computed)
+    yearRange: { from: 1950 }, // actual manufacture years; to = current year
 
     /* SERVICES — loaded from rate-card.js (the approved rate card, 27 Oct 2026).
        Edit prices there, not here. */

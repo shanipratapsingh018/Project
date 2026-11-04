@@ -1,3 +1,11 @@
+# v2.3.0 — Booking accuracy, accessibility and Hindi
+
+- Address all 13 follow-up audit findings; preserve parts preference, validate quantities and choices, verify receipts and use actual years/India dates.
+- Improve enlarged-text layouts, contrast, accessible link names, keyboard steps and error descriptions.
+- Add Hindi support for customer booking/calculator flows without changing submitted values.
+- Record additional checker, gallery, review and cached-markup cases in AUDIT_FIXES_2.3.md.
+- Prepare the separately deployed Supabase function update; its server date guard still requires owner activation.
+
 # v1.9.4 — Compact scrolling header
 
 - Reduced masthead text/logo sizes, spacing and menu height; aligned the header within a narrower 1200px container.

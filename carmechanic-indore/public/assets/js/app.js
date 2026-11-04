@@ -21,6 +21,25 @@
   const brandById = Object.fromEntries(C.brands.map((b) => [b.id, b]));
   const LUX = ["bmw", "mercedes", "audi"];
   const RATE_V = (window.CMI_RATE_CARD && window.CMI_RATE_CARD.version) || "";
+  function errorBox(el) {
+    const parent = el.closest(".field, .qty-item") || el.parentElement;
+    let box = $(".err", parent);
+    if (!box) { box = document.createElement("p"); box.className = "err"; box.hidden = true; parent.appendChild(box); }
+    if (!box.id) box.id = (el.id || "field") + "-error";
+    box.setAttribute("aria-live", "polite");
+    const ids = new Set((el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean));
+    ids.add(box.id); el.setAttribute("aria-describedby", [...ids].join(" "));
+    return box;
+  }
+  function fieldError(el, message) {
+    const box = errorBox(el); box.textContent = message || ""; box.hidden = !message;
+    message ? el.setAttribute("aria-invalid", "true") : el.removeAttribute("aria-invalid");
+    return !message;
+  }
+  function focusStep(step) {
+    const heading = $(".step-title h3, .step-title h2", step) || $("legend", step);
+    if (heading) { heading.tabIndex = -1; heading.focus({ preventScroll: true }); }
+  }
 
   /* ---------- WhatsApp ---------- */
   function waUrl(text) { return "https://wa.me/" + B.whatsapp + (text ? "?text=" + encodeURIComponent(text) : ""); }
@@ -94,7 +113,6 @@
     const now = new Date().getFullYear();
     let h = '<option value="">Select year</option>';
     for (let y = now; y >= C.yearRange.from; y--) h += `<option>${y}</option>`;
-    h += `<option value="${C.yearRange.from - 1}">Before ${C.yearRange.from}</option>`;
     sel.innerHTML = h;
   }
   function chipsHtml(name, items, type = "radio") {
@@ -196,11 +214,16 @@
       box.innerHTML = list.map((s) => `<div class="qty-item"><label for="q-${s.id}" class="label">${esc(s.name)} — how many (${esc(s.unit.replace(/^per /, ""))}s)?</label><input id="q-${s.id}" data-qty-for="${s.id}" type="number" min="1" max="${s.qty.max}" value="${state.qty[s.id] || 1}" inputmode="numeric"></div>`).join("");
       $$("[data-qty-for]", box).forEach((inp) => inp.addEventListener("input", () => {
         const s = svcById[inp.dataset.qtyFor];
-        state.qty[s.id] = Math.max(1, Math.min(s.qty.max, Math.floor(Number(inp.value)) || 1));
+        state.qty[s.id] = inp.value;
+        fieldError(inp, F.quantityError(inp.value, s.qty.max));
       }));
     }
     $$(".svc-opt input", root).forEach((cb) => cb.addEventListener("change", () => {
       const s = svcById[cb.value];
+      if (cb.checked && state.services.size >= F.maxServices && !state.services.has(cb.value) &&
+          !(s.exclusive && [...state.services].some(id => svcById[id].exclusive === s.exclusive))) {
+        cb.checked = false; err(2, `Choose up to ${F.maxServices} services per request.`); return;
+      }
       if (cb.checked && s.exclusive) {   // e.g. only one periodic service level at a time
         $$(".svc-opt input", root).forEach((o) => { if (o !== cb && o.checked && svcById[o.value].exclusive === s.exclusive) { o.checked = false; o.closest(".svc-opt").classList.remove("checked"); state.services.delete(o.value); } });
       }
@@ -232,14 +255,14 @@
     let pinTimer;
     pickupSel.addEventListener("change", () => refreshPin());
     pin.addEventListener("input", () => { clearTimeout(pinTimer); refreshPin(false); pinTimer = setTimeout(refreshPin, /^\s*\d{6}\s*$/.test(pin.value) ? 0 : 700); });
-    $("#e-date", root).min = new Date().toISOString().slice(0, 10);
+    $("#e-date", root).min = today();
 
     function carLabel() {
       const b = brandById[brand.value];
       const m = brand.value === "other" ? modelOther.value.trim() : model.value;
       return [b && b.id !== "other" ? b.name : "", m, year.value ? "(" + (Number(year.value) < C.yearRange.from ? "before " + C.yearRange.from : year.value) + ")" : ""].filter(Boolean).join(" ");
     }
-    function err(n, msg) { const e = $(`[data-err="${n}"]`, root); e.textContent = msg || ""; e.hidden = !msg; }
+    function err(n, msg) { const e = $(`[data-err="${n}"]`, root); e.id = `estimate-step-${n}-error`; e.setAttribute("role", "alert"); e.textContent = msg || ""; e.hidden = !msg; }
     function validate(n) {
       if (n === 1) {
         const m = brand.value === "other" ? modelOther.value.trim() : model.value;
@@ -248,14 +271,23 @@
         if (!brand.value) brand.setAttribute("aria-invalid", "true");
         if (!m) (brand.value === "other" ? modelOther : model).setAttribute("aria-invalid", "true");
         if (!year.value) year.setAttribute("aria-invalid", "true");
+        for (const el of [brand, model, modelOther, year, ...$$('input[name="fuel"], input[name="cat"]', root)]) {
+          el.setAttribute("aria-describedby", "estimate-step-1-error");
+          if (el.name === "fuel" || el.name === "cat") !radio(el.name) ? el.setAttribute("aria-invalid", "true") : el.removeAttribute("aria-invalid");
+        }
         err(1, missing.length ? "Please choose your " + missing.join(", ") + "." : "");
         return !missing.length;
       }
-      if (n === 2) { err(2, state.services.size ? "" : "Select at least one service."); return state.services.size > 0; }
+      if (n === 2) {
+        const message = !state.services.size ? "Select at least one service." : state.services.size > F.maxServices ? `Choose up to ${F.maxServices} services per request.` : "";
+        err(2, message); let ok = !message;
+        for (const el of $$("[data-qty-for]", root)) ok = fieldError(el, F.quantityError(el.value, svcById[el.dataset.qtyFor].qty.max)) && ok;
+        if (message) { const box = $('[data-err="2"]', root); box.tabIndex = -1; box.focus(); }
+        return ok;
+      }
       if (n === 3) {
-        const date = $("#e-date", root), msg = dateIssue(date), box = $("[data-date-err]", root);
-        box.textContent = msg; box.hidden = !msg;
-        msg ? date.setAttribute("aria-invalid", "true") : date.removeAttribute("aria-invalid");
+        const date = $("#e-date", root), msg = dateIssue(date);
+        fieldError(date, msg);
         return !msg;
       }
       return true;
@@ -272,8 +304,8 @@
     function bookingPayload(r) {
       return {
         name: $("#e-name", root).value.trim(), brand: brand.value, model: brand.value === "other" ? modelOther.value.trim() : model.value,
-        car: carLabel(), year: year.value, fuel: radio("fuel"), category: radio("cat"),
-        services: [...state.services], qty: { ...state.qty }, lights: $$('input[name="lights"]:checked', root).map((i) => i.value),
+        car: carLabel(), year: year.value, yearExact: true, fuel: radio("fuel"), category: radio("cat"),
+        services: [...state.services], qty: Object.fromEntries(Object.entries(state.qty).map(([id, q]) => [id, Number(q)])), lights: $$('input[name="lights"]:checked', root).map((i) => i.value),
         symptoms: $("#e-symptoms", root).value.trim(), pickup: pickupSel.value, area: pin.value.trim(),
         date: $("#e-date", root).value, time: $("#e-time", root).value,
         estimate: r.pricedJobs ? PR.formatRange(r.total) + (r.partsQuoted ? " + parts quoted by model" : "") : "Quote after inspection", partsGrade: $("#e-grade", root).value
@@ -369,6 +401,7 @@
       sum.hidden = n === 1 || n === 4;
       sum.textContent = carLabel() + (state.services.size && n > 2 ? " · " + state.services.size + " service(s)" : "");
       if (n === 4) renderResult();
+      focusStep($(`section[data-step="${n}"]`, root));
       if (n > 1) { const top = root.getBoundingClientRect().top; if (top < 0) root.scrollIntoView({ behavior: "smooth", block: "start" }); }
     }
     form.addEventListener("submit", (e) => { e.preventDefault(); if (validate(step)) go(Math.min(4, step + 1)); else { const inv = $('[aria-invalid="true"]', root); if (inv) inv.focus(); } });
@@ -612,7 +645,7 @@
   function mountQuickBook(form) {
     const svc = svcById[form.getAttribute("data-quick-book")];
     const out = $("[data-qb-result]", form.parentElement);
-    const err = (el, msg) => { const e = el.closest(".field").querySelector(".err"); e.textContent = msg || ""; e.hidden = !msg; msg ? el.setAttribute("aria-invalid", "true") : el.removeAttribute("aria-invalid"); return !msg; };
+    const err = fieldError;
     $("[name=date]", form).min = today();
     form.addEventListener("input", () => { out.innerHTML = ""; });
     form.addEventListener("change", () => { out.innerHTML = ""; });
@@ -648,6 +681,14 @@
     let step = 0, sending = false, requestSignature = "", requestId = "";
     const f = $("form", root);
     const brand = $("#b-brand", f), model = $("#b-model", f), modelOther = $("#b-model-other", f), year = $("#b-year", f);
+    let grade = $("#b-grade", f);
+    if (!grade) {
+      const field = document.createElement("div"); field.className = "field";
+      field.innerHTML = '<label for="b-grade">Parts preference</label><select id="b-grade"></select>';
+      steps[1].appendChild(field); grade = $("#b-grade", f);
+    }
+    grade.innerHTML = Object.entries(C.pricing.partsGrade).map(([id, g]) => `<option value="${id}">${esc(g.label)}</option>`).join("");
+    grade.value = Object.hasOwn(C.pricing.partsGrade, pre.partsGrade) ? pre.partsGrade : "standard";
     fillBrands(brand); fillModels(model, ""); fillYears(year);
     $("#b-fuel", f).innerHTML = '<option value="">Select fuel</option>' + C.fuels.map((x) => `<option value="${x.id}">${x.label}</option>`).join("");
     {
@@ -663,6 +704,9 @@
           $$('input[name="b-svc"]:checked', f).forEach((other) => {
             if (other !== cb && svcById[other.value].exclusive === svc.exclusive) other.checked = false;
           });
+        }
+        if ($$('input[name="b-svc"]:checked', f).length > F.maxServices) {
+          cb.checked = false; const box = $("[data-svc-err]", f); box.hidden = false; box.textContent = `Choose up to ${F.maxServices} services per request.`;
         }
         recount(); renderBookingQty();
       });
@@ -695,11 +739,12 @@
     $("[data-b-qty]", f).addEventListener("input", (e) => {
       const id = e.target.dataset.bQtyFor;
       if (!id || !svcById[id]) return;
-      quantities[id] = Math.max(1, Math.min(svcById[id].qty.max, Math.floor(Number(e.target.value)) || 1));
+      quantities[id] = e.target.value;
+      fieldError(e.target, F.quantityError(e.target.value, svcById[id].qty.max));
     });
     // A carried price is valid only while the vehicle, jobs and quantities stay the same.
     function priceSelection() {
-      return JSON.stringify([brand.value, model.value, modelOther.value.trim(), year.value, $("#b-fuel", f).value, $("#b-pickup", f).value, $("#b-pin", f).value.trim(),
+      return JSON.stringify([brand.value, model.value, modelOther.value.trim(), year.value, grade.value, $("#b-fuel", f).value, $("#b-pickup", f).value, $("#b-pin", f).value.trim(),
         $$('input[name="b-svc"]:checked', f).map((cb) => [cb.value, quantities[cb.value] || 1])]);
     }
     const originalSelection = priceSelection();
@@ -722,10 +767,7 @@
     pinIn.addEventListener("input", () => { clearTimeout(pinT); pinT = setTimeout(pinCheck, /^\d{6}$/.test(pinIn.value.trim()) ? 0 : 700); });
 
     function setErr(el, msg) {
-      const box = el.closest(".field") && el.closest(".field").querySelector(".err");
-      if (box) { box.textContent = msg || ""; box.hidden = !msg; }
-      msg ? el.setAttribute("aria-invalid", "true") : el.removeAttribute("aria-invalid");
-      return !msg;
+      return fieldError(el, msg);
     }
     function validate(i) {
       let ok = true;
@@ -743,9 +785,12 @@
         ok = setErr(reg, !rv || /^[A-Z]{2}\d{1,2}[A-Z]{0,3}\d{1,4}$|^\d{2}BH\d{4}[A-Z]{1,2}$/.test(rv) ? "" : "Check the format, e.g. MP09 AB 1234 (or leave blank).") && ok;
       }
       if (i === 2) {
-        const any = $$('input[name="b-svc"]:checked', f).length > 0;
-        const box = $("[data-svc-err]", f); box.hidden = any; box.textContent = any ? "" : "Select at least one service.";
-        ok = any;
+        const count = $$('input[name="b-svc"]:checked', f).length;
+        const msg = !count ? "Select at least one service." : count > F.maxServices ? `Choose up to ${F.maxServices} services per request.` : "";
+        const box = $("[data-svc-err]", f); box.hidden = !msg; box.textContent = msg; box.id = "booking-services-error"; box.setAttribute("role", "alert");
+        if (msg) { box.tabIndex = -1; box.focus(); }
+        ok = !msg;
+        for (const el of $$("[data-b-qty-for]", f)) ok = setErr(el, F.quantityError(el.value, svcById[el.dataset.bQtyFor].qty.max)) && ok;
       }
       if (i === 3) ok = setErr($("#b-date", f), dateIssue($("#b-date", f))) && ok;
       if (i === 3 && pickupSel.value === "yes") {
@@ -765,9 +810,10 @@
           const s = svcById[i.value];
           return s.name + (s.qty ? " × " + (quantities[s.id] || 1) + " " + s.unit.replace(/^per /, "") + "(s)" : "");
         }),
-        serviceItems: $$('input[name="b-svc"]:checked', f).map((i) => ({ id: i.value, qty: svcById[i.value].qty ? quantities[i.value] || 1 : 1 })),
-        partsGrade: estimateValid ? pre.partsGrade || "standard" : "", category: estimateValid ? pre.category || "" : "",
-        notes: $("#b-notes", f).value.trim(),
+        serviceItems: $$('input[name="b-svc"]:checked', f).map((i) => ({ id: i.value, qty: svcById[i.value].qty ? Number(quantities[i.value] || 1) : 1 })),
+        partsGrade: grade.value, category: estimateValid ? pre.category || "" : "",
+        // Notes are also retained by the already deployed handler.
+        notes: [$("#b-notes", f).value.trim(), `Parts preference: ${C.pricing.partsGrade[grade.value].label}`, estimateValid && pre.category ? `Vehicle category: ${pre.category}` : ""].filter(Boolean).join("\n"),
         pickup: pickupSel.value, address: pickupSel.value === "yes" ? $("#b-address", f).value.trim() : "", pin: pickupSel.value === "yes" ? $("#b-pin", f).value.trim() : "",
         date: $("#b-date", f).value, time: $("#b-time", f).value, estimate: estimateValid ? pre.estimate : ""
       };
@@ -789,13 +835,14 @@
         "Please confirm the slot."
       ].filter(Boolean).join("\n");
     }
-    function show(i) {
+    function show(i, moveFocus = true) {
       step = i;
       steps.forEach((s, k) => { s.hidden = k !== i; });
       $$(".steps-bar span", root).forEach((s, k) => s.classList.toggle("on", k <= i));
       $("[data-b-back]", root).hidden = i === 0;
       $("[data-b-next] span", root).textContent = i === steps.length - 1 ? (B.bookingEndpoint ? "Submit request" : "Review & send") : "Next";
       $("[data-b-count]", root).textContent = `Step ${i + 1} of ${steps.length}`;
+      if (moveFocus) focusStep(steps[i]);
     }
     $("[data-b-back]", root).addEventListener("click", () => show(Math.max(0, step - 1)));
     f.addEventListener("submit", async (e) => {
@@ -826,13 +873,15 @@
           }
           const res = await fetch(endpoint.href, { method: "POST", headers, body, signal: controller.signal, referrerPolicy: "no-referrer", credentials: "omit" });
           if (!res.ok) throw new Error("HTTP " + res.status);
+          const acknowledgement = await res.json();
+          if (!F.receipt(acknowledgement, B.bookingIdempotency ? requestId : "")) throw new Error("Receipt not confirmed");
           f.hidden = true; store.remove("cmi-booking");
           out.innerHTML = `<div class="success"><div class="status status--ok"><div><strong>Request received.</strong>We'll contact you on ${esc(p.mobile)} to confirm the slot and quotation. Your booking is confirmed only after we call or message you.</div></div></div>`;
         } catch (err) {
           out.innerHTML = `<div class="status status--bad" role="alert"><div><strong>${controller.signal.aborted ? "The request timed out." : "We couldn't confirm your request."}</strong>It may have reached the garage. Please check with us on WhatsApp or by phone before resending.</div></div><a class="btn btn--wa" target="_blank" rel="noopener" href="${waUrl(bookingText(p))}">${ICON.wa} Check on WhatsApp</a>`;
         } finally {
           clearTimeout(timer); sending = false; f.inert = false; f.removeAttribute("aria-busy");
-          btn.disabled = false; $("[data-b-back]", root).disabled = false; show(step);
+          btn.disabled = false; $("[data-b-back]", root).disabled = false; show(step, false);
           if (f.hidden) out.setAttribute("tabindex", "-1");
           if (f.hidden) out.focus();
         }
@@ -854,26 +903,19 @@
       });
       $("[data-b-edit]", out).addEventListener("click", () => { f.hidden = false; out.innerHTML = ""; });
     });
-    show(0);
+    show(0, false);
   }
 
-  /* ---------- Hindi toggle (key UI strings) ---------- */
-  const HI = {
-    "nav.home": "होम", "nav.calc": "खर्च कैलकुलेटर", "nav.gallery": "सर्विस गैलरी", "nav.reviews": "समीक्षाएँ", "nav.about": "हमारे बारे में", "back.home": "← होम पर वापस",
-    "sec.gallery": "सर्विस गैलरी", "sec.reviews": "हमारे ग्राहक क्या कहते हैं", "cta.share": "अपना अनुभव साझा करें",
-    "nav.services": "सेवाएँ", "nav.estimate": "खर्च जानें", "nav.pickup": "पिकअप-ड्रॉप", "nav.book": "बुकिंग", "nav.contact": "संपर्क",
-    "hero.title": "इंदौर में भरोसेमंद कार सर्विस और रिपेयर", "hero.sub": "पारदर्शी अनुमान। भरोसेमंद मैकेनिक। सुविधाजनक पिकअप और ड्रॉप।",
-    "cta.calc": "सर्विस खर्च जानें", "cta.book": "कार सर्विस बुक करें", "cta.wa": "व्हाट्सऐप पर बात करें", "cta.call": "कॉल करें",
-    "est.car": "आपकी कार", "est.services": "सेवाएँ चुनें", "est.details": "समस्या और पिकअप", "est.next": "आगे",
-    "sec.packages": "लोकप्रिय सर्विस पैकेज", "sec.why": "हमें क्यों चुनें", "sec.how": "कैसे काम करता है", "sec.areas": "सेवा क्षेत्र", "sec.faq": "अक्सर पूछे जाने वाले प्रश्न"
-  };
+  /* ---------- Display language ---------- */
   function applyLang(lang) {
-    document.documentElement.lang = lang === "hi" ? "hi" : "en";
-    $$("[data-i18n]").forEach((el) => {
-      if (el.dataset.en == null) el.dataset.en = el.innerHTML;
-      el.innerHTML = lang === "hi" && HI[el.dataset.i18n] ? esc(HI[el.dataset.i18n]) : el.dataset.en;
+    if (window.CMI_I18N?.available) { window.CMI_I18N.apply(lang); return; }
+    // If a language asset fails, keep the English controls usable and correctly tagged.
+    document.documentElement.lang = "en";
+    $$(".lang-toggle").forEach(button => {
+      button.disabled = true;
+      button.lang = "hi";
+      button.title = "Hindi could not load. Refresh to try again.";
     });
-    $$(".lang-toggle").forEach((b) => { b.textContent = lang === "hi" ? "EN" : "हिंदी"; b.setAttribute("aria-label", lang === "hi" ? "Switch to English" : "हिंदी में देखें"); });
   }
 
   /* ---------- Boot ---------- */
@@ -885,6 +927,11 @@
     $$("[data-workshop-slider]").forEach(mountWorkshopSlider);
     $$("[data-service-explorer]").forEach(mountServiceExplorer);
     $$("form[data-quick-book]").forEach(mountQuickBook);
+    $$(".field input, .field select, .field textarea").forEach(el => { if ($(".err", el.closest(".field"))) errorBox(el); });
+    const mobileActions = $(".mbar");
+    if (mobileActions && typeof ResizeObserver !== "undefined") new ResizeObserver(() => {
+      document.documentElement.style.setProperty("--mobile-actions-height", Math.ceil(mobileActions.getBoundingClientRect().height) + "px");
+    }).observe(mobileActions);
     wireWhatsApp();
     $$("[data-phone]").forEach((el) => { el.textContent = B.phoneDisplay; });
     const menu = $(".menu-btn"), nav = $(".nav");

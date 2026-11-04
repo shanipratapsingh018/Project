@@ -23,7 +23,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.2.2";
+const VERSION = "2.3.0";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -169,7 +169,7 @@ ${siteUrl ? `<meta property="og:url" content="${esc(url(file))}">` : ""}
 <link rel="icon" href="${FAVICON}">
 <link rel="stylesheet" href="assets/css/fonts.css?v=${VERSION}">
 <link rel="stylesheet" href="assets/css/style.css?v=${VERSION}">
-<link rel="stylesheet" href="assets/css/header.css?v=2">
+<link rel="stylesheet" href="assets/css/header.css?v=${VERSION}">
 ${file === "404.html" ? `<base href="${siteUrl ? esc(siteUrl) + "/" : "/"}">` : ""}
 ${IMG_FALLBACK_JS}
 ${lds}
@@ -179,7 +179,7 @@ ${sprite}
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="index.html" aria-label="${esc(B.name)} home">${LOGO}${WORDMARK}</a>
+    <a class="brand" href="index.html">${LOGO}${WORDMARK}</a>
     <button class="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">${ic("menu")}<span>Menu</span></button>
     <nav class="nav" id="site-nav" aria-label="Main">${NAV.map(([h, l, k, icon]) => `<a href="${h}" class="nav-button${h === "index.html" ? " nav-home" : ""}"${navKey === h ? ' aria-current="page"' : ""}>${ic(icon)}<span data-i18n="${k}">${l}</span></a>`).join("")}</nav>
     <div class="header-actions">
@@ -225,6 +225,8 @@ ${body}
 <script src="assets/js/gallery.js?v=${VERSION}"></script>
 <script src="assets/js/reviews.js?v=${VERSION}"></script>
 <script src="assets/js/forms.js?v=${VERSION}"></script>
+<script src="assets/js/hi.js?v=${VERSION}"></script>
+<script src="assets/js/i18n.js?v=${VERSION}"></script>
 <script src="assets/js/app.js?v=${VERSION}"></script>
 </body>
 </html>
@@ -627,11 +629,12 @@ function bookingPage() {
             <div class="field"><label for="b-year">Year *</label><select id="b-year"></select><p class="err" hidden></p></div>
             <div class="field"><label for="b-fuel">Fuel type *</label><select id="b-fuel"></select><p class="err" hidden></p></div>
           </div>
+          <div class="field"><label for="b-grade">Parts preference</label><select id="b-grade"></select></div>
           <div class="field"><label for="b-reg">Registration number (optional)</label><input id="b-reg" placeholder="MP09 AB 1234" maxlength="14" autocapitalize="characters"><p class="err" hidden></p></div>
         </fieldset>
         <fieldset data-bstep hidden style="border:0;padding:0;margin:0;display:grid;gap:14px">
           <legend class="step-title"><span class="num">03</span><h3 style="display:inline">Services</h3></legend>
-          <div class="chips" data-b-services></div><div class="grid-2" data-b-qty hidden></div><p class="err" data-svc-err hidden></p>
+          <div class="chips" data-b-services></div><div class="grid-2" data-b-qty hidden></div><p class="err" id="booking-services-error" data-svc-err role="alert" hidden></p>
           <div class="field"><label for="b-notes">Symptoms or repair notes (optional)</label><textarea id="b-notes" maxlength="600"></textarea></div>
         </fieldset>
         <fieldset data-bstep hidden style="border:0;padding:0;margin:0;display:grid;gap:14px">

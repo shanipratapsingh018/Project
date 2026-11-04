@@ -29,7 +29,8 @@
   font-size: clamp(2rem, 4.2vw, 3.5rem);
   line-height: 1;
   letter-spacing: .045em;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .site-header .brand-sub {
   position: relative;
@@ -37,7 +38,8 @@
   color: #d4dae2;
   font: 600 clamp(.75rem, 1.05vw, .86rem)/1.5 var(--f-body);
   letter-spacing: .11em;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .site-header .brand-sub::before {
   content: "";
@@ -59,6 +61,8 @@
   grid-row: 1;
   gap: 10px;
   align-self: center;
+  min-width: 0;
+  flex-wrap: wrap;
 }
 .site-header .header-actions .btn,
 .site-header .lang-toggle {
@@ -108,7 +112,9 @@
   box-shadow: none;
   font-size: clamp(.82rem, 1.1vw, .93rem);
   line-height: 1.2;
-  white-space: nowrap;
+  white-space: normal;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .site-header .nav-button svg { width: 18px; height: 18px; color: #ff9457; }
 .site-header .nav a.nav-button::after { content: none; }
@@ -179,6 +185,11 @@
   }
 }
 @media (max-width: 480px) {
+  .site-header > .wrap { display: flex; flex-wrap: wrap; }
+  .site-header .brand { flex: 1 1 100%; }
+  .site-header .menu-btn { flex: 0 1 auto; }
+  .site-header .header-actions { flex: 1 1 155px; justify-content: flex-end; }
+  .site-header .nav { flex: 1 1 100%; order: 4; }
   .site-header .brand-logo { width: 40px; height: 40px; }
   .site-header .header-actions .btn--ghost { display: none; }
   .site-header .header-actions a[href="booking.html"] { padding-inline: 16px; }

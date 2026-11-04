@@ -1,0 +1,22 @@
+{
+  "version": "2.3.0",
+  "date": "2026-11-04",
+  "public_pages": 22,
+  "audit_fix_browser_checks": 243,
+  "large_text_states": 220,
+  "responsive_states": 294,
+  "public_browser_checks": 84,
+  "service_checks": 35,
+  "gallery_checks": 333,
+  "reliability_checks": 41,
+  "admin_browser_checks": 112,
+  "admin_unit_tests": 13,
+  "database_checks": 49,
+  "booking_contract_tests": 6,
+  "approved_rate_figures": 276,
+  "accessibility_page_states": 46,
+  "contrast_failures": 0,
+  "accessible_label_mismatches": 0,
+  "backend_deployment": "prepared; owner Supabase deployment required",
+  "live_backend_verified": false
+}
