@@ -16,7 +16,7 @@ No WhatsApp API, SMS/OTP provider, payment gateway, accounting subscription or A
 
 1. Create a dedicated Supabase project and keep the database password private.
 2. In SQL Editor, run the complete contents of `supabase/setup-admin.sql` once for a new project. This combines `202610310001_admin.sql` and `202610310002_finance.sql` in order. Each migration is transactional. If both migrations have already succeeded, skip the combined file. Do not rerun successful migrations.
-3. In Authentication settings, disable public sign-ups. Set Site URL to `https://shanipratapsingh018.github.io/Project/admin/` and add that exact URL to allowed redirect URLs. Remove unused local redirect entries before production. Configure a strong password policy and, for reliable password-reset delivery, your own SMTP provider if required by Supabase’s email limits.
+3. In Authentication settings, disable public sign-ups. Set Site URL to `https://carrepairwala.co.in/admin/` and add that exact URL to allowed redirect URLs. Remove unused local redirect entries before production. Configure a strong password policy and, for reliable password-reset delivery, your own SMTP provider if required by Supabase’s email limits.
 4. In Authentication → Users, create the owner account with your email and a strong unique password. Confirm the email through the supported dashboard flow. Do not put that password in GitHub or send it in chat.
 5. Copy the new account’s User UID and substitute it in `supabase/bootstrap-owner.sql`; run that SQL in SQL Editor. Creating an Auth account alone does **not** give owner access.
 6. Keep the `private` schema out of exposed API schemas. Keep Row Level Security enabled. Do not add broad anonymous read/write policies. Storage bucket `garagewala-private` must stay private (4 MB per file; JPEG/PNG/WebP/PDF only).
@@ -39,7 +39,7 @@ Only the **public publishable key** (`sb_publishable_…`) or legacy **anon** JW
 
 The admin’s Content Security Policy permits Supabase’s `*.supabase.co` project hosts. A custom Supabase domain needs an explicit update to the CSP in `admin-app/src/index.html` and a rebuild. The public booking bridge currently expects the standard Supabase project host.
 
-The owner's supplied public URL/key are already configured in v2.0.1. After completing the database and owner account steps, open `/Project/admin/`, sign in, and complete Settings with the **actual legal business name, full billing address and state code**. Leave GSTIN empty if not registered. Invoice issuing stays blocked until these details are checked. Customer billing addresses are required before an invoice can be issued. Tax rates and HSN/SAC codes must be chosen for the actual supply; no tax registration is assumed. Public connection settings do not grant SQL Editor, account-creation or project-management access.
+The owner's supplied public URL/key are already configured in v2.0.1. After completing the database and owner account steps, open `/admin/`, sign in, and complete Settings with the **actual legal business name, full billing address and state code**. Leave GSTIN empty if not registered. Invoice issuing stays blocked until these details are checked. Customer billing addresses are required before an invoice can be issued. Tax rates and HSN/SAC codes must be chosen for the actual supply; no tax registration is assumed. Public connection settings do not grant SQL Editor, account-creation or project-management access.
 
 ## 3. Enable website booking storage
 

@@ -1,13 +1,17 @@
 # Car Repair Wala — Your Car. Our Care. · v2.2.1
 
-Live website: https://shanipratapsingh018.github.io/Project/
+Website: https://carrepairwala.co.in/
 
-Services & Prices: https://shanipratapsingh018.github.io/Project/services.html?v=2.2.1
+DNS, HTTPS and booking/login setup: [custom-domain guide](carmechanic-indore/docs/CUSTOM_DOMAIN.md).
+
+Services & Prices: https://carrepairwala.co.in/services.html?v=2.2.1
 
 The updated website is in **carmechanic-indore/**.
 The original Arduino temp.txt is preserved separately.
 
 ## Download
+
+- [Current website and source backup](downloads/car-repair-wala-backup-2026-11-04.zip).
 
 - [Hosting-ready ZIP](downloads/car-repair-wala-v2.2.1-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
 - [Complete source ZIP](downloads/car-repair-wala-v2.2.1-source.zip) — on GitHub, click **Download raw**.
@@ -24,7 +28,7 @@ npm start
 ```
 
 See [website README](carmechanic-indore/README.md) and [Hindi quick start](carmechanic-indore/docs/QUICKSTART-HINDI.md).
-Reviews: https://shanipratapsingh018.github.io/Project/reviews.html#write-review
+Reviews: https://carrepairwala.co.in/reviews.html#write-review
 
 Opening hours: every day, 7:00 AM–11:30 PM IST.
 The About page keeps its workshop image; the homepage uses one full-width twenty-photo service slider.
@@ -33,9 +37,9 @@ Publication consent is optional, and feedback appears publicly only after the ga
 
 The main **Book Service** form saves requests directly to **Admin → Bookings** through Supabase.
 WhatsApp buttons and service-page quick enquiries still require sending a WhatsApp message.
-The production URL is configured; rebuilding preserves the live GitHub Pages URLs.
+The production URL is configured; rebuilding preserves the custom-domain URLs.
 
-Owner workspace: https://shanipratapsingh018.github.io/Project/admin/?v=2.2.1
+Owner workspace: https://carrepairwala.co.in/admin/?v=2.2.1
 
 Customer vehicles and manual enquiries have searchable brand/model dropdowns: 70 brands,
 847 models, year/fuel selection and manual choices for anything missing. Existing saved
@@ -58,6 +62,6 @@ For future invoice addresses, use **Admin → Settings → Use workshop address*
 
 Validation is recorded in [VALIDATION.json](carmechanic-indore/docs/VALIDATION.json).
 
-Service Gallery: https://shanipratapsingh018.github.io/Project/gallery.html?v=2.2.1
+Service Gallery: https://carrepairwala.co.in/gallery.html?v=2.2.1
 
 The homepage has a twenty-photo service slider beneath the calculator; Previous/Next and mobile swipe are supported. Gallery cards include Call Now.

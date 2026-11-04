@@ -4,9 +4,9 @@ Primary address: `https://carrepairwala.co.in/`.
 The `www` address should redirect to the primary address through GitHub Pages.
 The existing GitHub Pages hosting can continue; a GoDaddy hosting plan is not needed.
 
-This branch prepares `public/CNAME`, the website URL, canonical links, structured
-data, sitemap and robots.txt. These prepared files have not activated the domain.
-Complete the following account settings before treating the domain as ready.
+The source includes `public/CNAME`, the website URL, canonical links, structured
+data, sitemap and robots.txt for this domain. The following account settings
+are also required; publishing files alone does not configure DNS or Supabase.
 
 ## Supabase: booking and owner access
 

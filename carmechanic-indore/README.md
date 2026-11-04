@@ -4,9 +4,11 @@ A ready-to-run static garage website branded **Car Repair Wala · Your Car. Our 
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form, online booking and WhatsApp contact. Node.js 18+ is needed for local serving
 and rebuilding; a static hosting provider needs only the included `public/` files.
 
-## Live website
+## Website address
 
-https://shanipratapsingh018.github.io/Project/
+https://carrepairwala.co.in/
+
+For DNS, HTTPS, booking origins and owner-login redirects, follow the [custom-domain guide](docs/CUSTOM_DOMAIN.md).
 
 The Services & Prices page has three service packages, 69 service cards, search, category filters,
 vehicle-specific estimates and an expandable comparison table. The generated logo is bundled locally.
@@ -26,7 +28,7 @@ This describes the public website. The private owner workspace uses the configur
 
 ## Private owner workspace
 
-Open https://shanipratapsingh018.github.io/Project/admin/ or the **Owner login** link in the footer.
+Open https://carrepairwala.co.in/admin/ or the **Owner login** link in the footer.
 It includes customers and vehicles, manual and website enquiries, job cards and customer approval,
 private job attachments, itemised invoices, printing/Save as PDF, payment records and billing settings.
 Owner membership is checked by database policies. Invoice amounts and payment balances are checked by SQL functions.
