@@ -3,4 +3,4 @@ Allow: /
 Disallow: /Project/admin/
 Disallow: /admin/
 
-Sitemap: https://shanipratapsingh018.github.io/Project/sitemap.xml
+Sitemap: https://carrepairwala.co.in/sitemap.xml
