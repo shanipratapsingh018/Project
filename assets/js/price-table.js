@@ -51,7 +51,7 @@
         <div class="service-card-top"><span class="service-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${esc(s.icon || "service")}"/></svg></span><span class="service-card-group">${esc(s.group)}</span></div>
         <h3>${esc(s.name)}</h3><p class="service-card-description">${esc((s.includes || [])[0] || "Tell us about your car and we’ll confirm the work needed.")}</p>
         <div class="service-card-cost"><span class="service-price-status" data-service-price-status>${status}</span><strong data-service-range>${esc(q.text)}</strong><span class="service-unit">${esc(s.unit || "per job")}</span></div>
-        <div class="service-card-footer"><span>${esc(PR.formatHours(s.hours))}<small>typical time</small></span><a href="booking.html?service=${encodeURIComponent(s.id)}" aria-label="Request ${esc(s.name)}">${q.status === "priced" ? "Book service" : "Request quote"}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+        <div class="service-card-footer"><span>${esc(PR.formatHours(s.hours))}<small>typical time</small></span><a href="booking.html?service=${encodeURIComponent(s.id)}"><span>${q.status === "priced" ? "Book service" : "Request quote"}</span><span class="sr-only">: ${esc(s.name)}</span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
       </article>`;
     }).join("");
   }

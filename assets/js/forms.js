@@ -16,12 +16,25 @@
     return value < minimum ? "Choose today or a future date." : "";
   }
   function validPin(value) { return /^[1-9]\d{5}$/.test(String(value).trim()); }
+  const maxServices = 30;
+  function quantityError(value, maximum) {
+    const n = Number(value);
+    return /^\d+$/.test(String(value)) && Number.isSafeInteger(n) && n >= 1 && n <= maximum
+      ? "" : `Enter a whole number from 1 to ${maximum}.`;
+  }
+  function receipt(value, requestId = "") {
+    return !!value && typeof value === "object" && value.received === true &&
+      (!requestId || !Object.hasOwn(value, "requestId") || value.requestId === requestId);
+  }
   function draft(cfg, value) {
     if (!value || typeof value !== "object" || Array.isArray(value)) return {};
     const out = {};
+    out.yearExact = value.yearExact === true;
     for (const key of ["name", "brand", "model", "year", "fuel", "category", "partsGrade", "symptoms", "pickup", "area", "date", "time", "estimate"]) {
       if (typeof value[key] === "string") out[key] = value[key].slice(0, 1000);
     }
+    // Old releases used 2004 as the value of "Before 2005", not an exact year.
+    if (out.year === "2004" && !out.yearExact) delete out.year;
     const byId = Object.fromEntries(cfg.services.map((s) => [s.id, s]));
     out.services = [...new Set(Array.isArray(value.services) ? value.services.filter((id) => typeof id === "string" && Object.hasOwn(byId, id)) : [])];
     out.qty = {};
@@ -32,7 +45,7 @@
     out.lights = Array.isArray(value.lights) ? value.lights.filter((s) => typeof s === "string").slice(0, 6) : [];
     return out;
   }
-  const api = { today, dateError, validPin, draft };
+  const api = { today, dateError, validPin, quantityError, maxServices, receipt, draft };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.CMI_FORMS = api;
 })(typeof window !== "undefined" ? window : this);
