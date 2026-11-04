@@ -120,7 +120,7 @@
     };
 
     root.innerHTML = `
-      <div class="jobcard-head"><span>Job card · <b>Estimate</b></span><span>${C.pricing.isDemo ? '<span class="tag tag--demo">Demo prices</span>' : "Rate card " + esc(RATE_V)}</span></div>
+      <div class="jobcard-head"><span>Job card · <b>Estimate</b></span><span>${C.pricing.isDemo ? '<span class="tag tag--demo">Demo prices</span>' : `Rate card <time datetime="${esc(RATE_V)}">${esc(RATE_V)}</time>`}</span></div>
       <div class="steps-bar" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
       <form class="jobcard-body" novalidate>
         <section data-step="1">
@@ -533,11 +533,12 @@
     return `<figure class="ba-shot"><img src="${esc(img.src)}" alt="${esc(img.alt)}" width="${img.width || 800}" height="${img.height || 600}" ${eager ? "" : 'loading="lazy"'} decoding="async"><figcaption class="ba-label ba-label--${label.toLowerCase()}">${label}</figcaption></figure>`;
   }
   function galleryCard(it, i) {
+    const photoWidth = Math.min(it.before.width || 600, it.after.width || 600);
     const svcName = svcById[it.serviceId] ? svcById[it.serviceId].name : it.category;
     const facts = [it.vehicle && ["Vehicle", it.vehicle], it.duration && ["Time taken", it.duration], it.price && ["Price", it.price]].filter(Boolean);
     return `<article class="ba-card" data-group="${esc(it.group)}" id="ba-${esc(it.id)}">
       <div class="ba-head"><span class="eyebrow">${esc(it.category)}</span><h3>${esc(it.title)}</h3></div>
-      <div class="ba-pair" tabindex="0" aria-label="Before and after images, swipe to compare">${baFigure(it.before, "Before", i < 2)}${baFigure(it.after, "After", i < 2)}</div>
+      <div class="ba-pair" style="--photo-width:${photoWidth}px;--comparison-width:${photoWidth * 2 + 8}px" tabindex="0" aria-label="Before and after images, swipe to compare">${baFigure(it.before, "Before", i < 2)}${baFigure(it.after, "After", i < 2)}</div>
       <div class="ba-dots" aria-hidden="true"><span class="on"></span><span></span><em>Swipe to see after →</em></div>
       <p class="ba-desc">${esc(it.description)}</p>
       ${facts.length ? `<dl class="ba-facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
