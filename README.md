@@ -1,16 +1,17 @@
-# Car Repair Wala — Your Car. Our Care. · v2.3.0
+# Car Repair Wala — Your Car. Our Care. · v2.4.0
 
 Website: https://carrepairwala.co.in/
 
-Release 2.3.0: [13 audit fixes and extra cases](carmechanic-indore/docs/AUDIT_FIXES_2.3.md).
-Server-side date validation requires the separate
-[booking function deployment](carmechanic-indore/docs/DEPLOY_BOOKING_FIX.md).
+Release 2.4.0: [local SEO changes and Google checklist](carmechanic-indore/docs/SEO_2.4.md).
+The [13 earlier audit fixes](carmechanic-indore/docs/AUDIT_FIXES_2.3.md) are retained.
+The owner reported completing the separate booking-handler update; no new backend
+deployment is needed for this release.
 
 Responsive fixes and affected pages: [4 November audit](carmechanic-indore/docs/RESPONSIVE_AUDIT.md).
 
 DNS, HTTPS and booking/login setup: [custom-domain guide](carmechanic-indore/docs/CUSTOM_DOMAIN.md).
 
-Services & Prices: https://carrepairwala.co.in/services.html?v=2.3.0
+Services & Prices: https://carrepairwala.co.in/services.html?v=2.4.0
 
 The updated website is in **carmechanic-indore/**.
 The original Arduino temp.txt is preserved separately.

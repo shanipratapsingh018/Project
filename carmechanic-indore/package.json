@@ -1,13 +1,13 @@
 {
   "name": "car-repair-wala",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "private": true,
   "description": "Car Repair Wala \u2014 Your Car. Our Care. Car service prices, estimates and online booking in Indore.",
   "scripts": {
     "build": "node tools/build.mjs",
     "build:admin": "npm --prefix admin-app run build",
     "test:admin": "npm --prefix admin-app test",
-    "test": "node tests/ratecard.test.js && node tests/estimate.test.js && node tests/area.test.js && node tests/photos.test.js && node tests/forms.test.js && node --test tests/server.test.mjs && node --test tests/build.test.mjs && node --test tests/booking-contract.test.mjs",
+    "test": "node tests/ratecard.test.js && node tests/estimate.test.js && node tests/area.test.js && node tests/photos.test.js && node tests/forms.test.js && node --test tests/server.test.mjs && node --test tests/build.test.mjs && node --test tests/booking-contract.test.mjs && node tests/seo.test.mjs",
     "test:browser": "python3 tests/browser_test.py",
     "test:responsive": "python3 tests/responsive_test.py",
     "serve": "node tools/serve.mjs",

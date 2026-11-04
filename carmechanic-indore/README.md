@@ -1,4 +1,4 @@
-# Car Repair Wala — Your Car. Our Care. · v2.3.0
+# Car Repair Wala — Your Car. Our Care. · v2.4.0
 
 A ready-to-run static garage website branded **Car Repair Wala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form, online booking and WhatsApp contact. Node.js 18+ is needed for local serving
@@ -8,11 +8,11 @@ and rebuilding; a static hosting provider needs only the included `public/` file
 
 https://carrepairwala.co.in/
 
-Release 2.3.0 addresses the 13 follow-up audit findings. See the
-[fix log and extra cases](docs/AUDIT_FIXES_2.3.md). The updated booking handler
-needs a separate [Supabase deployment](docs/DEPLOY_BOOKING_FIX.md); no database
-migration is required. Public booking notes preserve parts preferences with
-the existing deployed handler.
+Release 2.4.0 improves local search metadata, sharing previews, linked business
+data, headings and crawlable service/area links. See the [SEO change log and
+Google checklist](docs/SEO_2.4.md). The previous [13 audit fixes](docs/AUDIT_FIXES_2.3.md)
+are retained. The owner reported manually deploying the 2.3 booking handler;
+this SEO release requires no new Supabase deployment.
 
 Release 2.2.2 fixes service-page overflow, price comparison scrolling, photo sizing,
 mobile actions, calculator dates and small-screen service instructions. The

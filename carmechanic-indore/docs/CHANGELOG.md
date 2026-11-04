@@ -1,3 +1,11 @@
+# v2.4.0 — Local SEO and crawlable content
+
+- Add branded/local search titles, descriptions, social preview metadata and linked business/service/page data.
+- Add canonical breadcrumbs and contextual related-service links; render confirmed pickup areas without JavaScript.
+- Correct heading levels, carousel semantics and desktop contact navigation while preserving the controls.
+- Add critical font hints and defer public scripts; protect 404/admin indexing boundaries.
+- Record SEO checks and owner Search Console steps in SEO_2.4.md.
+
 # v2.3.0 — Booking accuracy, accessibility and Hindi
 
 - Address all 13 follow-up audit findings; preserve parts preference, validate quantities and choices, verify receipts and use actual years/India dates.

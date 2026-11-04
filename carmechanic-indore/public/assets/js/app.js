@@ -127,6 +127,8 @@
 
   /* ---------- Estimator ---------- */
   function mountEstimator(root) {
+    const headingTag = root.dataset.headingLevel === "2" ? "h2" : "h3";
+    const subHeadingTag = headingTag === "h2" ? "h3" : "h4";
     const state = { partsGrade: "standard", qty: {}, services: new Set(), pickupResult: null };
     const preset = (root.getAttribute("data-preset") || "").split(",").filter(Boolean);
     const groups = {};
@@ -142,7 +144,7 @@
       <div class="steps-bar" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
       <form class="jobcard-body" novalidate>
         <section data-step="1">
-          <div class="step-title"><span class="num">01–05</span><h3 data-i18n="est.car">Your car</h3></div>
+          <div class="step-title"><span class="num">01–05</span><${headingTag} data-i18n="est.car">Your car</${headingTag}></div>
           <div class="grid-2" style="margin-top:14px">
             <div class="field"><label for="e-brand">Manufacturer</label><select id="e-brand" required></select></div>
             <div class="field"><label for="e-model">Model</label><select id="e-model" required disabled></select><input id="e-model-other" aria-label="Car model" maxlength="80" placeholder="Type your car model" hidden></div>
@@ -154,11 +156,11 @@
           <p class="err" data-err="1" hidden></p>
         </section>
         <section data-step="2" hidden>
-          <div class="step-title"><span class="num">06</span><h3 data-i18n="est.services">Choose services</h3></div>
+          <div class="step-title"><span class="num">06</span><${headingTag} data-i18n="est.services">Choose services</${headingTag}></div>
           <p class="hint muted small" style="margin:6px 0 12px">Select one or more. Overlapping jobs are counted once. Prices shown are for a hatchback; your estimate adjusts for your car.</p>
           <div class="field svc-search"><label class="sr-only" for="e-search">Search services</label><input id="e-search" type="search" placeholder="Search, e.g. brake, AC, battery, dent" autocomplete="off"></div>
           <div class="svc-groups">${Object.entries(groups).map(([g, list]) => `
-            <div class="svc-group" data-group="${esc(g)}"><h4>${esc(g)}</h4><div class="svc-list">${list.map((s) => `
+            <div class="svc-group" data-group="${esc(g)}"><${subHeadingTag} class="svc-group-title">${esc(g)}</${subHeadingTag}><div class="svc-list">${list.map((s) => `
               <label class="svc-opt" data-svc="${s.id}" data-search="${esc((s.name + " " + g + " " + (s.includes || []).join(" ")).toLowerCase())}"><input type="checkbox" value="${s.id}"><span><span class="t">${esc(s.name)}</span><span class="s">${esc(fromText(s))}</span></span></label>`).join("")}
             </div></div>`).join("")}
             <p class="muted small" data-search-empty hidden>No service matches. Choose "Other / custom repair" and describe the problem.</p>
@@ -167,7 +169,7 @@
           <p class="err" data-err="2" hidden></p>
         </section>
         <section data-step="3" hidden>
-          <div class="step-title"><span class="num">07</span><h3 data-i18n="est.details">Problem & pickup</h3></div>
+          <div class="step-title"><span class="num">07</span><${headingTag} data-i18n="est.details">Problem & pickup</${headingTag}></div>
           <div class="field" style="margin-top:14px"><span class="label" id="l-lights">Warning lights on the dashboard (optional)</span><div class="chips" aria-labelledby="l-lights">${chipsHtml("lights", ["Check engine", "ABS", "Battery", "Oil pressure", "Temperature", "Airbag"].map((x) => ({ id: x, label: x })), "checkbox")}</div></div>
           <div class="field" style="margin-top:14px"><label for="e-symptoms">Symptoms or notes (optional)</label><textarea id="e-symptoms" maxlength="500" placeholder="e.g. squeaking when braking, AC not cooling"></textarea></div>
           <div class="grid-2" style="margin-top:14px">
@@ -344,7 +346,7 @@
       }).join("");
       const priced = r.pricedJobs > 0;
       $('[data-step="4"]', root).innerHTML = `
-        <div class="step-title"><span class="num">08</span><h3>Your estimate</h3></div>
+        <div class="step-title"><span class="num">08</span><${headingTag}>Your estimate</${headingTag}></div>
         <div class="estimate">
           <div class="est-total">
             <span class="k">${esc(p.car)} · ${esc((C.fuels.find((f) => f.id === p.fuel) || {}).label)} · ${esc((C.categories.find((c) => c.id === p.category) || {}).label)}</span>
@@ -361,8 +363,8 @@
               ${priced ? `<tr class="sum"><td>Estimated total${r.partsQuoted ? " (excl. parts quoted by model)" : ""}</td><td>${PR.formatRange(r.total)}</td></tr>` : ""}
             </tbody></table></div>
           ${r.includes.length || r.excludes.length ? `<div class="inc-exc">
-            <div><h4>Included</h4><ul>${r.includes.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>
-            <div><h4>Not included</h4><ul>${r.excludes.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div></div>` : ""}
+            <div><${subHeadingTag} class="estimate-list-title">Included</${subHeadingTag}><ul>${r.includes.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>
+            <div><${subHeadingTag} class="estimate-list-title">Not included</${subHeadingTag}><ul>${r.excludes.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div></div>` : ""}
           ${r.notes.map((n) => `<p class="small muted">• ${esc(n)}</p>`).join("")}
           <p class="disclaimer"><strong>This is an indicative estimate, not a final price.</strong> The final quotation is given after inspection. No additional work is done without your approval, and you get an itemised bill.${C.pricing.isDemo ? " <strong>Prices shown are demo values until the workshop publishes its rate card.</strong>" : ""}</p>
           <div class="est-actions">
@@ -890,7 +892,7 @@
       // No backend configured → WhatsApp fallback
       f.hidden = true;
       out.innerHTML = `<div class="success">
-        <div class="step-title"><span class="num">Last step</span><h3>Send your request on WhatsApp</h3></div>
+        <div class="step-title"><span class="num">Last step</span><h2>Send your request on WhatsApp</h2></div>
         <pre class="summary-chip" style="white-space:pre-wrap;margin:0">${esc(bookingText(p))}</pre>
         <a class="btn btn--wa btn--block" data-b-wa target="_blank" rel="noopener" href="${waUrl(bookingText(p))}">${ICON.wa} Open WhatsApp & send</a>
         <p class="small muted"><strong>How bookings work:</strong> this website doesn't store bookings in a database. Your details go to the garage only through the WhatsApp message you send. Your request is placed only when you press send in WhatsApp. We'll reply to confirm the slot and quotation. If WhatsApp doesn't open, call <span class="phone-line" style="color:inherit">${esc(B.phoneDisplay)}</span>.</p>

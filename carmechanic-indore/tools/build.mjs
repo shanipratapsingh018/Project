@@ -7,6 +7,7 @@ import { writeFileSync, readFileSync, existsSync, unlinkSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { runInNewContext } from "node:vm";
+import { createSeo, jsonLd } from "./seo.mjs";
 
 const require = createRequire(import.meta.url);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "public");
@@ -23,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.3.0";
+const VERSION = "2.4.0";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -131,27 +132,14 @@ function mapLink(compact = false) {
   return `<a class="${compact ? "" : "btn btn--outline btn--block"}" data-map-link href="${esc(href)}" target="_blank" rel="noopener noreferrer">${compact ? "" : ic("pin")}${label}</a>`;
 }
 const BACK_HOME = `<a class="back-home" href="index.html">${'<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg>'}<span data-i18n="back.home">Back to Home</span></a>`;
-function businessLd() {
-  const ld = {
-    "@context": "https://schema.org", "@type": "AutoRepair", name: B.name, url: url("index.html"),
-    telephone: B.phoneE164, areaServed: { "@type": "City", name: B.city },
-    address: B.address
-      ? { "@type": "PostalAddress", streetAddress: [B.address.street, B.address.locality].filter(Boolean).join(", "), addressLocality: B.city, addressRegion: B.state, ...(B.address.pincode ? { postalCode: B.address.pincode } : {}), addressCountry: B.country }
-      : { "@type": "PostalAddress", addressLocality: B.city, addressRegion: B.state, addressCountry: B.country },
-    description: "Multi-brand car servicing, maintenance, diagnostics and repairs in Indore with transparent estimates."
-  };
-  if (B.geo) ld.geo = { "@type": "GeoCoordinates", latitude: B.geo.lat, longitude: B.geo.lng };
-  if (B.hours) ld.openingHours = B.hours.map((h) => `${h.days} ${h.open}-${h.close}`);
-  if (B.googleBusinessProfileUrl) ld.sameAs = [B.googleBusinessProfileUrl];
-  if (B.email) ld.email = B.email;
-  return ld;
-}
 function faqLd(faqs) {
   return { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) };
 }
 function layout({ file, title, desc, body, ld = [], navKey = null }) {
   body = body.replace('<p class="crumbs">', BACK_HOME + '<p class="crumbs">');
-  const lds = [businessLd(), ...ld].map((x) => `<script type="application/ld+json">${JSON.stringify(x)}</script>`).join("\n");
+  const seo = createSeo({file,title,description:desc,business:B,siteUrl,services:SERVICE_PAGES,ld,serviceCount:C.services.length});
+  title = seo.title; desc = seo.description;
+  const lds = seo.schemas.map((x) => `<script type="application/ld+json">${jsonLd(x)}</script>`).join("\n");
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -159,14 +147,29 @@ function layout({ file, title, desc, body, ld = [], navKey = null }) {
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
-${siteUrl ? `<link rel="canonical" href="${esc(url(file))}">` : '<meta name="robots" content="noindex,follow">'}
+${seo.canonical ? `<link rel="canonical" href="${esc(seo.canonical)}">` : ""}
+<meta name="robots" content="${seo.robots}">
 <meta name="theme-color" content="#141619">
 <meta property="og:type" content="website">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
-${siteUrl ? `<meta property="og:url" content="${esc(url(file))}">` : ""}
+${seo.canonical ? `<meta property="og:url" content="${esc(seo.canonical)}">` : ""}
+<meta property="og:site_name" content="${esc(B.name)}">
 <meta property="og:locale" content="en_IN">
+${seo.image ? `<meta property="og:image" content="${esc(seo.image.url)}">
+<meta property="og:image:secure_url" content="${esc(seo.image.url)}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="${seo.image.width}">
+<meta property="og:image:height" content="${seo.image.height}">
+<meta property="og:image:alt" content="${esc(seo.image.caption)}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="${esc(title)}">
+<meta name="twitter:description" content="${esc(desc)}">
+<meta name="twitter:image" content="${esc(seo.image.url)}">
+<meta name="twitter:image:alt" content="${esc(seo.image.caption)}">` : ""}
 <link rel="icon" href="${FAVICON}">
+<link rel="preload" href="assets/fonts/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/fonts.css?v=${VERSION}">
 <link rel="stylesheet" href="assets/css/style.css?v=${VERSION}">
 <link rel="stylesheet" href="assets/css/header.css?v=${VERSION}">
@@ -202,32 +205,32 @@ ${body}
       ${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${mapLink(true)}` : ""}
       ${B.hours ? `<p>${hoursText()}</p>` : `<p class="small">Working hours: please call or WhatsApp to confirm.</p>`}
     </div>
-    <div><h4>Services</h4><ul>${SERVICE_PAGES.map((p) => `<li><a href="${p.file}">${esc(p.nav)}</a></li>`).join("")}</ul></div>
-    <div><h4>Customers</h4><ul><li><a href="index.html">Home</a></li><li><a href="estimate.html">Cost calculator</a></li><li><a href="booking.html">Book a service</a></li><li><a href="gallery.html">Service Gallery</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="pickup-drop.html">Pickup &amp; drop areas</a></li><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact</a></li><li><a href="index.html#faq">FAQs</a></li></ul></div>
-    <div><h4>Policies</h4><ul><li><a href="terms.html">Terms & conditions</a></li><li><a href="privacy.html">Privacy policy</a></li><li><a href="policies.html">Cancellation, pickup & billing</a></li><li><a href="admin/index.html">Owner login</a></li></ul></div>
+    <div><h2 class="footer-title">Services</h2><ul>${SERVICE_PAGES.map((p) => `<li><a href="${p.file}">${esc(p.nav)}</a></li>`).join("")}</ul></div>
+    <div><h2 class="footer-title">Customers</h2><ul><li><a href="index.html">Home</a></li><li><a href="estimate.html">Cost calculator</a></li><li><a href="booking.html">Book a service</a></li><li><a href="gallery.html">Service Gallery</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="pickup-drop.html">Pickup &amp; drop areas</a></li><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact</a></li><li><a href="index.html#faq">FAQs</a></li></ul></div>
+    <div><h2 class="footer-title">Policies</h2><ul><li><a href="terms.html">Terms & conditions</a></li><li><a href="privacy.html">Privacy policy</a></li><li><a href="policies.html">Cancellation, pickup & billing</a></li><li><a href="admin/index.html">Owner login</a></li></ul></div>
     <p class="fine">© <span data-year>${new Date().getFullYear()}</span> ${esc(B.name)}. Independent multi-brand garage; not affiliated with any car manufacturer. Brand names are used only to identify vehicles we service.</p>
   </div>
 </footer>
-<a class="wa-float" data-wa="general" href="https://wa.me/${B.whatsapp}" aria-label="Chat on WhatsApp">${ic("wa")}</a>
+<nav class="desktop-contact" aria-label="Contact options"><a class="wa-float" data-wa="general" href="https://wa.me/${B.whatsapp}" aria-label="Chat on WhatsApp">${ic("wa")}</a></nav>
 <nav class="mbar" aria-label="Quick actions">
   <a href="tel:${B.phoneE164}" data-tel>${ic("phone")}<span data-i18n="cta.call">Call Now</span></a>
   <a class="wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}<span>WhatsApp</span></a>
   <a class="book" href="booking.html">${ic("calendar")}<span data-i18n="nav.book">Book Service</span></a>
 </nav>
-<script src="assets/js/rate-card.js?v=${VERSION}"></script>
-<script src="assets/js/config.js?v=${VERSION}"></script>
-<script src="assets/js/backend-config.js?v=${VERSION}"></script>
-<script src="assets/js/booking-backend.js?v=${VERSION}"></script>
-<script src="assets/js/pricing.js?v=${VERSION}"></script>
-<script src="assets/js/price-table.js?v=${VERSION}"></script>
-<script src="assets/js/service-areas.js?v=${VERSION}"></script>
-<script src="assets/js/area-check.js?v=${VERSION}"></script>
-<script src="assets/js/gallery.js?v=${VERSION}"></script>
-<script src="assets/js/reviews.js?v=${VERSION}"></script>
-<script src="assets/js/forms.js?v=${VERSION}"></script>
-<script src="assets/js/hi.js?v=${VERSION}"></script>
-<script src="assets/js/i18n.js?v=${VERSION}"></script>
-<script src="assets/js/app.js?v=${VERSION}"></script>
+<script defer src="assets/js/rate-card.js?v=${VERSION}"></script>
+<script defer src="assets/js/config.js?v=${VERSION}"></script>
+<script defer src="assets/js/backend-config.js?v=${VERSION}"></script>
+<script defer src="assets/js/booking-backend.js?v=${VERSION}"></script>
+<script defer src="assets/js/pricing.js?v=${VERSION}"></script>
+<script defer src="assets/js/price-table.js?v=${VERSION}"></script>
+<script defer src="assets/js/service-areas.js?v=${VERSION}"></script>
+<script defer src="assets/js/area-check.js?v=${VERSION}"></script>
+<script defer src="assets/js/gallery.js?v=${VERSION}"></script>
+<script defer src="assets/js/reviews.js?v=${VERSION}"></script>
+<script defer src="assets/js/forms.js?v=${VERSION}"></script>
+<script defer src="assets/js/hi.js?v=${VERSION}"></script>
+<script defer src="assets/js/i18n.js?v=${VERSION}"></script>
+<script defer src="assets/js/app.js?v=${VERSION}"></script>
 </body>
 </html>
 `;
@@ -340,11 +343,24 @@ function quickBook(svcId, title) {
   </div>`;
 }
 
+const RELATED_SERVICES = {
+  'car-service-indore.html':['car-ac-repair-indore.html','engine-diagnostics-indore.html'],
+  'car-ac-repair-indore.html':['car-service-indore.html','car-battery-electrical-indore.html'],
+  'brake-clutch-repair-indore.html':['suspension-steering-repair-indore.html','car-service-indore.html'],
+  'engine-diagnostics-indore.html':['car-battery-electrical-indore.html','car-service-indore.html'],
+  'car-battery-electrical-indore.html':['engine-diagnostics-indore.html','car-ac-repair-indore.html'],
+  'suspension-steering-repair-indore.html':['brake-clutch-repair-indore.html','car-service-indore.html'],
+  'denting-painting-indore.html':['accident-repair-indore.html','car-detailing-indore.html'],
+  'car-detailing-indore.html':['denting-painting-indore.html','car-service-indore.html'],
+  'accident-repair-indore.html':['denting-painting-indore.html','suspension-steering-repair-indore.html']
+};
 function servicePage(p) {
   const includes = [...new Set(p.ids.slice(0, 1).flatMap((id) => svc[id].includes || []))];
   const photos = (p.photos || []).map(galItem).filter(Boolean);
+  const heading = p.h1.includes(B.city) ? p.h1 : p.h1 + " in " + B.city;
+  const related = (RELATED_SERVICES[p.file] || []).map(file=>SERVICE_PAGES.find(page=>page.file===file)).filter(Boolean);
   const ld = [
-    { "@context": "https://schema.org", "@type": "Service", name: p.h1, serviceType: p.nav, provider: { "@type": "AutoRepair", name: B.name, telephone: B.phoneE164 }, areaServed: { "@type": "City", name: B.city }, description: p.desc },
+    { "@context": "https://schema.org", "@type": "Service", name: heading, serviceType: p.nav, provider: { "@type": "AutoRepair", name: B.name, telephone: B.phoneE164 }, areaServed: { "@type": "City", name: B.city }, description: p.desc },
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: url("index.html") }, { "@type": "ListItem", position: 2, name: "Services", item: url("services.html") }, { "@type": "ListItem", position: 3, name: p.nav, item: url(p.file) }] },
     faqLd(p.faqs)
   ];
@@ -353,7 +369,7 @@ function servicePage(p) {
   <div class="page-hero-copy">
   <p class="crumbs"><a href="index.html">Home</a> / <a href="services.html">Services</a> / ${esc(p.nav)}</p>
   <span class="eyebrow">${esc(B.city)} · Multi-brand</span>
-  <h1>${esc(p.h1)}</h1>
+  <h1>${esc(heading)}</h1>
   <p>${esc(p.lead)}</p>
   <div class="hero-ctas"><a class="btn" href="#estimate">${ic("receipt")}Estimate my cost</a><a class="btn btn--wa" data-wa="${esc(p.nav)}" href="https://wa.me/${B.whatsapp}">${ic("wa")}WhatsApp us</a><a class="btn btn--ghost" href="tel:${B.phoneE164}" data-tel>${ic("phone")}Call ${esc(B.phoneDisplay)}</a></div>
   </div>
@@ -379,6 +395,7 @@ function servicePage(p) {
       <li><h3>Inspection &amp; quote</h3><p>We inspect the car and share a final quotation.</p></li>
       <li><h3>Approve &amp; collect</h3><p>Work starts after your OK. You get an itemised bill.</p></li>
     </ol>
+    ${related.length ? `<h2>Related services in ${esc(B.city)}</h2><ul data-related-services>${related.map(page=>`<li><a href="${page.file}">${esc(page.nav)} in ${esc(B.city)}</a></li>`).join('')}</ul>` : ''}
   </div>
   <aside style="display:grid;gap:18px;align-content:start" aria-label="Book ${esc(p.nav.toLowerCase())}">
     ${quickBook(p.ids[0], "Book " + p.nav.toLowerCase())}
@@ -394,7 +411,12 @@ ${ctaBand("Book your " + p.nav.toLowerCase() + " in Indore")}`;
 }
 
 function areaChecker(id) {
-  return `<div class="checker"><h3>Check your PIN code</h3><form data-area-check novalidate><label class="sr-only" for="${id}">PIN code or locality</label><input id="${id}" placeholder="6-digit PIN, e.g. 452020" inputmode="text" autocomplete="postal-code" maxlength="40"><button class="btn" type="submit">Check</button></form><p class="small muted" style="margin:0">You can also type a locality, e.g. Vijay Nagar or Kasturbagram.</p><div data-area-result aria-live="polite"></div></div>`;
+  return `<div class="checker"><h2 class="checker-title">Check your PIN code</h2><form data-area-check novalidate><label class="sr-only" for="${id}">PIN code or locality</label><input id="${id}" placeholder="6-digit PIN, e.g. 452020" inputmode="text" autocomplete="postal-code" maxlength="40"><button class="btn" type="submit">Check</button></form><p class="small muted" style="margin:0">You can also type a locality, e.g. Vijay Nagar or Kasturbagram.</p><div data-area-result aria-live="polite"></div></div>`;
+}
+function areaList() {
+  const byPin = {};
+  AREAS.localities.forEach(([name,pin]) => { (byPin[pin] ||= []).push(name); });
+  return AREAS.coveredPins.map(pin=>`<li><b>${esc(pin)}</b>${byPin[pin]?' '+esc(byPin[pin].slice(0,2).join(', ')):''}</li>`).join('');
 }
 function hoursText() {
   const clock = (value) => {
@@ -437,7 +459,7 @@ function reviewsSection(full = false) {
 function workshopSlider() {
   return `<section class="service-carousel" data-workshop-slider role="region" aria-roledescription="carousel" aria-label="Car service photos">
     <div class="service-carousel-heading"><span class="eyebrow">Service spotlight</span><p>Explore our car care services</p></div>
-    <div class="service-slides" id="workshop-slides" data-slide-track tabindex="0" aria-label="Service photos; swipe or use arrow keys">${WORKSHOP_PHOTOS.map((p, i) => `<figure class="service-slide" data-slide role="group" aria-roledescription="slide" aria-label="${i+1} of ${WORKSHOP_PHOTOS.length}: ${esc(p.title)}"><img src="assets/img/workshop/${p.id}-800.webp" srcset="assets/img/workshop/${p.id}-800.webp 800w, assets/img/workshop/${p.id}-1600.webp 1600w" sizes="(max-width: 1200px) calc(100vw - 32px), 1140px" alt="${esc(p.alt)}" width="${p.width}" height="${p.height}" loading="lazy" decoding="async"><figcaption>${esc(p.title)}</figcaption></figure>`).join("")}</div>
+    <div class="service-slides" id="workshop-slides" data-slide-track tabindex="0" aria-label="Service photos; swipe or use arrow keys">${WORKSHOP_PHOTOS.map((p, i) => `<figure class="service-slide" data-slide aria-roledescription="slide" aria-label="${i+1} of ${WORKSHOP_PHOTOS.length}: ${esc(p.title)}"><img src="assets/img/workshop/${p.id}-800.webp" srcset="assets/img/workshop/${p.id}-800.webp 800w, assets/img/workshop/${p.id}-1600.webp 1600w" sizes="(max-width: 1200px) calc(100vw - 32px), 1140px" alt="${esc(p.alt)}" width="${p.width}" height="${p.height}" loading="lazy" decoding="async"><figcaption>${esc(p.title)}</figcaption></figure>`).join("")}</div>
     <div class="service-slider-controls" data-slider-controls hidden><button type="button" data-slide-prev aria-label="Previous service photo" aria-controls="workshop-slides">${ic("arrow")} Previous</button><span data-slide-count aria-live="polite" aria-atomic="true">1 / ${WORKSHOP_PHOTOS.length}</span><button type="button" data-slide-next aria-label="Next service photo" aria-controls="workshop-slides">Next ${ic("arrow")}</button></div>
     <noscript><p class="service-swipe-hint">Swipe across the photos to explore services.</p></noscript>
   </section>`;
@@ -489,7 +511,7 @@ function homepage() {
       </ul>
       <p class="pickup-terms"><strong style="color:#fff">Free pickup &amp; drop</strong> across our ${AREAS.coveredPins.length} confirmed Indore PIN codes, subject to booking confirmation. <a href="pickup-drop.html">Check your PIN</a>.</p>
     </div>
-    <div class="jobcard reveal" id="estimate" data-estimator><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
+    <div class="jobcard reveal" id="estimate" data-estimator data-heading-level="2"><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
     ${workshopSlider()}
   </div>
 </section>
@@ -524,7 +546,7 @@ ${reviewsSection()}
 
 <section class="band band--char" id="areas"><div class="wrap area-wrap">
   <div class="section-head" style="margin:0"><span class="eyebrow">Pickup &amp; drop</span><h2 data-i18n="sec.areas">Service areas</h2><p>Free pickup and drop across these ${AREAS.coveredPins.length} Indore city PIN codes, subject to booking confirmation. Outside them, ask us and we'll check.</p>
-    <ul class="area-list" data-area-list></ul>
+    <ul class="area-list" data-area-list>${areaList()}</ul>
   </div>
   ${areaChecker("home-area")}
 </div></section>
@@ -532,7 +554,8 @@ ${reviewsSection()}
 ${faqBlock(C.faqs)}
 
 <section class="band band--white" id="contact"><div class="wrap two-col">
-  <div class="prose"><span class="eyebrow">Contact</span><h2 style="margin-top:0">Talk to a mechanic</h2>
+  <div class="prose"><span class="eyebrow">Contact</span><h2 style="margin-top:0">Car repair workshop in ${esc(B.address?.locality || B.city)}, ${esc(B.city)}</h2>
+    <p>Visit ${esc(B.name)} for car servicing, AC checks, brake repairs and engine diagnostics. <a href="services.html">Compare our services and indicative prices</a> or <a href="contact.html">find workshop contact details and directions</a>. We confirm the final quotation after inspection.</p>
     <p>Call or WhatsApp <span class="phone-line" style="color:var(--ink)" data-phone>${esc(B.phoneDisplay)}</span></p>
     ${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${mapLink()}` : `<p class="muted">Workshop address will be shown here once confirmed. Ask on WhatsApp for directions.</p>`}
     ${B.hours ? `<p data-working-hours>${hoursText()}</p>` : `<p class="muted">Working hours: please call or WhatsApp to confirm.</p>`}
@@ -614,7 +637,7 @@ function bookingPage() {
       <noscript><p class="notice">This form needs JavaScript. <a href="https://wa.me/${B.whatsapp}">Book on WhatsApp</a> or <a href="tel:${B.phoneE164}">call us</a>.</p></noscript>
       <form novalidate style="display:grid;gap:16px">
         <fieldset data-bstep style="border:0;padding:0;margin:0;display:grid;gap:14px">
-          <legend class="step-title"><span class="num">01</span><h3 style="display:inline">Your details</h3></legend>
+          <legend class="step-title"><span class="num">01</span><h2 style="display:inline">Your details</h2></legend>
           <div class="grid-2">
             <div class="field"><label for="b-name">Name *</label><input id="b-name" autocomplete="name" maxlength="60" required><p class="err" hidden></p></div>
             <div class="field"><label for="b-mobile">Mobile number *</label><input id="b-mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="98765 43210" required><p class="err" hidden></p></div>
@@ -622,7 +645,7 @@ function bookingPage() {
           <div class="field"><label for="b-contact">Preferred contact method</label><select id="b-contact"><option>WhatsApp</option><option>Phone call</option></select></div>
         </fieldset>
         <fieldset data-bstep hidden style="border:0;padding:0;margin:0;display:grid;gap:14px">
-          <legend class="step-title"><span class="num">02</span><h3 style="display:inline">Your car</h3></legend>
+          <legend class="step-title"><span class="num">02</span><h2 style="display:inline">Your car</h2></legend>
           <div class="grid-2">
             <div class="field"><label for="b-brand">Manufacturer *</label><select id="b-brand"></select><p class="err" hidden></p></div>
             <div class="field"><label for="b-model">Model *</label><select id="b-model" disabled></select><input id="b-model-other" hidden aria-label="Car model" maxlength="80" placeholder="Type your model"><p class="err" hidden></p></div>
@@ -633,12 +656,12 @@ function bookingPage() {
           <div class="field"><label for="b-reg">Registration number (optional)</label><input id="b-reg" placeholder="MP09 AB 1234" maxlength="14" autocapitalize="characters"><p class="err" hidden></p></div>
         </fieldset>
         <fieldset data-bstep hidden style="border:0;padding:0;margin:0;display:grid;gap:14px">
-          <legend class="step-title"><span class="num">03</span><h3 style="display:inline">Services</h3></legend>
+          <legend class="step-title"><span class="num">03</span><h2 style="display:inline">Services</h2></legend>
           <div class="chips" data-b-services></div><div class="grid-2" data-b-qty hidden></div><p class="err" id="booking-services-error" data-svc-err role="alert" hidden></p>
           <div class="field"><label for="b-notes">Symptoms or repair notes (optional)</label><textarea id="b-notes" maxlength="600"></textarea></div>
         </fieldset>
         <fieldset data-bstep hidden style="border:0;padding:0;margin:0;display:grid;gap:14px">
-          <legend class="step-title"><span class="num">04</span><h3 style="display:inline">Pickup &amp; timing</h3></legend>
+          <legend class="step-title"><span class="num">04</span><h2 style="display:inline">Pickup &amp; timing</h2></legend>
           <div class="field"><label for="b-pickup">Pickup &amp; drop</label><select id="b-pickup"><option value="yes">Yes, pick up my car</option><option value="no">No, I'll drop it at the workshop</option></select></div>
           <div class="field" data-addr><label for="b-address">Pickup address *</label><textarea id="b-address" autocomplete="street-address" maxlength="250" style="min-height:70px"></textarea><p class="err" hidden></p></div>
           <div class="grid-3">
@@ -664,7 +687,7 @@ function pickupPage() {
 <section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Pickup &amp; drop</p><span class="eyebrow">Doorstep service</span><h1>Car pickup &amp; drop in Indore</h1><p>We collect your car, service it and bring it back. Pickup and drop is free across our confirmed Indore PIN codes, subject to booking confirmation.</p></div></section>
 <section class="band band--char"><div class="wrap area-wrap">
   ${areaChecker("pd-area")}
-  <div class="section-head" style="margin:0"><h2 style="font-size:2rem">Confirmed PIN codes</h2><ul class="area-list" data-area-list></ul><p class="small" style="color:var(--fog)">Indore city PIN codes from India Post data. Other areas, including the rest of Indore district (Mhow, Sanwer, Depalpur, Hatod), aren't confirmed yet — contact us to check.</p></div>
+  <div class="section-head" style="margin:0"><h2 style="font-size:2rem">Confirmed PIN codes</h2><ul class="area-list" data-area-list>${areaList()}</ul><p class="small" style="color:var(--fog)">Indore city PIN codes from India Post data. Other areas, including the rest of Indore district (Mhow, Sanwer, Depalpur, Hatod), aren't confirmed yet — contact us to check.</p></div>
 </div></section>
 <section class="band band--white"><div class="wrap prose">
   <h2>How pickup &amp; drop works</h2>
@@ -732,9 +755,9 @@ function estimatePage() {
   const body = `
 <section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Cost calculator</p><span class="eyebrow">Cost calculator</span><h1>Car service cost calculator</h1><p>Choose your car and the work you need to see an estimated price range for labour, parts and time — before you book.</p></div></section>
 <section class="band"><div class="wrap two-col">
-  <div class="jobcard" id="estimate" data-estimator><noscript><p style="padding:20px">The cost calculator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
+  <div class="jobcard" id="estimate" data-estimator data-heading-level="2"><noscript><p style="padding:20px">The cost calculator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
   <aside class="side-card" aria-label="How the estimate works">
-    <h3>How the estimate works</h3>
+    <h2 class="aside-title">How the estimate works</h2>
     <ul class="prose" style="padding-left:18px;margin:0;display:grid;gap:8px;font-size:.95rem">
       <li>Prices scale with your car's category, fuel type and the parts grade you choose.</li>
       <li>Overlapping jobs are counted once — for example, an oil change inside a periodic service.</li>
@@ -754,6 +777,7 @@ function galleryPage() {
   const body = `
 <section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Service Gallery</p><span class="eyebrow">Gallery</span><h1>${esc(GALLERY.title)}</h1><p>${esc(GALLERY.subtitle)}</p><div class="hero-ctas"><a class="btn" href="tel:${B.phoneE164}" data-tel data-call-now>${ic("phone")}Call Now</a><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}WhatsApp us</a></div></div></section>
 <section class="band"><div class="wrap">
+  <h2 class="sr-only">Service photo comparisons</h2>
   <div class="filters" data-gallery-filters="#ba-all" role="toolbar" aria-label="Filter by category"></div>
   <div class="ba-grid" id="ba-all" data-gallery></div>
 </div></section>

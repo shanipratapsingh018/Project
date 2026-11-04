@@ -42,7 +42,7 @@ try:
   p=page();p.fill('#b-name','Fictional Audit Customer');next(p)
   bad=p.locator('#b-mobile');description=bad.get_attribute('aria-describedby')
   check(bad.get_attribute('aria-invalid')=='true' and description and p.locator('#'+description).is_visible(),'Invalid fields expose their visible error as an accessible description')
-  p.fill('#b-mobile','9000000003');next(p);check(p.evaluate('document.activeElement.tagName')=='H3','Booking focuses the new step heading');p.keyboard.press('Tab');check(p.evaluate('document.activeElement.id')=='b-brand','Tab reaches the first new field')
+  p.fill('#b-mobile','9000000003');next(p);check(p.evaluate('document.activeElement.tagName') in ['H2','H3'],'Booking focuses the new step heading');p.keyboard.press('Tab');check(p.evaluate('document.activeElement.id')=='b-brand','Tab reaches the first new field')
   check(p.locator('#b-year option[value="1998"]').count()==1 and p.locator('#b-year option').filter(has_text='Before').count()==0,'Older vehicles use an actual year')
   p.close()
   p=page(draft={'year':'2004','brand':'maruti','model':'Swift','fuel':'petrol'});check(p.locator('#b-year').input_value()=='','An ambiguous legacy Before-2005 handoff requires an actual year');p.close()
@@ -66,7 +66,7 @@ try:
    mode['value']=value;p=page();car(p);choose(p,'GS-01');finish(p);expect(p.locator('[data-b-result]')).to_contain_text("couldn't confirm")
    check(p.locator('[data-booking] form').is_visible() and p.locator('#b-name').input_value()=='Fictional Audit Customer',value+' acknowledgement never clears the form or claims receipt');p.close()
   mode['value']='success'
-  p=page('estimate.html');p.select_option('#e-brand','maruti');p.select_option('#e-model','Swift');p.select_option('#e-year','1998');p.check('input[name="fuel"][value="petrol"]',force=True);p.locator('[data-next]').click();check(p.evaluate('document.activeElement.tagName')=='H3','Calculator focuses each new step heading')
+  p=page('estimate.html');p.select_option('#e-brand','maruti');p.select_option('#e-model','Swift');p.select_option('#e-year','1998');p.check('input[name="fuel"][value="petrol"]',force=True);p.locator('[data-next]').click();check(p.evaluate('document.activeElement.tagName') in ['H2','H3'],'Calculator focuses each new step heading')
   p.keyboard.press('Tab');check(p.evaluate('document.activeElement.id')=='e-search','Calculator keyboard order starts with the new step controls')
   p.locator('.svc-opt[data-svc="BD-01"]').click();p.fill('#q-BD-01','0');p.locator('[data-next]').click();check(p.locator('[data-step="2"]').is_visible(),'Calculator blocks an invalid quantity');p.close()
   p=ctx.new_page();p.add_init_script("{const D=Date;const at=D.parse('2026-11-04T20:00:00Z');globalThis.Date=class extends D{constructor(...a){super(...(a.length?a:[at]))}static now(){return at}};}");p.goto(base+'/estimate.html')

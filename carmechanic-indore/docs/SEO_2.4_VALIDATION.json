@@ -1,0 +1,36 @@
+{
+  "release": "2.4.0",
+  "validated_at_utc": "2026-11-04",
+  "tested_target": "Generated public/ files intended for the GitHub Pages root; no real booking submitted",
+  "dedicated_seo_tests": 7,
+  "indexable_sitemap_urls": 21,
+  "public_html_pages_including_404": 22,
+  "service_pages": 9,
+  "approved_rate_card_figures_checked": 276,
+  "public_browser_checks": 84,
+  "booking_hindi_large_text_checks": 243,
+  "responsive_states": 294,
+  "responsive_routes": 23,
+  "responsive_viewport_widths": 11,
+  "service_menu_checks": 35,
+  "gallery_and_slider_checks": 333,
+  "all_page_scan": {
+    "route_viewport_states": 46,
+    "script_errors": 0,
+    "duplicate_ids": 0,
+    "broken_internal_links": 0,
+    "automated_accessibility_violations": 0,
+    "tool": "axe-core 4.14",
+    "incomplete_checks_by_rule_across_states": {
+      "color-contrast": 44,
+      "aria-prohibited-attr": 4
+    }
+  },
+  "scope_limits": [
+    "Direct custom-domain access and Google account inspection are restricted by this environment.",
+    "Automated checks do not guarantee accessibility conformance, indexing, rich results, Maps visibility or ranking.",
+    "The accessibility scan marked some contrast and ARIA cases for manual review; zero automated violations is not a complete contrast or accessibility certification.",
+    "No live field Core Web Vitals were measured.",
+    "The owner reported completing the earlier 2.3 booking-handler deployment; release 2.4 needs no new Supabase deployment."
+  ]
+}
