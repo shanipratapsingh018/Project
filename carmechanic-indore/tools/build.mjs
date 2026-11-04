@@ -23,7 +23,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.2.1";
+const VERSION = "2.2.2";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -312,8 +312,9 @@ if (C.pages && C.pages.accidentRepair) SERVICE_PAGES.push(
 
 const galItem = (id) => GALLERY.items.find((g) => g.id === id);
 function baStatic(it, eager = false) {
+  const photoWidth = Math.min(it.before.width || 600, it.after.width || 600);
   const f = (img, label) => `<figure class="ba-shot"><img src="${img.src}" alt="${esc(img.alt)}" width="${img.width}" height="${img.height}"${eager ? "" : ' loading="lazy"'} decoding="async"><figcaption class="ba-label ba-label--${label.toLowerCase()}">${label}</figcaption></figure>`;
-  return `<div class="ba-pair">${f(it.before, "Before")}${f(it.after, "After")}</div>`;
+  return `<div class="ba-pair" style="--photo-width:${photoWidth}px;--comparison-width:${photoWidth * 2 + 8}px">${f(it.before, "Before")}${f(it.after, "After")}</div>`;
 }
 function quickBook(svcId, title) {
   return `<div class="side-card" style="position:static">
@@ -370,7 +371,7 @@ function servicePage(p) {
     <p><a href="services.html#${svc[p.ids[0]].group.toLowerCase().replace(/[^a-z0-9]+/g, "-")}">See the full price list</a></p>
     ${photos.length > 1 ? `<h2>More service photos</h2>${photos.slice(1).map((ph) => `<figure class="page-photo">${baStatic(ph)}<figcaption>${esc(ph.category)}</figcaption></figure>`).join("")}` : ""}
     <h2>How it works</h2>
-    <ol class="steps" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+    <ol class="steps steps--service">
       <li><h3>Get an estimate</h3><p>Choose your car and service to see a price range.</p></li>
       <li><h3>Book a slot</h3><p>Send the details on WhatsApp or the booking form.</p></li>
       <li><h3>Inspection &amp; quote</h3><p>We inspect the car and share a final quotation.</p></li>

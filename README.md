@@ -1,10 +1,12 @@
-# Car Repair Wala — Your Car. Our Care. · v2.2.1
+# Car Repair Wala — Your Car. Our Care. · v2.2.2
 
 Website: https://carrepairwala.co.in/
 
+Responsive fixes and affected pages: [4 November audit](carmechanic-indore/docs/RESPONSIVE_AUDIT.md).
+
 DNS, HTTPS and booking/login setup: [custom-domain guide](carmechanic-indore/docs/CUSTOM_DOMAIN.md).
 
-Services & Prices: https://carrepairwala.co.in/services.html?v=2.2.1
+Services & Prices: https://carrepairwala.co.in/services.html?v=2.2.2
 
 The updated website is in **carmechanic-indore/**.
 The original Arduino temp.txt is preserved separately.
@@ -13,8 +15,8 @@ The original Arduino temp.txt is preserved separately.
 
 - [Current website and source backup](downloads/car-repair-wala-backup-2026-11-04.zip).
 
-- [Hosting-ready ZIP](downloads/car-repair-wala-v2.2.1-hosting.zip) — on GitHub, click **Download raw**. Extract its contents into your hosting web root.
-- [Complete source ZIP](downloads/car-repair-wala-v2.2.1-source.zip) — on GitHub, click **Download raw**.
+- [Previous v2.2.1 hosting ZIP](downloads/car-repair-wala-v2.2.1-hosting.zip) — the current fixes are in the current backup above.
+- [Previous v2.2.1 source ZIP](downloads/car-repair-wala-v2.2.1-source.zip).
 - [Six AI-generated garage photos](downloads/garagewala-ai-garage-photos.zip) — original PNGs in one ZIP; illustrative scenes, not photos of the actual workshop.
 - Or choose **Code → Download ZIP** to download this whole branch.
 

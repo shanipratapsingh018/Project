@@ -109,7 +109,7 @@ try:
         open_customer();pg.get_by_role('button',name='+ Add vehicle',exact=True).click();pg.get_by_label('Search make or model',exact=True).fill('unknown-brand-1234')
         expect(pg.locator('[data-vehicle-search-status]')).to_contain_text('No matches')
         pg.get_by_label('Brand',exact=True).select_option('gw:custom');pg.get_by_label('Other brand name',exact=True).fill('Unlisted Motors');pg.get_by_label('Car model',exact=True).select_option('gw:custom');pg.get_by_label('Other model name',exact=True).fill('<img src=x onerror=alert(1)>');pg.get_by_label('Year (optional)',exact=True).select_option('gw:custom');pg.get_by_label('Other year',exact=True).fill('2035');pg.get_by_label('Fuel',exact=True).select_option('electric')
-        pg.set_viewport_size({'width':390,'height':844});check(pg.evaluate('document.documentElement.scrollWidth<=innerWidth') and pg.locator('[data-vehicle-fields]').evaluate('e=>e.scrollWidth<=e.clientWidth'),'Vehicle dropdowns and manual fields fit mobile screens')
+        pg.set_viewport_size({'width':390,'height':844});check(pg.evaluate('document.documentElement.scrollWidth<=document.documentElement.clientWidth') and pg.locator('[data-vehicle-fields]').evaluate('e=>e.scrollWidth<=e.clientWidth'),'Vehicle dropdowns and manual fields fit mobile screens')
         pg.locator('#editor').screenshot(path=str(vehicle_shots/'new-vehicle-mobile.png'));pg.get_by_role('button',name='Save changes',exact=True).click();expect(pg.locator('#editor')).not_to_be_visible();pg.set_viewport_size({'width':1366,'height':900})
         check(writes[-1][1]['make']=='Unlisted Motors' and writes[-1][1]['year']==2035 and writes[-1][1]['fuel']=='electric','Manual brand, model and year entries support cars missing from the list')
         open_customer();pg.locator('#editor .detail-list li').filter(has_text='Unlisted Motors').get_by_role('button',name='Edit',exact=True).click()
@@ -130,9 +130,18 @@ try:
         pg.get_by_role('button',name='Invoices',exact=True).click();pg.get_by_role('button',name='Open',exact=True).click();expect(pg.get_by_text('Fictional <img onerror=x>',exact=True)).to_be_visible();pg.get_by_role('button',name='Print / Save PDF',exact=True).click();expect(pg.frame_locator('.print-frame').get_by_role('heading',name='Garagewala',exact=True)).to_be_visible();check(pg.frame_locator('.print-frame').locator('img').count()==0,'Invoice PDF view escapes customer details and stays inside private page');check('Test garage address' in pg.frame_locator('.print-frame').locator('body').inner_text(),'Already issued invoices retain their original supplier-address snapshot')
         pg.get_by_role('button',name='+ Record payment',exact=True).click();pg.get_by_label('Received amount (₹)',exact=True).fill('100.01');state['payment_fail']=True;pg.get_by_role('button',name='Record received payment',exact=True).click();expect(pg.locator('#editor .form-error')).to_contain_text('server');first_request=writes[-1][1]['p_request'];state['payment_fail']=False;pg.get_by_role('button',name='Record received payment',exact=True).click();expect(pg.locator('#editor')).not_to_be_visible();check(writes[-1][1]['p_request']==first_request and writes[-1][1]['p_amount']==10001,'Uncertain payment retry keeps its idempotency key and amount in paise')
         pg.get_by_role('button',name='Overview',exact=True).click();expect(pg.get_by_role('heading',name='Let’s get to work.')).to_be_visible()
-        for width in [390,768,1366]:
-            pg.set_viewport_size({'width':width,'height':844});check(pg.evaluate('document.documentElement.scrollWidth<=innerWidth'),'Admin has no page overflow at '+str(width))
-            if width==390:pg.screenshot(path=str(OUT/'overview-mobile.png'),full_page=True)
+        for width in [320,390,768,1366]:
+            pg.set_viewport_size({'width':width,'height':844})
+            for name,action in [('Overview',None),('Customers','+ Add customer'),('Bookings','+ Add enquiry'),('Job cards','+ Create job card'),('Invoices','+ Draft invoice'),('Payments',None),('Settings',None)]:
+                pg.get_by_role('button',name=name,exact=True).click()
+                expect(pg.locator('#content .loading')).to_have_count(0)
+                check(pg.evaluate('document.documentElement.scrollWidth<=document.documentElement.clientWidth'),f'{width}px: admin {name} fits the screen')
+                check(pg.locator('.table-wrap').evaluate_all('els=>els.every(e=>e.getBoundingClientRect().right<=document.documentElement.clientWidth+1)'),f'{width}px: admin {name} tables stay in their scroll containers')
+                if action:
+                    pg.get_by_role('button',name=action,exact=True).click();expect(pg.locator('#editor')).to_be_visible()
+                    check(pg.locator('#editor').evaluate('e=>e.scrollWidth<=e.clientWidth+1 && e.getBoundingClientRect().left>=0 && e.getBoundingClientRect().right<=document.documentElement.clientWidth+1'),f'{width}px: admin {name} form fits the dialog')
+                    pg.get_by_role('button',name='Close dialog',exact=True).click()
+                if width==390 and name=='Overview':pg.screenshot(path=str(OUT/'overview-mobile.png'),full_page=True)
         storage=pg.evaluate('({local:Object.keys(localStorage),session:Object.keys(sessionStorage)})');check(not storage['local'] and not storage['session'],'No auth tokens or private customer data persist in browser storage')
         pg.reload();expect(pg.get_by_role('button',name='Sign in →',exact=True)).to_be_visible();check(pg.locator('[data-nav]').count()==0,'Reload ends memory-only owner session')
         pg.close();pg=login();expect(pg.get_by_role('heading',name='Let’s get to work.')).to_be_visible();pg.get_by_role('button',name='Sign out',exact=True).click();expect(pg.get_by_role('button',name='Sign in →',exact=True)).to_be_visible();check('Fictional Customer' not in pg.content(),'Sign out clears private interface')

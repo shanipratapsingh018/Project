@@ -20,9 +20,9 @@
       if (!s.labour) return `<tr data-svc-row="${s.id}">${name}<td class="num pt-q" colspan="${C.categories.length}">Price on request</td></tr>`;
       return `<tr data-svc-row="${s.id}">${name}${C.categories.map((c) => cell(C, PR, s.id, c.id)).join("")}</tr>`;
     }).join("");
-    return `<div class="table-scroll"><table class="rate-table${opts.compact ? " rate-table--compact" : ""}">${opts.caption ? `<caption>${esc(opts.caption)}</caption>` : ""}
+    return `<div class="rate-table-block"><p class="table-scroll-hint">Swipe or scroll to compare all vehicle categories →</p><div class="table-scroll" role="region" aria-label="Service prices by vehicle category" tabindex="0"><table class="rate-table${opts.compact ? " rate-table--compact" : ""}">${opts.caption ? `<caption>${esc(opts.caption)}</caption>` : ""}
       <thead><tr><th scope="col">Service</th>${C.categories.map((c) => `<th scope="col" class="num">${esc(c.label)}</th>`).join("")}</tr></thead>
-      <tbody>${rows}</tbody></table></div>`;
+      <tbody>${rows}</tbody></table></div></div>`;
   }
 
   /** Short footnote under every price table. */

@@ -63,7 +63,7 @@ try:
             track.evaluate('t => t.scrollLeft = t.getBoundingClientRect().width * 4')
             expect(count).to_have_text('5 / 20')
             check(True, f'{width}px: swipe/scroll position updates the counter')
-            check(page.evaluate('document.documentElement.scrollWidth <= innerWidth'), f'{width}px: homepage has no overflow')
+            check(page.evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth'), f'{width}px: homepage has no overflow')
             if width == 1366:
                 page.locator('.hero').screenshot(path=str(shots / 'home-desktop.png'))
             if width == 390:
@@ -83,7 +83,7 @@ try:
             check(page.locator('.ba-note').count() == 0 and not re.search(r'illustrative example|about these images|not an actual customer vehicle', page.inner_text('main'), re.I), f'{width}px: image disclaimer labels removed')
             page.locator('[data-filter="body"]').click()
             check(page.locator('.ba-card:visible').count() == 5, f'{width}px: category filters still work')
-            check(page.evaluate('document.documentElement.scrollWidth <= innerWidth') and not errors, f'{width}px: gallery fits without script errors')
+            check(page.evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth') and not errors, f'{width}px: gallery fits without script errors')
             if width == 1366:
                 page.locator('.ba-card').first.screenshot(path=str(shots / 'gallery-card-desktop.png'))
             page.close()

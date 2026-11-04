@@ -26,7 +26,7 @@ try:
    check(page.locator('.site-header .brand-name').inner_text().lower().replace(' ','')=='carrepairwala',f'{width}px: Car Repair Wala brand appears')
    check(page.locator('.site-header .brand-sub').is_visible() and 'Your Car. Our Care.' in page.locator('.brand-sub').first.text_content(),f'{width}px: current tagline stays visible')
    check(page.locator('.site-header .brand-logo').evaluate('e=>e.complete&&e.naturalWidth>0'),f'{width}px: new logo loads')
-   check(page.evaluate('document.documentElement.scrollWidth<=innerWidth'),f'{width}px: no horizontal overflow')
+   check(page.evaluate('document.documentElement.scrollWidth<=document.documentElement.clientWidth'),f'{width}px: no horizontal overflow')
    check(page.locator('[data-service-card]:visible').count()==69,f'{width}px: all 69 service cards initially visible')
    page.screenshot(path=str(SHOTS/f'car-repair-wala-services-{width}.png'),full_page=False)
    if width==1440:

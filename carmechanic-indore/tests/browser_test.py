@@ -42,7 +42,7 @@ with sync_playwright() as p:
             # 404s are allowed only for stock photos not yet downloaded (npm run photos); anything else is an error
             pg.on("response", lambda r, errs=errs: errs.append(f"{r.status} {r.url}") if r.status >= 400 and "/assets/img/photos/" not in r.url else None)
             pg.goto(BASE + f); pg.wait_for_load_state("networkidle")
-            over = pg.evaluate("document.documentElement.scrollWidth - window.innerWidth")
+            over = pg.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth")
             if over > 0 or errs:
                 check(False, f"{name} {f}: overflow={over} errors={errs[:2]}")
             pg.close()
@@ -69,7 +69,7 @@ with sync_playwright() as p:
     # Mobile bottom bar visible, has 3 actions with correct targets
     hrefs = pg.eval_on_selector_all(".mbar a", "els => els.map(e => e.href)")
     check(len(hrefs) == 3 and hrefs[0].startswith("tel:+918965957978") and "wa.me/918965957978" in hrefs[1] and hrefs[2].endswith("booking.html"), "Mobile bar: Call / WhatsApp / Book links correct")
-    check(pg.is_visible(".wa-float"), "Floating WhatsApp button visible")
+    check(not pg.is_visible(".wa-float") and pg.is_visible(".mbar .wa"), "Mobile WhatsApp is available once in the action bar")
     mb = pg.eval_on_selector(".menu-btn", "e => e.getBoundingClientRect().width")
     check(mb >= 40, f"Mobile menu button is full size ({mb:.0f}px)")
     check("From ₹0" not in pg.inner_text("#services"), "Service cards never say 'From ₹0'")
@@ -295,12 +295,12 @@ with sync_playwright() as p:
     pp.screenshot(path=f"{SHOTS}/photos-home-desktop.png", full_page=False)
     pp.goto(BASE + "car-detailing-indore.html"); pp.wait_for_load_state("networkidle")
     check(pp.locator(".page-hero-photo img").is_visible() and pp.locator(".photo-row img").count() == 2, "Detailing page shows hero photo + 2 extra photos")
-    over = pp.evaluate("document.documentElement.scrollWidth - window.innerWidth")
+    over = pp.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth")
     check(over <= 0, "No horizontal overflow with photos")
     mctx = b.new_context(viewport={"width": 390, "height": 844}, is_mobile=True)
     mctx.route("**/assets/img/photos/*.jpg", lambda route: route.fulfill(status=200, content_type="image/jpeg", body=JPG))
     mp = mctx.new_page(); mp.goto(BASE + "car-service-indore.html"); mp.wait_for_load_state("networkidle")
-    check(mp.evaluate("document.documentElement.scrollWidth - window.innerWidth") <= 0, "Mobile service page with photo has no overflow")
+    check(mp.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth") <= 0, "Mobile service page with photo has no overflow")
     mp.screenshot(path=f"{SHOTS}/photos-service-mobile.png", full_page=False)
     mctx.close(); pctx.close()
 

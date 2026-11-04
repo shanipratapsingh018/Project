@@ -121,6 +121,7 @@ p { margin: 0; }
 .jobcard { background: var(--card); color: var(--ink); border-radius: var(--r); box-shadow: 0 30px 60px -30px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.04); overflow: hidden; min-width: 0; }
 .jobcard-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 20px; background: var(--paper); border-bottom: 1px dashed var(--line); font: 500 .78rem/1.2 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
 .jobcard-head b { color: var(--ink); }
+.jobcard-head time { white-space: nowrap; }
 .steps-bar { display: flex; gap: 6px; padding: 16px 20px 0; }
 .steps-bar span { flex: 1; height: 4px; border-radius: 4px; background: var(--line); transition: background .3s; }
 .steps-bar span.on { background: var(--signal); }
@@ -270,12 +271,18 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
 .crumbs a { color: var(--fog); }
 .page-hero p { color: #cfd5dc; max-width: 62ch; font-size: 1.12rem; }
 .two-col { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.two-col > * { min-width: 0; }
 @media (max-width: 900px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
-.prose { display: grid; gap: 18px; max-width: 68ch; }
+.prose { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; width: 100%; min-width: 0; max-width: 68ch; }
+.prose > * { min-width: 0; }
 .prose ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
 .prose h2 { font-size: 2rem; margin-top: 12px; }
 .side-card { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 88px); background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; display: grid; gap: 14px; }
-.table-scroll { overflow-x: auto; }
+.rate-table-block { min-width: 0; max-width: 100%; }
+.table-scroll { min-width: 0; max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.table-scroll-hint { margin-bottom: 8px; color: var(--ink-2); font-size: .8rem; }
+.steps--service { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 520px) { .steps--service { grid-template-columns: minmax(0, 1fr); } }
 
 /* Booking form */
 .form-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; max-width: 760px; }
@@ -312,7 +319,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
   .mbar a svg { width: 22px; height: 22px; }
   .mbar a.wa { background: var(--wa); }
   .mbar a.book { background: var(--signal); color: #1a0d03; }
-  .wa-float { bottom: calc(env(safe-area-inset-bottom, 0px) + 84px); width: 52px; height: 52px; }
+  .wa-float { display: none; }
   body { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 }
 
@@ -388,9 +395,10 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
 .ba-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: grid; gap: 12px; align-content: start; min-width: 0; }
 .ba-head { display: grid; gap: 6px; }
 .ba-head h3 { font-size: 1.5rem; }
-.ba-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; border-radius: var(--r-sm); }
+.ba-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: var(--comparison-width, 100%); min-width: 0; border-radius: var(--r-sm); }
+.ba-card .ba-pair { justify-self: center; }
 .ba-shot { margin: 0; position: relative; border-radius: var(--r-sm); overflow: hidden; background: var(--char-800); aspect-ratio: 1 / 1; }
-.ba-shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ba-shot img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .ba-label { position: absolute; left: 10px; bottom: 10px; font: 700 .78rem/1 var(--f-mono); letter-spacing: .14em; padding: 6px 9px; border-radius: 6px; }
 .ba-label--before { background: #141619; color: #fff; }
 .ba-label--after { background: var(--signal); color: #1a0d03; }
@@ -408,6 +416,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
   .ba-pair::-webkit-scrollbar { display: none; }
   .ba-shot { flex: 0 0 100%; scroll-snap-align: start; border-radius: 0; }
   .ba-pair { border-radius: var(--r-sm); overflow-x: auto; }
+  .ba-card .ba-pair { max-width: var(--photo-width, 100%); }
   .ba-dots { display: flex; gap: 6px; align-items: center; margin-top: -4px; }
   .ba-dots span { width: 8px; height: 8px; border-radius: 50%; background: #c9ced4; }
   .ba-dots span.on { background: var(--signal); width: 22px; border-radius: 4px; }
@@ -415,8 +424,8 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
 }
 
 /* Service page photo + quick booking */
-.page-photo { margin: 0; display: grid; gap: 8px; }
-.page-photo .ba-pair { margin: 0; }
+.page-photo { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; max-width: 100%; }
+.page-photo .ba-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; overflow: hidden; }
 .page-photo figcaption { font-size: .85rem; color: var(--ink-2); }
 .qb { display: grid; gap: 14px; }
 .qb .check-row label { font-weight: 500; }
@@ -428,11 +437,11 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
 @media (max-width: 1440px) { .site-header .brand-sub { display: none; } }
 
 /* ===== v1.2 rate card ===== */
-.rate-table { width: 100%; min-width: 620px; border-collapse: collapse; font-size: .92rem; }
+.rate-table { width: 100%; min-width: 740px; border-collapse: collapse; font-size: .92rem; }
 .rate-table caption { text-align: left; font-weight: 600; padding-bottom: 8px; }
-.rate-table th, .rate-table td { padding: 10px 10px 10px 0; border-bottom: 1px dashed var(--line); vertical-align: top; text-align: left; }
+.rate-table th, .rate-table td { padding: 12px 16px 12px 0; border-bottom: 1px dashed var(--line); vertical-align: top; text-align: left; }
 .rate-table thead th { font: 600 .72rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); border-bottom: 2px solid var(--ink); white-space: nowrap; }
-.rate-table tbody th { font-weight: 600; width: 34%; }
+.rate-table tbody th { font-weight: 600; width: 30%; }
 .rate-table td:last-child, .rate-table th:last-child { text-align: right; padding-right: 0; }
 .rate-table .num { text-align: right; font-family: var(--f-mono); font-size: .84rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .rate-table .pt-q { color: var(--ink-2); font-family: var(--f-body); font-size: .85rem; white-space: normal; }
