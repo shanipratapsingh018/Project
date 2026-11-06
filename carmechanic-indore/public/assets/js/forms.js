@@ -45,7 +45,28 @@
     out.lights = Array.isArray(value.lights) ? value.lights.filter((s) => typeof s === "string").slice(0, 6) : [];
     return out;
   }
-  const api = { today, dateError, validPin, quantityError, maxServices, receipt, draft };
+  // Service search: every typed word must match the START of a word in the text,
+  // so "brak" finds "Brake pads" but not "replACement". A
+  // two-letter word that is itself a word in the service list (e.g. "AC") must match
+  // that whole word, so "AC" skips "Accident"; "b" and "br" still match word starts.
+  function searchWords(text) {
+    return String(text == null ? "" : text).toLowerCase().split(/[^a-z0-9\u0900-\u097f]+/).filter(Boolean);
+  }
+  function searchVocabulary(texts) {
+    const v = new Set();
+    (texts || []).forEach((t) => searchWords(t).forEach((w) => v.add(w)));
+    return v;
+  }
+  function searchMatch(text, query, vocabulary) {
+    const terms = searchWords(query);
+    if (!terms.length) return true;
+    const words = searchWords(text);
+    return terms.every((t) => {
+      const whole = t.length === 2 && vocabulary && vocabulary.has(t);
+      return words.some((w) => (whole ? w === t : w.startsWith(t)));
+    });
+  }
+  const api = { today, dateError, validPin, quantityError, maxServices, receipt, draft, searchMatch, searchVocabulary };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.CMI_FORMS = api;
 })(typeof window !== "undefined" ? window : this);
