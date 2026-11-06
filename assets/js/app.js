@@ -56,6 +56,26 @@
     $$("[data-tel]", root).forEach((a) => { a.href = "tel:" + B.phoneE164; });
   }
 
+  /* ---------- Footer "Open now / Closed now" from config hours, in the garage's time zone ---------- */
+  function openStatus(hours, timeZone, now = new Date()) {
+    const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+    const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(now).map((p) => [p.type, p.value]));
+    const day = DAYS.indexOf(parts.weekday.slice(0, 2)), mins = Number(parts.hour) * 60 + Number(parts.minute);
+    const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+    const covers = (spec) => String(spec).split(",").some((r) => {
+      const [a, b] = r.trim().split("-").map((d) => DAYS.indexOf(d.slice(0, 2)));
+      return b === undefined || b < 0 ? a === day : (a <= b ? day >= a && day <= b : day >= a || day <= b);
+    });
+    return (hours || []).some((h) => covers(h.days) && mins >= toMin(h.open) && mins < toMin(h.close));
+  }
+  function renderOpenStatus() {
+    const els = $$("[data-open-status]");
+    if (!els.length || !B.hours) return;
+    let open;
+    try { open = openStatus(B.hours, B.timeZone || "Asia/Kolkata"); } catch (e) { return; }
+    els.forEach((el) => { el.textContent = open ? "Open now" : "Closed now"; el.classList.toggle("is-open", open); el.hidden = false; });
+  }
+
   /* ---------- Service-area check (logic in area-check.js, data in service-areas.js) ---------- */
   const AREAS = window.CMI_AREAS, AREA = window.CMI_AREA;
   function checkArea(raw) { return AREA.checkArea(AREAS, raw); }
@@ -992,6 +1012,7 @@
     applyLang(lang);
     $$(".lang-toggle").forEach((b) => b.addEventListener("click", () => { lang = lang === "hi" ? "en" : "hi"; store.lset("cmi-lang", lang); applyLang(lang); }));
     $$("[data-year]").forEach((el) => { el.textContent = new Date().getFullYear(); });
+    renderOpenStatus(); setInterval(renderOpenStatus, 60000);
     if (B.googleAnalyticsId) {
       const s = document.createElement("script"); s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + B.googleAnalyticsId; document.head.appendChild(s);
       window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); }; gtag("js", new Date()); gtag("config", B.googleAnalyticsId);
