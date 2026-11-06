@@ -116,9 +116,9 @@ try:
                     inspect(name, 'mobile menu open')
                     page.locator('.menu-btn').click()
                 if name in ['index.html', 'brake-clutch-repair-indore.html']:
-                    page.locator('.lang-toggle').click()
+                    page.locator('header .lang-toggle').click()
                     inspect(name, 'Hindi labels')
-                    page.locator('.lang-toggle').click()
+                    page.locator('header .lang-toggle').click()
                 if width == 390 and name in ['index.html', 'brake-clutch-repair-indore.html', 'car-ac-repair-indore.html', 'gallery.html']:
                     page.evaluate('scrollTo(0,0)')
                     page.screenshot(path=str(OUT / (name.replace('.html', '') + '-mobile-top.png')))

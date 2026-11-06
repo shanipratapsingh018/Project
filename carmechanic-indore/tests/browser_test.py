@@ -166,10 +166,16 @@ with sync_playwright() as p:
     check("PIN 452020" in wmsg and "pickup and drop" in wmsg, "Checker WhatsApp message carries PIN 452020")
 
     # Hindi toggle
-    pg.click(".lang-toggle")
+    pg.click("header .lang-toggle")
     check("इंदौर" in pg.inner_text("h1"), "Hindi toggle translates hero")
-    pg.click(".lang-toggle")
+    pg.click("header .lang-toggle")
     check("indore" in pg.inner_text("h1").lower() and pg.locator("h1 span").count() == 1, "English restored (with accent span)")
+    pg.click("footer .lang-toggle")
+    check(pg.evaluate("document.documentElement.lang") == "hi" and pg.inner_text("header .lang-toggle") == "English", "Footer language switch changes the whole page")
+    pg.click("footer .lang-toggle")
+    check(pg.evaluate("document.documentElement.lang") == "en", "Footer switch returns to English")
+    check(pg.locator("footer .footer-cta [data-tel]").get_attribute("href") == "tel:+918965957978" and "wa.me/918965957978" in pg.locator("footer .footer-cta .btn--wa").get_attribute("href"), "Footer Call now and WhatsApp us buttons link correctly")
+    check(pg.inner_text("footer [data-open-status]") in ("Open now", "Closed now", "OPEN NOW", "CLOSED NOW"), "Footer shows an open/closed label")
 
     # Booking form
     pg.goto(BASE + "booking.html"); pg.wait_for_load_state("networkidle")

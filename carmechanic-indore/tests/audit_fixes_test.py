@@ -71,12 +71,12 @@ try:
   p.locator('.svc-opt[data-svc="BD-01"]').click();p.fill('#q-BD-01','0');p.locator('[data-next]').click();check(p.locator('[data-step="2"]').is_visible(),'Calculator blocks an invalid quantity');p.close()
   p=ctx.new_page();p.add_init_script("{const D=Date;const at=D.parse('2026-11-04T20:00:00Z');globalThis.Date=class extends D{constructor(...a){super(...(a.length?a:[at]))}static now(){return at}};}");p.goto(base+'/estimate.html')
   check(p.locator('#e-date').get_attribute('min')=='2026-11-05','Calendar uses the India date just after midnight');p.close()
-  p=page();p.locator('.lang-toggle').click();expect(p.locator('h1')).to_contain_text('अपनी कार')
+  p=page();p.locator('header .lang-toggle').click();expect(p.locator('h1')).to_contain_text('अपनी कार')
   check(p.locator('label[for="b-name"]').inner_text()=='नाम *' and p.locator('[data-b-next]').inner_text()=='आगे','Hindi covers booking headings, labels and Next')
   p.fill('#b-name','Fictional Audit Customer');p.fill('#b-mobile','9000000003');next(p);p.select_option('#b-brand','maruti');p.select_option('#b-model','Swift');p.select_option('#b-year','1998');p.select_option('#b-fuel','petrol');p.select_option('#b-grade','genuine');next(p);choose(p,'GS-01');finish(p)
   expect(p.locator('[data-b-result]')).to_contain_text('अनुरोध मिल गया')
   check(requests[-1]['fuel']=='petrol' and requests[-1]['partsGrade']=='genuine' and requests[-1]['year']=='1998','Hindi display does not alter submitted vehicle or preference values')
-  p.locator('.lang-toggle').click();expect(p.locator('h1')).to_contain_text('Book your car service',ignore_case=True);check(p.locator('[data-b-result]').inner_text().startswith('Request received.'),'Switching back restores English, including dynamic confirmations');p.close();ctx.close()
+  p.locator('header .lang-toggle').click();expect(p.locator('h1')).to_contain_text('Book your car service',ignore_case=True);check(p.locator('[data-b-result]').inner_text().startswith('Request received.'),'Switching back restores English, including dynamic confirmations');p.close();ctx.close()
   # Test enlarged browser preferences, not CSS that suppresses overflow.
   ctx=b.new_context(viewport={'width':390,'height':844},reduced_motion='reduce');ctx.route('https://**/*',lambda r:r.abort());p=ctx.new_page();session=ctx.new_cdp_session(p);session.send('Page.setFontSizes',{'fontSizes':{'standard':32,'fixed':26}})
   for width in [320,390,768,1024,1440]:
@@ -84,10 +84,10 @@ try:
    for name in sorted(f.name for f in (ROOT/'public').glob('*.html')):
     p.goto(base+('/audit-missing-page' if name=='404.html' else '/'+name));p.evaluate('document.fonts.ready')
     check(p.evaluate('document.documentElement.scrollWidth<=document.documentElement.clientWidth+1'),f'{width}px large text fits '+name)
-    p.locator('.lang-toggle').click()
+    p.locator('header .lang-toggle').click()
     check(p.evaluate('document.documentElement.scrollWidth<=document.documentElement.clientWidth+1'),f'{width}px large Hindi text fits '+name)
     if name=='booking.html' and width==390:p.screenshot(path=str(OUT/'large-hindi-booking.png'))
-    p.locator('.lang-toggle').click()
+    p.locator('header .lang-toggle').click()
   ctx.close();check(not errors,'No script errors in the audit regressions: '+repr(errors));b.close()
 finally:
  server.terminate();server.wait(timeout=10)
