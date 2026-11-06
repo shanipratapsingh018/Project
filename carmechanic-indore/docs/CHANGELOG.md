@@ -1,3 +1,11 @@
+# v2.4.1 — High-priority bug fixes (audit 6 Nov 2026)
+
+- Service search matches word starts, and two-letter terms such as "AC" match whole words, so "AC" no longer lists brake, battery or accident jobs (Services page and calculator).
+- Calculator step 2 re-prices every service for the chosen car type and fuel, and switches off jobs that do not apply (e.g. oil change, spark plugs and clutch on electric cars).
+- Calculator result headline says "Price on request" or "No priced jobs" instead of always "Inspection required" when nothing could be priced.
+- Booking failures explain what happened: offline, details not accepted, rate-limited, booking unavailable, or uncertain (with a safe resend, since repeated identical requests are de-duplicated).
+- Preferred-time choices now come from config.js and match the 7:00 AM–11:30 PM opening hours; the About page states the hours instead of asking customers to ask for them.
+
 # v2.4.0 — Local SEO and crawlable content
 
 - Add branded/local search titles, descriptions, social preview metadata and linked business/service/page data.
