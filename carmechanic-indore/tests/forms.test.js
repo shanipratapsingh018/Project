@@ -25,3 +25,13 @@ test('Duplicate and invalid service IDs never inflate an estimate',()=>{
  const dupe=P.estimate(C,{...options,services:[null,{id:'__proto__'},{id:'GS-01'},{id:'GS-01'}]});
  assert.deepEqual(dupe.total,one.total);assert.equal(dupe.lines.length,1);
 });
+test('Service search matches word starts; "AC" means the AC jobs, not replACement or ACcident',()=>{
+ const texts=C.services.map(s=>[s.name,s.group,...(s.includes||[])].join(' '));
+ const vocab=F.searchVocabulary(texts);
+ const hits=q=>C.services.filter((s,i)=>F.searchMatch(texts[i],q,vocab)).map(s=>s.name);
+ const ac=hits('AC');
+ assert(ac.includes('AC service (standard)'));assert(ac.includes('Cabin (AC) filter replacement'));
+ for(const wrong of ['Front brake pad replacement','Battery replacement','Accident repair','Windshield replacement'])assert(!ac.includes(wrong),wrong);
+ assert(hits('brak').includes('Brake inspection'));assert(hits('b').length>hits('brake').length);
+ assert.equal(hits('xyz').length,0);assert.equal(hits('  ').length,C.services.length);
+});

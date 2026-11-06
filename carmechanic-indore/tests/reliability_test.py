@@ -52,10 +52,10 @@ try:
         pg.close()
         pg=page('not an object');check(pg.locator('#b-brand option').count()>1,'Wrong-shaped session JSON is safely ignored');pg.close()
 
-        handoff={'brand':'maruti','model':'Swift','year':'2025','fuel':'petrol','category':'hatchback','partsGrade':'genuine','services':['BD-01'],'qty':{'BD-01':3},'pickup':'no','estimate':'₹6,750 – ₹9,000','time':'Evening (4–7)'}
+        handoff={'brand':'maruti','model':'Swift','year':'2025','fuel':'petrol','category':'hatchback','partsGrade':'genuine','services':['BD-01'],'qty':{'BD-01':3},'pickup':'no','estimate':'₹6,750 – ₹9,000','time':'Evening (4–8)'}
         pg=page(handoff)
         check(pg.input_value('#bq-BD-01')=='3','Estimator panel quantity survives booking handoff')
-        check(pg.input_value('#b-time')=='Evening (4–7)','Preferred time survives booking handoff')
+        check(pg.input_value('#b-time')=='Evening (4–8)','Preferred time survives booking handoff')
         pg.fill('#b-name','Test Customer');pg.fill('#b-mobile','9876543210');next(pg);next(pg);next(pg)
         pg.fill('#b-date','2000-01-01');next(pg)
         check(pg.locator('#b-date').get_attribute('aria-invalid')=='true' and pg.locator('[data-b-wa]').count()==0,'Booking rejects a past date even with novalidate')

@@ -82,11 +82,13 @@ with sync_playwright() as p:
         pg.check(f'{est} input[name="fuel"][value="{fuel}"]', force=True)
         if cat: pg.check(f'{est} input[name="cat"][value="{cat}"]', force=True)
 
-    def run(case, brand, model, year, fuel, services, pin=None, cat=None, panels=None, grade=None):
+    def run(case, brand, model, year, fuel, services, pin=None, cat=None, panels=None, grade=None, disabled=()):
         pg.goto(BASE + "index.html"); pg.wait_for_load_state("networkidle")
         fill_car(brand, model, year, fuel, cat)
         if grade: pg.select_option("#e-grade", grade)
         pg.click(f"{est} [data-next]")
+        for s in disabled:
+            check(pg.is_disabled(f'{est} .svc-opt[data-svc="{s}"] input') and "Not for" in pg.inner_text(f'{est} .svc-opt[data-svc="{s}"] .s'), f"{case}: {s} switched off in the service list")
         for s in services: pg.click(f'{est} .svc-opt[data-svc="{s}"]')
         if panels: pg.fill(f"{est} [data-qty-for=BD-01]", str(panels))
         pg.click(f"{est} [data-next]")
@@ -118,8 +120,8 @@ with sync_playwright() as p:
     pg.click(f"{est} [data-restart]")
     check(pg.is_visible(f'{est} [data-step="1"]') and pg.input_value("#e-brand") == "", "Start over resets the calculator")
 
-    t3, m3 = run("Nexon EV: standard service + oil + clutch + battery", "tata", "Nexon", "2024", "electric", ["GS-02", "GS-04", "CL-02", "TB-05"], pin="999999")
-    check(pg.inner_text(f"{est} .est-table").count("N/A") == 2, "EV: oil change and clutch marked not applicable")
+    t3, m3 = run("Nexon EV: standard service + battery (oil change and clutch switched off)", "tata", "Nexon", "2024", "electric", ["GS-02", "TB-05"], pin="999999", disabled=["GS-04", "CL-02"])
+    check("N/A" not in pg.inner_text(f"{est} .est-table"), "EV: no not-applicable jobs reach the estimate")
     check("on request" in pg.inner_text(f"{est} .est-table").lower() and "Price on request: Standard service" in m3, "EV: periodic service shown as price on request")
     check("Outside our confirmed pickup area" in pg.inner_text(f"{est} .est-table"), "Out-of-area PIN not promised free pickup")
 
