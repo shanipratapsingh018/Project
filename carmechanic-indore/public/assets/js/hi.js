@@ -40,7 +40,9 @@
     "It may or may not have reached the garage. You can safely press Submit request again — the same request is never booked twice — or check with us on WhatsApp.":"हो सकता है अनुरोध गैराज तक पहुँचा हो या न पहुँचा हो। आप बिना चिंता फिर से अनुरोध भेजें दबा सकते हैं — एक ही अनुरोध दो बार बुक नहीं होता — या व्हाट्सऐप पर हमसे पूछें।",
     "Send on WhatsApp":"व्हाट्सऐप पर भेजें", "Message on WhatsApp":"व्हाट्सऐप पर संदेश भेजें",
     "Morning (7–12)":"सुबह (7–12)", "Evening (4–8)":"शाम (4–8)", "Night (8–11:30)":"रात (8–11:30)",
-    "To check a slot for your car,":"अपनी कार के लिए समय जाँचने हेतु", "call or WhatsApp us":"हमें कॉल या व्हाट्सऐप करें", "before visiting.":"आने से पहले।"
+    "To check a slot for your car,":"अपनी कार के लिए समय जाँचने हेतु", "call or WhatsApp us":"हमें कॉल या व्हाट्सऐप करें", "before visiting.":"आने से पहले।",
+    "Call now":"अभी कॉल करें", "Get directions":"रास्ता देखें", "Open daily":"रोज़ खुला", "Open now":"अभी खुला है", "Closed now":"अभी बंद है",
+    "Help & policies":"मदद और नीतियाँ", "Language":"भाषा"
   });
   root.CMI_HI = text;
 })(window);
