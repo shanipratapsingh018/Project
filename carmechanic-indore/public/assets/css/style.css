@@ -867,3 +867,21 @@ main [id], #write-review, .pl-group { scroll-margin-top: 16px; }
 }
 .brand-stamp .brand-name { font-size: clamp(1.6rem, 5vw, 2.15rem); letter-spacing: .015em; white-space: normal; line-height: 1.1; }
 .site-footer .brand-name { font-size: clamp(1.7rem, 5vw, 2.1rem); white-space: normal; line-height: 1.1; }
+
+/* ---------- Footer v2.4.2: contact buttons, one-line hours, open status, language switch ---------- */
+.site-footer .footer-contact { display: grid; gap: 10px; }
+.site-footer .footer-contact p { margin: 0; }
+.site-footer .footer-phone { font: 600 1.2rem var(--f-body); letter-spacing: .02em; color: #fff; font-variant-numeric: tabular-nums; user-select: all; }
+.site-footer .footer-cta { display: flex; flex-wrap: wrap; gap: 10px; }
+.site-footer .footer-cta .btn, .site-footer .footer-cta .btn:hover { color: var(--fg); }
+.site-footer .footer-cta .btn svg { width: 18px; height: 18px; }
+.site-footer .footer-directions { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: #fff; }
+.site-footer .footer-directions svg { width: 18px; height: 18px; color: var(--signal); }
+.site-footer .footer-hours { white-space: nowrap; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.site-footer .open-status { font: 600 .75rem var(--f-body); text-transform: uppercase; letter-spacing: .05em; padding: 3px 9px; border-radius: 999px; background: rgba(255,255,255,.08); color: #ffb4a3; border: 1px solid rgba(255,140,120,.35); }
+.site-footer .open-status.is-open { color: #8fe3ad; border-color: rgba(120,220,160,.4); background: rgba(40,170,95,.14); }
+.site-footer .footer-lang { display: flex; align-items: center; gap: 10px; margin: 0; }
+.site-footer .footer-lang .lang-toggle { height: 34px; }
+/* Faded logo sits top-right, clear of the fixed WhatsApp button in the bottom corner. */
+.site-footer::before { top: 24px; bottom: auto; right: -60px; width: 360px; height: 360px; opacity: .05; }
+@media (max-width: 520px) { .site-footer::before { width: 260px; height: 260px; right: -70px; top: 12px; } }
