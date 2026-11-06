@@ -1,3 +1,12 @@
+# v2.4.2 — Footer improvements
+
+- Add Call now and WhatsApp us buttons under the phone number; the number itself is tappable and shown without wide monospace gaps.
+- Rename the location link to "Get directions".
+- Show hours on one line ("Open daily · 7 AM – 11:30 PM") with a live Open now / Closed now label calculated in India time.
+- Balance the columns: FAQs and Pickup & drop areas move to a "Help & policies" column.
+- Move the faded logo to the top-right so the floating WhatsApp button no longer covers it.
+- Add the हिंदी / English switch to the footer.
+
 # v2.4.1 — High-priority bug fixes (audit 6 Nov 2026)
 
 - Service search matches word starts, and two-letter terms such as "AC" match whole words, so "AC" no longer lists brake, battery or accident jobs (Services page and calculator).
