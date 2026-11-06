@@ -24,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.4.1";
+const VERSION = "2.4.2";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -201,13 +201,17 @@ ${body}
     <div style="display:grid;gap:14px;align-content:start">
       <a class="brand" href="index.html">${LOGO}${WORDMARK}</a>
       <p>Multi-brand car servicing, diagnostics and repairs in ${esc(B.city)}, ${esc(B.state)}. Estimates are indicative until inspection; extra work only with your approval.</p>
-      <p>Call / WhatsApp<br><span class="phone-line" data-phone>${esc(B.phoneDisplay)}</span></p>
-      ${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${mapLink(true)}` : ""}
-      ${B.hours ? `<p>${hoursText()}</p>` : `<p class="small">Working hours: please call or WhatsApp to confirm.</p>`}
+      <div class="footer-contact">
+        <p>Call / WhatsApp<br><a class="phone-line footer-phone" href="tel:${B.phoneE164}" data-tel data-phone>${esc(B.phoneDisplay)}</a></p>
+        <div class="footer-cta"><a class="btn btn--sm" href="tel:${B.phoneE164}" data-tel>${ic("phone")}<span>Call now</span></a><a class="btn btn--sm btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}<span>WhatsApp us</span></a></div>
+      </div>
+      ${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${footerDirections()}` : ""}
+      ${B.hours ? `<p class="footer-hours">${footerHours()} <span class="open-status" data-open-status hidden></span></p>` : `<p class="small">Working hours: please call or WhatsApp to confirm.</p>`}
+      <p class="footer-lang"><span>Language</span> <button class="lang-toggle" type="button">हिंदी</button></p>
     </div>
     <div><h2 class="footer-title">Services</h2><ul>${SERVICE_PAGES.map((p) => `<li><a href="${p.file}">${esc(p.nav)}</a></li>`).join("")}</ul></div>
-    <div><h2 class="footer-title">Customers</h2><ul><li><a href="index.html">Home</a></li><li><a href="estimate.html">Cost calculator</a></li><li><a href="booking.html">Book a service</a></li><li><a href="gallery.html">Service Gallery</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="pickup-drop.html">Pickup &amp; drop areas</a></li><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact</a></li><li><a href="index.html#faq">FAQs</a></li></ul></div>
-    <div><h2 class="footer-title">Policies</h2><ul><li><a href="terms.html">Terms & conditions</a></li><li><a href="privacy.html">Privacy policy</a></li><li><a href="policies.html">Cancellation, pickup & billing</a></li><li><a href="admin/index.html">Owner login</a></li></ul></div>
+    <div><h2 class="footer-title">Customers</h2><ul><li><a href="index.html">Home</a></li><li><a href="estimate.html">Cost calculator</a></li><li><a href="booking.html">Book a service</a></li><li><a href="gallery.html">Service Gallery</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div><h2 class="footer-title">Help &amp; policies</h2><ul><li><a href="index.html#faq">FAQs</a></li><li><a href="pickup-drop.html">Pickup &amp; drop areas</a></li><li><a href="terms.html">Terms & conditions</a></li><li><a href="privacy.html">Privacy policy</a></li><li><a href="policies.html">Cancellation, pickup & billing</a></li><li><a href="admin/index.html">Owner login</a></li></ul></div>
     <p class="fine">© <span data-year>${new Date().getFullYear()}</span> ${esc(B.name)}. Independent multi-brand garage; not affiliated with any car manufacturer. Brand names are used only to identify vehicles we service.</p>
   </div>
 </footer>
@@ -417,6 +421,18 @@ function areaList() {
   const byPin = {};
   AREAS.localities.forEach(([name,pin]) => { (byPin[pin] ||= []).push(name); });
   return AREAS.coveredPins.map(pin=>`<li><b>${esc(pin)}</b>${byPin[pin]?' '+esc(byPin[pin].slice(0,2).join(', ')):''}</li>`).join('');
+}
+// Footer: one-line hours ("Open daily · 7 AM – 11:30 PM") and a plain "Get directions" link.
+function shortClock(value) {
+  const [hour, minute] = value.split(":").map(Number);
+  return `${hour % 12 || 12}${minute ? ":" + String(minute).padStart(2, "0") : ""} ${hour >= 12 ? "PM" : "AM"}`;
+}
+function footerHours() {
+  return `<span class="hours-line">${B.hours.map((h) => `<span>${/^Mo-Su$/i.test(h.days) ? "Open daily" : esc(h.label || h.days)}</span> · ${shortClock(h.open)} – ${shortClock(h.close)}`).join("<br>")}</span>`;
+}
+function footerDirections() {
+  const href = B.googleBusinessProfileUrl || B.googleMapsSearchUrl;
+  return href ? `<a class="footer-directions" data-map-link href="${esc(href)}" target="_blank" rel="noopener noreferrer">${ic("pin")}<span>Get directions</span></a>` : "";
 }
 function timeOptions() {
   return (B.timeSlots || []).map((t) => `<option>${esc(t)}</option>`).join("");
