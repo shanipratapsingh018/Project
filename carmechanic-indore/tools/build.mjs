@@ -24,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.4.0";
+const VERSION = "2.4.1";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -332,7 +332,7 @@ function quickBook(svcId, title) {
         <div class="field"><label for="qb-car">Car make, model &amp; year *</label><input id="qb-car" name="car" maxlength="60" placeholder="e.g. Hyundai i20 2019"><p class="err" hidden></p></div>
         <div class="field"><label for="qb-pin">PIN code</label><input id="qb-pin" name="pin" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="452020"><p class="err" hidden></p></div>
         <div class="field"><label for="qb-date">Preferred date</label><input id="qb-date" name="date" type="date"><p class="err" hidden></p></div>
-        <div class="field"><label for="qb-time">Preferred time</label><select id="qb-time" name="time"><option value="">Any time</option><option>Morning (9–12)</option><option>Afternoon (12–4)</option><option>Evening (4–7)</option></select></div>
+        <div class="field"><label for="qb-time">Preferred time</label><select id="qb-time" name="time"><option value="">Any time</option>${timeOptions()}</select></div>
       </div>
       <div class="field"><label for="qb-problem">Problem description</label><textarea id="qb-problem" name="problem" maxlength="400" style="min-height:70px"></textarea></div>
       <div class="check-row"><input type="checkbox" id="qb-pickup" name="pickup" checked><label for="qb-pickup">I need pickup &amp; drop</label></div>
@@ -417,6 +417,9 @@ function areaList() {
   const byPin = {};
   AREAS.localities.forEach(([name,pin]) => { (byPin[pin] ||= []).push(name); });
   return AREAS.coveredPins.map(pin=>`<li><b>${esc(pin)}</b>${byPin[pin]?' '+esc(byPin[pin].slice(0,2).join(', ')):''}</li>`).join('');
+}
+function timeOptions() {
+  return (B.timeSlots || []).map((t) => `<option>${esc(t)}</option>`).join("");
 }
 function hoursText() {
   const clock = (value) => {
@@ -667,7 +670,7 @@ function bookingPage() {
           <div class="grid-3">
             <div class="field" data-addr><label for="b-pin">PIN code *</label><input id="b-pin" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="452020"><p class="err" hidden></p></div>
             <div class="field"><label for="b-date">Preferred date</label><input id="b-date" type="date"><p class="err" hidden></p></div>
-            <div class="field"><label for="b-time">Preferred time</label><select id="b-time"><option value="">Any time</option><option>Morning (9–12)</option><option>Afternoon (12–4)</option><option>Evening (4–7)</option></select></div>
+            <div class="field"><label for="b-time">Preferred time</label><select id="b-time"><option value="">Any time</option>${timeOptions()}</select></div>
           </div>
           <div data-b-pin-result aria-live="polite"></div>
           <p class="small muted">Pickup and drop is free across our confirmed Indore PIN codes, subject to booking confirmation.</p>
@@ -816,7 +819,7 @@ function aboutPage() {
     ${B.address ? `<h2>Visit our workshop</h2><p data-workshop-address>${esc(addressText())}</p>${mapLink(true)}` : ""}
     <h2>Workshop services</h2>
     ${photo("workshop-cars", { sizes: "(max-width: 900px) 100vw, 60vw" })}
-    <p>For our workshop location, current opening hours and appointment availability, <a href="contact.html">contact us before visiting</a>.</p>
+    ${B.hours ? `<p>Opening hours: ${hoursText()}. To check a slot for your car, <a href="contact.html">call or WhatsApp us</a> before visiting.</p>` : `<p>For opening hours and appointment availability, <a href="contact.html">contact us before visiting</a>.</p>`}
   </div>
   <div style="display:grid;gap:18px;align-content:start">
     <div class="brand-stamp">${LOGO}${WORDMARK}</div>
