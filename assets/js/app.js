@@ -133,10 +133,15 @@
     const preset = (root.getAttribute("data-preset") || "").split(",").filter(Boolean);
     const groups = {};
     C.services.filter((s) => s.inCalculator !== false).forEach((s) => { (groups[s.group] = groups[s.group] || []).push(s); });
-    const fromText = (s) => {
-      const q = PR.quickRange(C, s.id, "hatchback");
-      if (q.status === "priced") return "Hatchback " + PR.formatINR(q.range[0]) + "–" + PR.formatINR(q.range[1]).slice(1) + (q.partsQuoted ? " + parts" : "") + (s.qty ? " · per " + s.unit.replace(/^per /, "") : "");
-      return q.status === "inspection" ? "Quote after inspection" : "Price on request";
+    // Price line under each service. Uses the car type and fuel chosen in step 1 (hatchback/petrol before that).
+    const catLabel = (id) => ((C.categories.find((c) => c.id === id) || {}).label || "Hatchback");
+    const fuelLabel = (id) => ((C.fuels.find((f) => f.id === id) || {}).label || "");
+    const fromText = (s, category = "hatchback", fuel = "petrol") => {
+      const q = PR.quickRange(C, s.id, category, fuel);
+      if (q.status === "priced") return catLabel(category) + " " + PR.formatINR(q.range[0]) + "–" + PR.formatINR(q.range[1]).slice(1) + (q.partsQuoted ? " + parts" : "") + (s.qty ? " · per " + s.unit.replace(/^per /, "") : "");
+      if (q.status === "not-applicable") return "Not for " + fuelLabel(fuel).toLowerCase() + " cars";
+      if (q.status === "inspection" || /inspection/i.test(q.text || "")) return "Quote after inspection";
+      return "Price on request";
     };
 
     root.innerHTML = `
@@ -157,7 +162,7 @@
         </section>
         <section data-step="2" hidden>
           <div class="step-title"><span class="num">06</span><${headingTag} data-i18n="est.services">Choose services</${headingTag}></div>
-          <p class="hint muted small" style="margin:6px 0 12px">Select one or more. Overlapping jobs are counted once. Prices shown are for a hatchback; your estimate adjusts for your car.</p>
+          <p class="hint muted small" style="margin:6px 0 12px" data-svc-hint>Select one or more. Overlapping jobs are counted once. Prices shown are for a hatchback; your estimate adjusts for your car.</p>
           <div class="field svc-search"><label class="sr-only" for="e-search">Search services</label><input id="e-search" type="search" placeholder="Search, e.g. brake, AC, battery, dent" autocomplete="off"></div>
           <div class="svc-groups">${Object.entries(groups).map(([g, list]) => `
             <div class="svc-group" data-group="${esc(g)}"><${subHeadingTag} class="svc-group-title">${esc(g)}</${subHeadingTag}><div class="svc-list">${list.map((s) => `
@@ -176,7 +181,7 @@
             <div class="field"><label for="e-pickup">Pickup & drop</label><select id="e-pickup"><option value="yes">Yes, pick up my car</option><option value="no">No, I'll drop it at the workshop</option></select></div>
             <div class="field" data-pin-field><label for="e-pin">Locality or PIN code</label><input id="e-pin" autocomplete="postal-code" placeholder="e.g. Vijay Nagar or 452010"></div>
             <div class="field"><label for="e-date">Preferred date (optional)</label><input id="e-date" type="date"><p class="err" data-date-err hidden></p></div>
-            <div class="field"><label for="e-time">Preferred time (optional)</label><select id="e-time"><option value="">Any time</option><option>Morning (9–12)</option><option>Afternoon (12–4)</option><option>Evening (4–7)</option></select></div>
+            <div class="field"><label for="e-time">Preferred time (optional)</label><select id="e-time"><option value="">Any time</option>${(B.timeSlots || []).map((t) => `<option>${esc(t)}</option>`).join("")}</select></div>
             <div class="field"><label for="e-name">Your name (optional)</label><input id="e-name" autocomplete="name" maxlength="60"></div>
           </div>
           <div data-pin-result style="margin-top:12px"></div>
@@ -234,12 +239,13 @@
       renderQty();
     }));
     const search = $("#e-search", root);
+    const searchVocab = F.searchVocabulary($$(".svc-opt", root).map((o) => o.dataset.search));
     search.addEventListener("input", () => {
       const q = search.value.trim().toLowerCase();
       let shown = 0;
       $$(".svc-group", root).forEach((g) => {
         let any = false;
-        $$(".svc-opt", g).forEach((o) => { const hit = !q || o.dataset.search.includes(q); o.hidden = !hit; if (hit) any = true; });
+        $$(".svc-opt", g).forEach((o) => { const hit = F.searchMatch(o.dataset.search, q, searchVocab); o.hidden = !hit; if (hit) any = true; });
         g.hidden = !any; if (any) shown++;
       });
       $("[data-search-empty]", root).hidden = shown > 0;
@@ -310,8 +316,14 @@
         services: [...state.services], qty: Object.fromEntries(Object.entries(state.qty).map(([id, q]) => [id, Number(q)])), lights: $$('input[name="lights"]:checked', root).map((i) => i.value),
         symptoms: $("#e-symptoms", root).value.trim(), pickup: pickupSel.value, area: pin.value.trim(),
         date: $("#e-date", root).value, time: $("#e-time", root).value,
-        estimate: r.pricedJobs ? PR.formatRange(r.total) + (r.partsQuoted ? " + parts quoted by model" : "") : "Quote after inspection", partsGrade: $("#e-grade", root).value
+        estimate: r.pricedJobs ? PR.formatRange(r.total) + (r.partsQuoted ? " + parts quoted by model" : "") : unpriced(r).short, partsGrade: $("#e-grade", root).value
       };
+    }
+    // Headline when nothing could be priced: say why, instead of always "Inspection required".
+    function unpriced(r) {
+      if (r.inspection.length) return { title: "Inspection required", short: "Quote after inspection", text: "Request a quote — we'll price it after inspecting the car" };
+      if (r.quotes.length) return { title: "Price on request", short: "Price on request", text: "We'll send you a quote on WhatsApp" };
+      return { title: "No priced jobs", short: "No applicable jobs", text: "These jobs don't apply to your car. Go back and choose other services" };
     }
     function waMessage(p, r) {
       const svcNames = p.services.map((id) => svcById[id].name + (svcById[id].qty ? " × " + (p.qty[id] || 1) + " " + svcById[id].unit.replace(/^per /, "") + "(s)" : ""));
@@ -350,8 +362,8 @@
         <div class="estimate">
           <div class="est-total">
             <span class="k">${esc(p.car)} · ${esc((C.fuels.find((f) => f.id === p.fuel) || {}).label)} · ${esc((C.categories.find((c) => c.id === p.category) || {}).label)}</span>
-            <span class="v">${priced ? PR.formatRange(r.total) : "Inspection required"}</span>
-            <span class="t">${priced ? "Estimated total" + (r.partsQuoted ? " + parts quoted by model" : "") + (r.tax ? " incl. " + esc(r.taxLabel) : "") + (r.inspection.length || r.quotes.length ? " · other jobs quoted separately" : "") : "Request a quote — we'll price it after inspecting the car"}${r.hours ? " · Typical time: " + PR.formatHours(r.hours) : ""}</span>
+            <span class="v">${priced ? PR.formatRange(r.total) : esc(unpriced(r).title)}</span>
+            <span class="t">${priced ? "Estimated total" + (r.partsQuoted ? " + parts quoted by model" : "") + (r.tax ? " incl. " + esc(r.taxLabel) : "") + (r.inspection.length || r.quotes.length ? " · other jobs quoted separately" : "") : esc(unpriced(r).text)}${r.hours ? " · Typical time: " + PR.formatHours(r.hours) : ""}</span>
           </div>
           <div class="table-scroll"><table class="est-table">
             <thead><tr><th>Job</th><th>Range</th></tr></thead>
@@ -391,7 +403,24 @@
         fillModels(model, ""); model.hidden = false; modelOther.hidden = true; refreshPin(); go(1);
       });
     }
+    // Re-price the service list for the chosen car and switch off jobs that don't apply (e.g. oil change on an EV).
+    function refreshServiceList() {
+      const category = radio("cat") || "hatchback", fuel = radio("fuel") || "petrol";
+      let removed = false;
+      $$(".svc-opt", root).forEach((o) => {
+        const s = svcById[o.dataset.svc], cb = $("input", o);
+        $(".s", o).textContent = fromText(s, category, fuel);
+        const na = PR.serviceStatus(s, fuel) === "not-applicable";
+        o.classList.toggle("disabled", na);
+        cb.disabled = na;
+        if (na && cb.checked) { cb.checked = false; o.classList.remove("checked"); state.services.delete(s.id); removed = true; }
+      });
+      if (removed) renderQty();
+      const hint = $("[data-svc-hint]", root);
+      if (hint) hint.textContent = "Select one or more. Overlapping jobs are counted once. Prices shown are for a " + catLabel(category).toLowerCase() + (fuel !== "petrol" ? " (" + fuelLabel(fuel).toLowerCase() + ")" : "") + "; your final estimate also reflects the car's age and parts grade." + (fuel === "electric" ? " Jobs that don't apply to electric cars are switched off." : "");
+    }
     function go(n) {
+      if (n === 2) refreshServiceList();
       step = n;
       $$("section[data-step]", root).forEach((s) => { s.hidden = Number(s.dataset.step) !== n; });
       $$(".steps-bar span", root).forEach((s, i) => s.classList.toggle("on", i < n));
@@ -448,12 +477,13 @@
     const cards = $$("[data-service-card]", root), filters = $$("[data-service-filter]", root);
     let group = "all";
     const searchable = Object.fromEntries(C.services.map((s) => [s.id, [s.name, s.group, ...(s.includes || [])].join(" ").toLowerCase()]));
+    const searchVocab = F.searchVocabulary(Object.values(searchable));
     function update() {
       const query = search.value.trim().toLowerCase(), category = car.value;
       const visible = new Set();
       cards.forEach((card) => {
         const id = card.dataset.serviceCard;
-        card.hidden = (group !== "all" && card.dataset.serviceGroup !== group) || !searchable[id].includes(query);
+        card.hidden = (group !== "all" && card.dataset.serviceGroup !== group) || !F.searchMatch(searchable[id], query, searchVocab);
         if (!card.hidden) visible.add(id);
         const price = PR.quickRange(C, id, category);
         $("[data-service-range]", card).textContent = price.text;
@@ -847,6 +877,17 @@
       if (moveFocus) focusStep(steps[i]);
     }
     $("[data-b-back]", root).addEventListener("click", () => show(Math.max(0, step - 1)));
+    // Tell the customer what actually happened. Resending unchanged details reuses the same
+    // request ID, and the server ignores duplicates, so "press Submit again" is safe.
+    function bookingFailure(err, timedOut) {
+      const status = err && err.status;
+      if (err && err.offline) return { title: "You're offline. Your request was not sent.", text: "Connect to the internet and press Submit request again, or send the same details on WhatsApp.", button: "Send on WhatsApp" };
+      if (status === 400 || status === 413 || status === 415) return { title: "We couldn't accept these details.", text: "Your request was not saved. Please check your details and try again, or send them on WhatsApp.", button: "Send on WhatsApp" };
+      if (status === 429) return { title: "Too many requests from this number.", text: "Your request was not saved. Please call or WhatsApp the garage to book.", button: "Send on WhatsApp" };
+      if (status === 403 || status === 404 || status === 405) return { title: "Online booking isn't available right now.", text: "Your request was not saved. Please send it on WhatsApp or call the garage.", button: "Send on WhatsApp" };
+      if (status === 409) return { title: "An earlier version of this request already reached us.", text: "Please message the garage on WhatsApp with any changes instead of resending.", button: "Message on WhatsApp" };
+      return { title: timedOut ? "The request timed out." : "We couldn't confirm your request.", text: "It may or may not have reached the garage. You can safely press Submit request again — the same request is never booked twice — or check with us on WhatsApp.", button: "Check on WhatsApp" };
+    }
     f.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (sending || !validate(step)) return;
@@ -873,14 +914,17 @@
             if (requestSignature !== body) { requestSignature = body; requestId = crypto.randomUUID(); }
             headers["X-Idempotency-Key"] = requestId;
           }
-          const res = await fetch(endpoint.href, { method: "POST", headers, body, signal: controller.signal, referrerPolicy: "no-referrer", credentials: "omit" });
-          if (!res.ok) throw new Error("HTTP " + res.status);
+          let res;
+          try { res = await fetch(endpoint.href, { method: "POST", headers, body, signal: controller.signal, referrerPolicy: "no-referrer", credentials: "omit" }); }
+          catch (netErr) { netErr.offline = typeof navigator !== "undefined" && navigator.onLine === false; throw netErr; }
+          if (!res.ok) { const httpErr = new Error("HTTP " + res.status); httpErr.status = res.status; throw httpErr; }
           const acknowledgement = await res.json();
           if (!F.receipt(acknowledgement, B.bookingIdempotency ? requestId : "")) throw new Error("Receipt not confirmed");
           f.hidden = true; store.remove("cmi-booking");
           out.innerHTML = `<div class="success"><div class="status status--ok"><div><strong>Request received.</strong>We'll contact you on ${esc(p.mobile)} to confirm the slot and quotation. Your booking is confirmed only after we call or message you.</div></div></div>`;
         } catch (err) {
-          out.innerHTML = `<div class="status status--bad" role="alert"><div><strong>${controller.signal.aborted ? "The request timed out." : "We couldn't confirm your request."}</strong>It may have reached the garage. Please check with us on WhatsApp or by phone before resending.</div></div><a class="btn btn--wa" target="_blank" rel="noopener" href="${waUrl(bookingText(p))}">${ICON.wa} Check on WhatsApp</a>`;
+          const fail = bookingFailure(err, controller.signal.aborted);
+          out.innerHTML = `<div class="status status--bad" role="alert"><div><strong>${esc(fail.title)}</strong>${esc(fail.text)}</div></div><a class="btn btn--wa" target="_blank" rel="noopener" href="${waUrl(bookingText(p))}">${ICON.wa} ${esc(fail.button)}</a>`;
         } finally {
           clearTimeout(timer); sending = false; f.inert = false; f.removeAttribute("aria-busy");
           btn.disabled = false; $("[data-b-back]", root).disabled = false; show(step, false);
