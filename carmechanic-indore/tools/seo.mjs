@@ -1,6 +1,6 @@
 // Shared, factual SEO metadata. No invented reviews, coordinates or fixed-price offers.
 const COPY = {
-  'index.html': ['Car Repair Wala Indore | Car Service & Repair', 'Car Repair Wala offers multi-brand car service and repairs at 17, AB Road, Choithram Mandi, Indore. View estimates and request a booking.', 'Home'],
+  'index.html': ['Car Repair Wala: Best Car Service Center & Repair in Indore', 'Car Repair Wala offers multi-brand car service and repairs at 17, AB Road, Choithram Mandi, Indore. View estimates and request a booking.', 'Home'],
   'services.html': ['Car Service & Repair Prices Indore | Car Repair Wala', 'Compare 69 car service and repair options in Indore. View indicative prices by vehicle category and request a quote from Car Repair Wala.', 'Services & Prices'],
   'car-service-indore.html': ['Car Service in Indore | Car Repair Wala', 'Book basic, standard or comprehensive car service at Car Repair Wala, Choithram Mandi, Indore. Compare estimates before approving work.', 'Car servicing'],
   'car-ac-repair-indore.html': ['Car AC Repair in Indore | Car Repair Wala', 'Car AC inspection, leak testing, gas top-up and cooling repairs at Car Repair Wala in Indore. View estimates and request a workshop inspection.', 'Car AC repair'],
