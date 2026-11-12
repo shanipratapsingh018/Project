@@ -24,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.5.0";
+const VERSION = "2.5.1";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -659,7 +659,6 @@ const BOOKING_NEEDS = [
 ];
 function bookingPage() {
   const waText = `Hello ${B.name}, I want to book a car service.\nCar: \nProblem: \nArea / PIN: `;
-  const carOptions = C.brands.filter((b) => b.models.length).flatMap((b) => b.models.map((m) => `<option value="${esc(b.name + " " + m[0])}"></option>`)).join("");
   const radio = (name, value, label, checked = false) => `<label class="seg-opt"><input type="radio" name="${name}" value="${esc(value)}"${checked ? " checked" : ""}><span>${label}</span></label>`;
   const body = `
 <section class="page-hero page-hero--compact"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Book</p><h1>Book a car service</h1><p>Takes about a minute. We confirm the slot and price with you before any work starts.</p></div></section>
@@ -677,7 +676,10 @@ function bookingPage() {
       <form novalidate class="b-form">
         <fieldset data-bstep class="b-step">
           <legend class="step-title"><span class="num">01</span><h2>Your car &amp; the problem</h2></legend>
-          <div class="field"><label for="b-car">Which car? *</label><input id="b-car" list="b-car-list" autocomplete="off" autocapitalize="words" maxlength="80" placeholder="e.g. Maruti Swift"><datalist id="b-car-list">${carOptions}</datalist><p class="err" hidden></p></div>
+          <div class="grid-2">
+            <div class="field"><label for="b-brand">Car brand *</label><select id="b-brand"></select><p class="err" hidden></p></div>
+            <div class="field"><label for="b-model">Model *</label><select id="b-model" disabled></select><input id="b-model-other" hidden maxlength="80" autocapitalize="words" placeholder="Type your car model" aria-label="Car model"><p class="err" hidden></p></div>
+          </div>
           <div class="field" role="group" aria-labelledby="b-need-label">
             <p class="label" id="b-need-label">What does it need? * <span class="hint">Tap all that apply</span></p>
             <div class="tiles" data-b-needs>${BOOKING_NEEDS.map(([label, icon]) => `<label class="tile"><input type="checkbox" name="b-need" value="${esc(label)}"><span>${ic(icon)}${esc(label)}</span></label>`).join("")}</div>
