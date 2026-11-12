@@ -24,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.5.1";
+const VERSION = "2.6.0";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -689,23 +689,51 @@ function bookingPage() {
           <div class="field"><label for="b-notes">Anything else? (optional)</label><textarea id="b-notes" maxlength="600" rows="2" placeholder="e.g. squeaking noise when I brake"></textarea></div>
         </fieldset>
         <fieldset data-bstep hidden class="b-step">
-          <legend class="step-title"><span class="num">02</span><h2>Your details &amp; time</h2></legend>
-          <div class="grid-2">
-            <div class="field"><label for="b-name">Your name *</label><input id="b-name" autocomplete="name" maxlength="60"><p class="err" hidden></p></div>
-            <div class="field"><label for="b-mobile">Mobile / WhatsApp number *</label><input id="b-mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="98765 43210"><p class="err" hidden></p></div>
-          </div>
-          <div class="field" role="group" aria-labelledby="b-pickup-label"><p class="label" id="b-pickup-label">Pickup &amp; drop</p><div class="seg">${radio("b-pickup", "yes", "Pick up my car", true)}${radio("b-pickup", "no", "I’ll drop it at the garage")}</div></div>
-          <div class="grid-addr" data-addr>
-            <div class="field"><label for="b-address">Pickup address *</label><input id="b-address" autocomplete="street-address" maxlength="250" placeholder="House / street / colony"><p class="err" hidden></p></div>
-            <div class="field"><label for="b-pin">PIN code *</label><input id="b-pin" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="452001"><p class="err" hidden></p></div>
-          </div>
-          <div data-b-pin-result aria-live="polite"></div>
-          <div class="field" role="group" aria-labelledby="b-day-label"><p class="label" id="b-day-label">Which day? <span class="hint">Optional</span></p><div class="seg seg--wrap">${radio("b-day", "today", "Today")}${radio("b-day", "tomorrow", "Tomorrow")}${radio("b-day", "pick", "Pick a date")}</div></div>
-          <div class="field" data-b-date-field hidden><label for="b-date">Preferred date</label><input id="b-date" type="date"><p class="err" hidden></p></div>
-          <div class="field" role="group" aria-labelledby="b-time-label"><p class="label" id="b-time-label">What time suits you?</p><div class="seg seg--wrap">${radio("b-time", "", "Any time", true)}${B.timeSlots.map((t) => radio("b-time", t, esc(t))).join("")}</div></div>
-          <p class="small muted">Pickup and drop is free across our confirmed Indore PIN codes, subject to booking confirmation.</p>
+          <legend class="sr-only"><h2>Your details &amp; time</h2></legend>
+          <div class="b-summary" data-b-summary></div>
+          <section class="b-sec" aria-labelledby="b-sec-you">
+            <h3 class="b-sec-title" id="b-sec-you">${ic("phone")}Your details</h3>
+            <div class="grid-2">
+              <div class="field"><label for="b-name">Your name *</label><input id="b-name" autocomplete="name" maxlength="60" placeholder="e.g. Ravi Kumar"><p class="err" hidden></p></div>
+              <div class="field"><label for="b-mobile">Mobile / WhatsApp number *</label><div class="inp-pre"><span aria-hidden="true">+91</span><input id="b-mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="98765 43210"></div><p class="err" hidden></p></div>
+            </div>
+            <p class="hint b-hint">We'll confirm your slot on this number.</p>
+          </section>
+          <section class="b-sec" aria-labelledby="b-sec-pickup">
+            <h3 class="b-sec-title" id="b-sec-pickup">${ic("truck")}Pickup &amp; drop</h3>
+            <div class="pk-cards" role="radiogroup" aria-label="Pickup and drop">
+              <label class="pk-card"><input type="radio" name="b-pickup" value="yes" checked><span>${ic("truck")}<b>Pick up my car</b><small>Free in our confirmed Indore areas</small></span></label>
+              <label class="pk-card"><input type="radio" name="b-pickup" value="no"><span>${ic("home")}<b>I’ll drop it at the garage</b><small>${esc([B.address?.street, B.address?.locality].filter(Boolean).join(", "))}</small></span></label>
+            </div>
+            <p class="b-garage" data-b-garage hidden>${ic("pin")}<span>${esc(addressText())}</span> · <a href="${esc(B.googleBusinessProfileUrl || B.googleMapsSearchUrl)}" target="_blank" rel="noopener noreferrer">Directions</a></p>
+            <div class="b-loc" data-addr>
+              <p class="label">Pickup address *</p>
+              <button type="button" class="b-locbtn" data-b-locate>${ic("pin")}<span>Use my current location</span></button>
+              <p class="b-loc-or"><span>or type it below</span></p>
+              <p class="b-loc-msg" data-b-loc-msg role="status" hidden></p>
+            </div>
+            <div class="grid-addr" data-addr>
+              <div class="field"><label for="b-address" class="sr-only">Pickup address</label><input id="b-address" autocomplete="street-address" maxlength="250" placeholder="House no., street, colony"><p class="err" hidden></p></div>
+              <div class="field"><label for="b-pin" class="sr-only">PIN code</label><input id="b-pin" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="PIN code"><p class="err" hidden></p></div>
+            </div>
+            <div data-b-pin-result aria-live="polite"></div>
+            <div class="b-map" data-b-map hidden><div class="b-map-canvas" data-b-map-canvas></div><p class="b-map-foot"><span>Drag the pin to your gate if needed.</span><button type="button" class="linkish" data-b-loc-clear>✕ Don’t use my location</button></p></div>
+          </section>
+          <section class="b-sec" aria-labelledby="b-sec-when">
+            <h3 class="b-sec-title" id="b-sec-when">${ic("calendar")}When</h3>
+            <div class="field" role="group" aria-labelledby="b-day-label"><p class="label" id="b-day-label">Which day? <span class="hint">Optional</span></p><div class="seg seg--wrap seg--sub">
+              <label class="seg-opt"><input type="radio" name="b-day" value="today"><span><b>Today</b><small data-b-day-sub="0"></small></span></label>
+              <label class="seg-opt"><input type="radio" name="b-day" value="tomorrow"><span><b>Tomorrow</b><small data-b-day-sub="1"></small></span></label>
+              <label class="seg-opt"><input type="radio" name="b-day" value="pick"><span><b>Pick a date</b><small>${ic("calendar")}</small></span></label>
+            </div></div>
+            <div class="field" data-b-date-field hidden><label for="b-date">Preferred date</label><input id="b-date" type="date"><p class="err" hidden></p></div>
+            <div class="field" role="group" aria-labelledby="b-time-label"><p class="label" id="b-time-label">What time suits you?</p><div class="seg seg--wrap seg--sub">${radio("b-time", "", "<b>Any time</b>", true)}${B.timeSlots.map((t) => { const m = /^(.+?) \((.+)\)$/.exec(t); return radio("b-time", t, m ? `<b>${esc(m[1])}</b><small>${esc(m[2])}</small>` : `<b>${esc(t)}</b>`); }).join("")}</div>
+            <p class="hint" data-b-passed hidden>Times that have already passed today are greyed out.</p></div>
+          </section>
+          <ul class="b-trust"><li>No advance payment</li><li>Final price after inspection</li><li>No extra work without your OK</li><li>Free pickup &amp; drop in our confirmed Indore areas</li></ul>
         </fieldset>
         <div class="step-nav"><button type="button" class="btn btn--outline btn--sm" data-b-back hidden>Back</button><button type="submit" class="btn" data-b-next><span>Next</span> ${ic("arrow")}</button></div>
+        <p class="b-wa-small" data-b-wa-small hidden>Prefer WhatsApp? <a data-b-quick-wa2 target="_blank" rel="noopener" href="https://wa.me/${B.whatsapp}">Chat with us →</a></p>
         <p class="small muted">We only ask for what we need to service your car. See our <a href="privacy.html">privacy policy</a>.</p>
       </form>
       <div data-b-result role="status" aria-live="polite"></div>
@@ -768,6 +796,7 @@ const terms = legalPage("terms.html", "Terms & Conditions | Car Repair Wala", "T
 const privacy = legalPage("privacy.html", "Privacy Policy | Car Repair Wala", "Privacy policy", [
   ["What we collect", `<p>When you request an estimate or booking we may collect your name, mobile number, car details, optional registration number, service needs, and pickup address and PIN code if you request pickup. We do not ask for payment card details, ID documents or other sensitive information on this website.</p>`],
   ["How it's used", `<p>To contact you about your enquiry, arrange pickup and service, and send your quotation and bill. Feedback you send through the review form is used to respond to your experience. Your display name, rating, car model, service and feedback are published only if you choose the optional publication permission and the garage approves the review. Private feedback is not published.</p>`],
+  ["Location (optional)", `<p>The booking form never asks for your location unless you tap “Use my current location”. If you tap it, your browser asks your permission and then shares your position with the page. It is used only to fill in your pickup address: the position is sent to OpenStreetMap's address lookup service (Nominatim) to find the street and PIN code, a small OpenStreetMap map is shown so you can adjust the pin, and a Google Maps link to that spot is included in your booking so the driver can find you. You can clear it with “Don’t use my location” or simply type your address instead.</p>`],
   ["WhatsApp", `<p>If you use the WhatsApp buttons, your message is sent through WhatsApp and is subject to WhatsApp's own privacy policy.</p>`],
   ["Images", `<p>Images and fonts are served with this website. Stock photos, where used, are credited. External services such as WhatsApp or Google receive connection information when you follow their links.</p>`],
   ["Storage", `<p>The cost estimator runs in your browser. Booking details you send are kept only as long as needed for your service and records.</p><p>The estimator temporarily keeps its booking handoff in session storage in this browser tab; closing the tab clears that session. Language preference is saved locally. Online booking form submissions are stored in Car Repair Wala's private Supabase database for authorised owner access, so the garage can contact you about the request. WhatsApp buttons and the service-page quick-enquiry forms prepare messages that you must send in WhatsApp. Private job files and billing records may also be stored there. Technical request identifiers and short-lived rate limits help prevent duplicate requests and abuse. Contact the garage about access, correction, deletion and record retention; billing records may need to be retained for legal requirements.</p>`],
