@@ -24,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.4.3";
+const VERSION = "2.5.0";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -520,11 +520,12 @@ function homepage() {
       <span class="eyebrow">Multi-brand garage · ${esc(B.city)}</span>
       <h1 data-i18n="hero.title">Expert Car Service <span>&amp; Repair in Indore</span></h1>
       <p class="hero-sub" data-i18n="hero.sub">Transparent Estimates. Trusted Mechanics. Convenient Pickup &amp; Drop.</p>
-      <div class="hero-ctas">
+      ${heroPriceTiles()}
+      <div class="hero-ctas hero-ctas--desk">
         <a class="btn" href="#estimate">${ic("receipt")}<span data-i18n="cta.calc">Calculate Service Cost</span></a>
         <a class="btn btn--ghost" href="booking.html">${ic("calendar")}<span data-i18n="cta.book">Book Your Car Service</span></a>
       </div>
-      <div class="hero-ctas"><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}<span data-i18n="cta.wa">Chat on WhatsApp</span></a><a class="btn btn--ghost" href="tel:${B.phoneE164}" data-tel data-call-now>${ic("phone")}Call Now</a></div>
+      <div class="hero-ctas hero-ctas--desk"><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}<span data-i18n="cta.wa">Chat on WhatsApp</span></a><a class="btn btn--ghost" href="tel:${B.phoneE164}" data-tel data-call-now>${ic("phone")}Call Now</a></div>
       <ul class="hero-facts">
         <li>${ic("check")}All major brands</li><li>${ic("receipt")}Itemised bills</li><li>${ic("shield")}Approval before extra work</li>
       </ul>
@@ -644,6 +645,12 @@ function servicesHub() {
   return layout({ file: "services.html", title: `Car Services & Prices in Indore | ${B.name}`, desc: "Explore Car Repair Wala car services, compare transparent price ranges, and find the right maintenance or repair for your car in Indore. Your Car. Our Care.", body, ld: [offerLd], navKey: "services.html" });
 }
 
+// Phone-only price tiles in the home hero: each one opens the calculator with that job ticked.
+const HERO_TILES = [["GS-01", "Car service", "service"], ["AC-03", "AC service", "ac"], ["BR-01", "Brake check", "brake"], ["BD-01", "Dent & paint", "paint"]];
+function heroPriceTiles() {
+  const from = (id) => { const q = PR.quickRange(C, id, "hatchback", "petrol"); return q.status === "priced" ? "from " + PR.formatINR(q.range[0]) : "Quote after inspection"; };
+  return `<div class="hero-price"><h2>Check your price in 30 seconds</h2><div class="est-tiles">${HERO_TILES.map(([id, label, icon]) => `<a class="est-tile" href="#estimate" data-hero-svc="${id}"><span>${ic(icon)}<b>${esc(label)}</b><small>${esc(from(id))}</small></span></a>`).join("")}</div><a class="hero-price-all" href="services.html">All services &amp; prices →</a></div>`;
+}
 // Problem tiles: plain-language needs a customer can tap without knowing repair names.
 // The label is sent to the garage as the service line, so keep it readable in English.
 const BOOKING_NEEDS = [
