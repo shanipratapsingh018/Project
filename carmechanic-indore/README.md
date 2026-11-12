@@ -1,6 +1,6 @@
-# Car Repair Wala — Your Car. Our Care. · v2.4.3
+# Car Repair Wala — Your Car. Our Care. · v2.5.0
 
-A ready-to-run static garage website branded **Car Repair Wala · Your Car. Our Care.**: 22 responsive pages, 69-service price list,
+A ready-to-run static garage website branded **Car Repair Wala · Your Car. Our Care.**: 22 responsive pages, 85-service price list,
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form, online booking and WhatsApp contact. Node.js 18+ is needed for local serving
 and rebuilding; a static hosting provider needs only the included `public/` files.
 
@@ -20,7 +20,7 @@ mobile actions, calculator dates and small-screen service instructions. The
 
 For DNS, HTTPS, booking origins and owner-login redirects, follow the [custom-domain guide](docs/CUSTOM_DOMAIN.md).
 
-The Services & Prices page has three service packages, 69 service cards, search, category filters,
+The Services & Prices page has three service packages, 85 service cards, search, category filters,
 vehicle-specific estimates and an expandable comparison table. The generated logo is bundled locally.
 Car types change indicative prices; the approved rate card remains unchanged.
 
