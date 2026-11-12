@@ -58,7 +58,8 @@ try:
         check(pg.input_value('#b-car')=='Maruti Suzuki Swift','Estimator car survives booking handoff')
         check(pg.input_value('#bq-BD-01')=='3','Estimator panel quantity survives booking handoff')
         check(pg.is_checked('input[name="b-time"][value="Evening (4–8)"]'),'Preferred time survives booking handoff')
-        next(pg);pg.fill('#b-name','Test Customer');pg.fill('#b-mobile','9876543210')
+        check(pg.locator('[data-b-count]').text_content()=='Step 2 of 2' and pg.locator('#b-name').is_visible(),'A complete estimate opens booking straight at your details')
+        pg.fill('#b-name','Test Customer');pg.fill('#b-mobile','9876543210')
         pg.check('input[name="b-day"][value="pick"]');pg.fill('#b-date','2000-01-01');next(pg)
         check(pg.locator('#b-date').get_attribute('aria-invalid')=='true' and pg.locator('[data-b-wa]').count()==0,'Booking rejects a past date even with novalidate')
         pg.check('input[name="b-day"][value="tomorrow"]');pg.check('input[name="b-pickup"][value="yes"]');pg.fill('#b-address','12 Test Road');pg.fill('#b-pin','052010');next(pg)
@@ -73,13 +74,13 @@ try:
         check('Website estimate:' not in msg,'Changed pickup choices invalidate a carried estimate')
         pg.close()
 
-        pg=page(handoff)
+        pg=page(handoff);pg.click('[data-b-back]')
         pg.fill('#b-car','Maruti Baleno')
         check('Recalculate your estimate' in pg.locator('[data-b-estimate]').inner_text(),'Changing vehicle invalidates the old price immediately')
         next(pg);pg.fill('#b-name','Test Customer');pg.fill('#b-mobile','9876543210');next(pg)
         check('Website estimate:' not in unquote(pg.locator('[data-b-wa]').get_attribute('href')),'Stale price is absent from the final booking message');pg.close()
 
-        pg=page(handoff);next(pg);pg.fill('#b-name','Test Customer');pg.fill('#b-mobile','9876543210');next(pg)
+        pg=page(handoff);pg.fill('#b-name','Test Customer');pg.fill('#b-mobile','9876543210');next(pg)
         check('Website estimate: ₹6,750 – ₹9,000' in unquote(pg.locator('[data-b-wa]').get_attribute('href')),'Unchanged estimate is carried into the booking message');pg.close()
 
         pg=page();next(pg)

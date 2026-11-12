@@ -10,7 +10,7 @@ const one = (extra, ...ids) => estimate(CFG, { ...base, ...extra, services: ids.
 
 test("Approved rates in use (not demo)", () => {
   assert.equal(CFG.pricing.isDemo, false);
-  assert.equal(CFG.services.length, 69);
+  assert.equal(CFG.services.length, 85);
 });
 
 test("Standard service, Swift petrol = ₹3,000–4,000 (rate card GS-02)", () => {

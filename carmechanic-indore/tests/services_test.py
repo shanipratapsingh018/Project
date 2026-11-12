@@ -27,7 +27,7 @@ try:
    check(page.locator('.site-header .brand-sub').is_visible() and 'Your Car. Our Care.' in page.locator('.brand-sub').first.text_content(),f'{width}px: current tagline stays visible')
    check(page.locator('.site-header .brand-logo').evaluate('e=>e.complete&&e.naturalWidth>0'),f'{width}px: new logo loads')
    check(page.evaluate('document.documentElement.scrollWidth<=document.documentElement.clientWidth'),f'{width}px: no horizontal overflow')
-   check(page.locator('[data-service-card]:visible').count()==69,f'{width}px: all 69 service cards initially visible')
+   check(page.locator('[data-service-card]:visible').count()==85,f'{width}px: all 85 service cards initially visible')
    page.screenshot(path=str(SHOTS/f'car-repair-wala-services-{width}.png'),full_page=False)
    if width==1440:
     page.locator('[data-services-car]').select_option('suv')
@@ -41,7 +41,7 @@ try:
     page.locator('[data-services-search]').fill('battery')
     check(page.locator('[data-services-empty]').is_visible(),'Combined search and category show a useful empty state')
     page.locator('[data-clear-services]').click()
-    check(page.locator('[data-service-card]:visible').count()==69,'Clear filters restores all services')
+    check(page.locator('[data-service-card]:visible').count()==85,'Clear filters restores all services')
     page.locator('[data-services-search]').fill('battery')
     check(page.locator('[data-service-card="TB-05"]').is_visible() and not page.locator('[data-service-card="BD-01"]').is_visible(),'Search finds battery services and hides unrelated jobs')
     page.locator('[data-compare-prices] summary').click()
@@ -55,7 +55,7 @@ try:
   # The static service menu still works without JavaScript.
   context=browser.new_context(java_script_enabled=False,viewport={'width':390,'height':844},is_mobile=True)
   page=context.new_page();page.goto(base+'services.html')
-  check(page.locator('[data-service-card]').count()==69 and '₹2,200 – ₹3,000' in page.content(),'All services and base prices are present without JavaScript')
+  check(page.locator('[data-service-card]').count()==85 and '₹2,200 – ₹3,000' in page.content(),'All services and base prices are present without JavaScript')
   check(not page.locator('[data-explorer-tools]').is_visible(),'Unavailable search controls are hidden when JavaScript is disabled')
   page.locator('[data-compare-prices] summary').click()
   check(page.locator('.rate-table').first.is_visible(),'Price comparison opens natively without JavaScript')
