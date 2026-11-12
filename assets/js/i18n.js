@@ -22,6 +22,8 @@
     }
     if (key === "Select one or more. Overlapping jobs are counted once. Prices shown are for a hatchback; your estimate adjusts for your car.") return "एक या ज़्यादा चुनें। एक जैसे काम एक ही बार गिने जाते हैं। कीमतें हैचबैक के लिए हैं; अनुमान आपकी कार के अनुसार बदलेगा।";
     if ((m = /^(\d+) brands, current and older models\. Not listed\? Choose “My model isn't listed”\.$/.exec(key))) return `${m[1]} ब्रांड, नए और पुराने मॉडल। सूची में नहीं है? “मेरा मॉडल सूची में नहीं है” चुनें।`;
+    if ((m = /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun) (\d{1,2})$/.exec(key))) return `${{ Mon: "सोम", Tue: "मंगल", Wed: "बुध", Thu: "गुरु", Fri: "शुक्र", Sat: "शनि", Sun: "रवि" }[m[1]]} ${m[2]}`;
+    if ((m = /^Your location is approximate \(about ([\d.]+) km\)\. Please check the address and drag the pin if needed\.$/.exec(key))) return `आपकी लोकेशन अनुमानित है (लगभग ${m[1]} किमी)। कृपया पता जाँचें और ज़रूरत हो तो पिन खींचें।`;
     if ((m = /^Step (\d) of 2$/i.exec(key))) return `चरण ${m[1]} / 2`;
     if ((m = /^Search all (\d+) services$/.exec(key))) return `सभी ${m[1]} सेवाएँ खोजें`;
     if ((m = /^from (₹[\d,]+)( \/ (.+))?$/.exec(key))) return `${m[1]} से${m[3] ? " / " + translate(m[3]) : ""}`;
