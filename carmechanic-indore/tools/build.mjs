@@ -24,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.4.2";
+const VERSION = "2.4.3";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -644,61 +644,66 @@ function servicesHub() {
   return layout({ file: "services.html", title: `Car Services & Prices in Indore | ${B.name}`, desc: "Explore Car Repair Wala car services, compare transparent price ranges, and find the right maintenance or repair for your car in Indore. Your Car. Our Care.", body, ld: [offerLd], navKey: "services.html" });
 }
 
+// Problem tiles: plain-language needs a customer can tap without knowing repair names.
+// The label is sent to the garage as the service line, so keep it readable in English.
+const BOOKING_NEEDS = [
+  ["General service", "service"], ["AC not cooling", "ac"], ["Brakes / noise", "brake"], ["Dent & paint", "paint"],
+  ["Battery / won't start", "battery"], ["Warning light / engine", "scan"], ["Accident repair", "shield"], ["Not sure — please check", "chat"]
+];
 function bookingPage() {
+  const waText = `Hello ${B.name}, I want to book a car service.\nCar: \nProblem: \nArea / PIN: `;
+  const carOptions = C.brands.filter((b) => b.models.length).flatMap((b) => b.models.map((m) => `<option value="${esc(b.name + " " + m[0])}"></option>`)).join("");
+  const radio = (name, value, label, checked = false) => `<label class="seg-opt"><input type="radio" name="${name}" value="${esc(value)}"${checked ? " checked" : ""}><span>${label}</span></label>`;
   const body = `
-<section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Book</p><span class="eyebrow">Booking</span><h1>Book your car service</h1><p>Four short steps. ${ONLINE_BOOKING ? "Submit your request online and we’ll receive it directly. Your details are stored privately for the garage to follow up." : "Your request is sent to the garage on WhatsApp — the garage receives it when you press Send in WhatsApp."} We confirm the slot and final quotation before any work starts.</p></div></section>
-<section class="band"><div class="wrap">
+<section class="page-hero page-hero--compact"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / Book</p><h1>Book a car service</h1><p>Takes about a minute. We confirm the slot and price with you before any work starts.</p></div></section>
+<section class="band band--booking"><div class="wrap">
   <div class="form-card" data-booking>
-    <div class="jobcard-head"><span>Booking request</span><span data-b-count>Step 1 of 4</span></div>
-    <div class="steps-bar" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+    <div class="b-quick">
+      <a class="btn btn--wa btn--block" data-b-quick-wa target="_blank" rel="noopener" href="https://wa.me/${B.whatsapp}?text=${encodeURIComponent(waText)}">${ic("wa")}Book on WhatsApp instead</a>
+      <p class="b-or"><span>or fill this short form</span></p>
+    </div>
+    <div class="jobcard-head"><span>Booking request</span><span data-b-count>Step 1 of 2</span></div>
+    <div class="steps-bar" aria-hidden="true"><span class="on"></span><span></span></div>
     <div class="jobcard-body">
       <div data-b-estimate hidden></div>
       <noscript><p class="notice">This form needs JavaScript. <a href="https://wa.me/${B.whatsapp}">Book on WhatsApp</a> or <a href="tel:${B.phoneE164}">call us</a>.</p></noscript>
-      <form novalidate style="display:grid;gap:16px">
-        <fieldset data-bstep style="border:0;padding:0;margin:0;display:grid;gap:14px">
-          <legend class="step-title"><span class="num">01</span><h2 style="display:inline">Your details</h2></legend>
-          <div class="grid-2">
-            <div class="field"><label for="b-name">Name *</label><input id="b-name" autocomplete="name" maxlength="60" required><p class="err" hidden></p></div>
-            <div class="field"><label for="b-mobile">Mobile number *</label><input id="b-mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="98765 43210" required><p class="err" hidden></p></div>
+      <form novalidate class="b-form">
+        <fieldset data-bstep class="b-step">
+          <legend class="step-title"><span class="num">01</span><h2>Your car &amp; the problem</h2></legend>
+          <div class="field"><label for="b-car">Which car? *</label><input id="b-car" list="b-car-list" autocomplete="off" autocapitalize="words" maxlength="80" placeholder="e.g. Maruti Swift"><datalist id="b-car-list">${carOptions}</datalist><p class="err" hidden></p></div>
+          <div class="field" role="group" aria-labelledby="b-need-label">
+            <p class="label" id="b-need-label">What does it need? * <span class="hint">Tap all that apply</span></p>
+            <div class="tiles" data-b-needs>${BOOKING_NEEDS.map(([label, icon]) => `<label class="tile"><input type="checkbox" name="b-need" value="${esc(label)}"><span>${ic(icon)}${esc(label)}</span></label>`).join("")}</div>
+            <p class="err" id="booking-services-error" data-svc-err role="alert" hidden></p>
           </div>
-          <div class="field"><label for="b-contact">Preferred contact method</label><select id="b-contact"><option>WhatsApp</option><option>Phone call</option></select></div>
+          <details class="b-more" data-b-more><summary>Know the exact job? Choose from all services <span class="small muted" data-b-more-count></span></summary><div data-b-services></div><div class="grid-2" data-b-qty hidden></div></details>
+          <div class="field"><label for="b-notes">Anything else? (optional)</label><textarea id="b-notes" maxlength="600" rows="2" placeholder="e.g. squeaking noise when I brake"></textarea></div>
         </fieldset>
-        <fieldset data-bstep hidden style="border:0;padding:0;margin:0;display:grid;gap:14px">
-          <legend class="step-title"><span class="num">02</span><h2 style="display:inline">Your car</h2></legend>
+        <fieldset data-bstep hidden class="b-step">
+          <legend class="step-title"><span class="num">02</span><h2>Your details &amp; time</h2></legend>
           <div class="grid-2">
-            <div class="field"><label for="b-brand">Manufacturer *</label><select id="b-brand"></select><p class="err" hidden></p></div>
-            <div class="field"><label for="b-model">Model *</label><select id="b-model" disabled></select><input id="b-model-other" hidden aria-label="Car model" maxlength="80" placeholder="Type your model"><p class="err" hidden></p></div>
-            <div class="field"><label for="b-year">Year *</label><select id="b-year"></select><p class="err" hidden></p></div>
-            <div class="field"><label for="b-fuel">Fuel type *</label><select id="b-fuel"></select><p class="err" hidden></p></div>
+            <div class="field"><label for="b-name">Your name *</label><input id="b-name" autocomplete="name" maxlength="60"><p class="err" hidden></p></div>
+            <div class="field"><label for="b-mobile">Mobile / WhatsApp number *</label><input id="b-mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="98765 43210"><p class="err" hidden></p></div>
           </div>
-          <div class="field"><label for="b-grade">Parts preference</label><select id="b-grade"></select></div>
-          <div class="field"><label for="b-reg">Registration number (optional)</label><input id="b-reg" placeholder="MP09 AB 1234" maxlength="14" autocapitalize="characters"><p class="err" hidden></p></div>
-        </fieldset>
-        <fieldset data-bstep hidden style="border:0;padding:0;margin:0;display:grid;gap:14px">
-          <legend class="step-title"><span class="num">03</span><h2 style="display:inline">Services</h2></legend>
-          <div class="chips" data-b-services></div><div class="grid-2" data-b-qty hidden></div><p class="err" id="booking-services-error" data-svc-err role="alert" hidden></p>
-          <div class="field"><label for="b-notes">Symptoms or repair notes (optional)</label><textarea id="b-notes" maxlength="600"></textarea></div>
-        </fieldset>
-        <fieldset data-bstep hidden style="border:0;padding:0;margin:0;display:grid;gap:14px">
-          <legend class="step-title"><span class="num">04</span><h2 style="display:inline">Pickup &amp; timing</h2></legend>
-          <div class="field"><label for="b-pickup">Pickup &amp; drop</label><select id="b-pickup"><option value="yes">Yes, pick up my car</option><option value="no">No, I'll drop it at the workshop</option></select></div>
-          <div class="field" data-addr><label for="b-address">Pickup address *</label><textarea id="b-address" autocomplete="street-address" maxlength="250" style="min-height:70px"></textarea><p class="err" hidden></p></div>
-          <div class="grid-3">
-            <div class="field" data-addr><label for="b-pin">PIN code *</label><input id="b-pin" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="452020"><p class="err" hidden></p></div>
-            <div class="field"><label for="b-date">Preferred date</label><input id="b-date" type="date"><p class="err" hidden></p></div>
-            <div class="field"><label for="b-time">Preferred time</label><select id="b-time"><option value="">Any time</option>${timeOptions()}</select></div>
+          <div class="field" role="group" aria-labelledby="b-pickup-label"><p class="label" id="b-pickup-label">Pickup &amp; drop</p><div class="seg">${radio("b-pickup", "yes", "Pick up my car", true)}${radio("b-pickup", "no", "I’ll drop it at the garage")}</div></div>
+          <div class="grid-addr" data-addr>
+            <div class="field"><label for="b-address">Pickup address *</label><input id="b-address" autocomplete="street-address" maxlength="250" placeholder="House / street / colony"><p class="err" hidden></p></div>
+            <div class="field"><label for="b-pin">PIN code *</label><input id="b-pin" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="452001"><p class="err" hidden></p></div>
           </div>
           <div data-b-pin-result aria-live="polite"></div>
+          <div class="field" role="group" aria-labelledby="b-day-label"><p class="label" id="b-day-label">Which day? <span class="hint">Optional</span></p><div class="seg seg--wrap">${radio("b-day", "today", "Today")}${radio("b-day", "tomorrow", "Tomorrow")}${radio("b-day", "pick", "Pick a date")}</div></div>
+          <div class="field" data-b-date-field hidden><label for="b-date">Preferred date</label><input id="b-date" type="date"><p class="err" hidden></p></div>
+          <div class="field" role="group" aria-labelledby="b-time-label"><p class="label" id="b-time-label">What time suits you?</p><div class="seg seg--wrap">${radio("b-time", "", "Any time", true)}${B.timeSlots.map((t) => radio("b-time", t, esc(t))).join("")}</div></div>
           <p class="small muted">Pickup and drop is free across our confirmed Indore PIN codes, subject to booking confirmation.</p>
         </fieldset>
-        <div class="step-nav"><button type="button" class="btn btn--outline btn--sm" data-b-back hidden>Back</button><button type="submit" class="btn" data-b-next style="margin-left:auto"><span>Next</span> ${ic("arrow")}</button></div>
+        <div class="step-nav"><button type="button" class="btn btn--outline btn--sm" data-b-back hidden>Back</button><button type="submit" class="btn" data-b-next><span>Next</span> ${ic("arrow")}</button></div>
         <p class="small muted">We only ask for what we need to service your car. See our <a href="privacy.html">privacy policy</a>.</p>
       </form>
       <div data-b-result role="status" aria-live="polite"></div>
     </div>
   </div>
 </div></section>`;
-  return layout({ file: "booking.html", title: "Book a Car Service in Indore | Car Repair Wala", desc: "Book car servicing or repair in Indore online or on WhatsApp. Choose services, pickup and drop, and a preferred time.", body, navKey: "booking.html" });
+  return layout({ file: "booking.html", title: "Book a Car Service in Indore | Car Repair Wala", desc: "Book car servicing or repair in Indore in about a minute — online or on WhatsApp. Tell us your car and the problem; we confirm the slot and price.", body, navKey: "booking.html" });
 }
 
 function pickupPage() {
