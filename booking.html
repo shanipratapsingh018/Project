@@ -28,9 +28,9 @@
 <link rel="icon" href="assets/img/car-repair-wala-logo.png">
 <link rel="preload" href="assets/fonts/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/fonts.css?v=2.5.1">
-<link rel="stylesheet" href="assets/css/style.css?v=2.5.1">
-<link rel="stylesheet" href="assets/css/header.css?v=2.5.1">
+<link rel="stylesheet" href="assets/css/fonts.css?v=2.6.0">
+<link rel="stylesheet" href="assets/css/style.css?v=2.6.0">
+<link rel="stylesheet" href="assets/css/header.css?v=2.6.0">
 
 <script>function cmiImg(i){var d=i.dataset;if(d.remoteSrc&&!d.r){d.r=1;i.srcset=d.remoteSrcset;i.src=d.remoteSrc;return}if(d.fallback&&!d.f){d.f=1;i.removeAttribute("srcset");i.src=d.fallback;var c=i.closest("figure");if(c){c.classList.add("photo--fallback");var k=c.querySelector(".photo-credit");if(k)k.hidden=true}return}var g=i.closest("figure");if(g)g.hidden=true}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"AutoRepair","@id":"https://carrepairwala.co.in/#business","name":"Car Repair Wala","alternateName":["Car Repair Wala Indore","CarRepairWala"],"url":"https://carrepairwala.co.in/","telephone":"+918965957978","description":"Multi-brand car servicing, maintenance, diagnostics and repairs in Indore with inspection-led estimates and customer approval.","address":{"@type":"PostalAddress","streetAddress":"17, AB Rd, Choithram Mandi","postalCode":"452012","addressLocality":"Indore","addressRegion":"Madhya Pradesh","addressCountry":"IN"},"areaServed":{"@type":"City","name":"Indore"},"logo":{"@id":"https://carrepairwala.co.in/#logo"},"image":{"@id":"https://carrepairwala.co.in/#logo"},"hasOfferCatalog":{"@type":"OfferCatalog","name":"Car servicing and repairs","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://carrepairwala.co.in/car-service-indore.html#service","name":"Car servicing in Indore","url":"https://carrepairwala.co.in/car-service-indore.html","provider":{"@id":"https://carrepairwala.co.in/#business"}}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://carrepairwala.co.in/car-ac-repair-indore.html#service","name":"Car AC repair in Indore","url":"https://carrepairwala.co.in/car-ac-repair-indore.html","provider":{"@id":"https://carrepairwala.co.in/#business"}}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://carrepairwala.co.in/brake-clutch-repair-indore.html#service","name":"Brake and clutch repair","url":"https://carrepairwala.co.in/brake-clutch-repair-indore.html","provider":{"@id":"https://carrepairwala.co.in/#business"}}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://carrepairwala.co.in/engine-diagnostics-indore.html#service","name":"Engine diagnostics in Indore","url":"https://carrepairwala.co.in/engine-diagnostics-indore.html","provider":{"@id":"https://carrepairwala.co.in/#business"}}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://carrepairwala.co.in/car-battery-electrical-indore.html#service","name":"Battery and electrical services","url":"https://carrepairwala.co.in/car-battery-electrical-indore.html","provider":{"@id":"https://carrepairwala.co.in/#business"}}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://carrepairwala.co.in/suspension-steering-repair-indore.html#service","name":"Suspension and steering repair","url":"https://carrepairwala.co.in/suspension-steering-repair-indore.html","provider":{"@id":"https://carrepairwala.co.in/#business"}}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://carrepairwala.co.in/denting-painting-indore.html#service","name":"Denting and painting","url":"https://carrepairwala.co.in/denting-painting-indore.html","provider":{"@id":"https://carrepairwala.co.in/#business"}}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://carrepairwala.co.in/car-detailing-indore.html#service","name":"Car detailing and cleaning","url":"https://carrepairwala.co.in/car-detailing-indore.html","provider":{"@id":"https://carrepairwala.co.in/#business"}}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://carrepairwala.co.in/accident-repair-indore.html#service","name":"Accident repair in Indore","url":"https://carrepairwala.co.in/accident-repair-indore.html","provider":{"@id":"https://carrepairwala.co.in/#business"}}}]},"openingHours":["Mo-Su 07:00-23:30"],"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["https://schema.org/Monday","https://schema.org/Tuesday","https://schema.org/Wednesday","https://schema.org/Thursday","https://schema.org/Friday","https://schema.org/Saturday","https://schema.org/Sunday"],"opens":"07:00","closes":"23:30"}],"sameAs":["https://share.google/xKw37sHP3Pm3QmCXr"],"hasMap":"https://share.google/xKw37sHP3Pm3QmCXr"}</script>
@@ -120,23 +120,51 @@
           <div class="field"><label for="b-notes">Anything else? (optional)</label><textarea id="b-notes" maxlength="600" rows="2" placeholder="e.g. squeaking noise when I brake"></textarea></div>
         </fieldset>
         <fieldset data-bstep hidden class="b-step">
-          <legend class="step-title"><span class="num">02</span><h2>Your details &amp; time</h2></legend>
-          <div class="grid-2">
-            <div class="field"><label for="b-name">Your name *</label><input id="b-name" autocomplete="name" maxlength="60"><p class="err" hidden></p></div>
-            <div class="field"><label for="b-mobile">Mobile / WhatsApp number *</label><input id="b-mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="98765 43210"><p class="err" hidden></p></div>
-          </div>
-          <div class="field" role="group" aria-labelledby="b-pickup-label"><p class="label" id="b-pickup-label">Pickup &amp; drop</p><div class="seg"><label class="seg-opt"><input type="radio" name="b-pickup" value="yes" checked><span>Pick up my car</span></label><label class="seg-opt"><input type="radio" name="b-pickup" value="no"><span>I’ll drop it at the garage</span></label></div></div>
-          <div class="grid-addr" data-addr>
-            <div class="field"><label for="b-address">Pickup address *</label><input id="b-address" autocomplete="street-address" maxlength="250" placeholder="House / street / colony"><p class="err" hidden></p></div>
-            <div class="field"><label for="b-pin">PIN code *</label><input id="b-pin" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="452001"><p class="err" hidden></p></div>
-          </div>
-          <div data-b-pin-result aria-live="polite"></div>
-          <div class="field" role="group" aria-labelledby="b-day-label"><p class="label" id="b-day-label">Which day? <span class="hint">Optional</span></p><div class="seg seg--wrap"><label class="seg-opt"><input type="radio" name="b-day" value="today"><span>Today</span></label><label class="seg-opt"><input type="radio" name="b-day" value="tomorrow"><span>Tomorrow</span></label><label class="seg-opt"><input type="radio" name="b-day" value="pick"><span>Pick a date</span></label></div></div>
-          <div class="field" data-b-date-field hidden><label for="b-date">Preferred date</label><input id="b-date" type="date"><p class="err" hidden></p></div>
-          <div class="field" role="group" aria-labelledby="b-time-label"><p class="label" id="b-time-label">What time suits you?</p><div class="seg seg--wrap"><label class="seg-opt"><input type="radio" name="b-time" value="" checked><span>Any time</span></label><label class="seg-opt"><input type="radio" name="b-time" value="Morning (7–12)"><span>Morning (7–12)</span></label><label class="seg-opt"><input type="radio" name="b-time" value="Afternoon (12–4)"><span>Afternoon (12–4)</span></label><label class="seg-opt"><input type="radio" name="b-time" value="Evening (4–8)"><span>Evening (4–8)</span></label><label class="seg-opt"><input type="radio" name="b-time" value="Night (8–11:30)"><span>Night (8–11:30)</span></label></div></div>
-          <p class="small muted">Pickup and drop is free across our confirmed Indore PIN codes, subject to booking confirmation.</p>
+          <legend class="sr-only"><h2>Your details &amp; time</h2></legend>
+          <div class="b-summary" data-b-summary></div>
+          <section class="b-sec" aria-labelledby="b-sec-you">
+            <h3 class="b-sec-title" id="b-sec-you"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>Your details</h3>
+            <div class="grid-2">
+              <div class="field"><label for="b-name">Your name *</label><input id="b-name" autocomplete="name" maxlength="60" placeholder="e.g. Ravi Kumar"><p class="err" hidden></p></div>
+              <div class="field"><label for="b-mobile">Mobile / WhatsApp number *</label><div class="inp-pre"><span aria-hidden="true">+91</span><input id="b-mobile" type="tel" inputmode="tel" autocomplete="tel" placeholder="98765 43210"></div><p class="err" hidden></p></div>
+            </div>
+            <p class="hint b-hint">We'll confirm your slot on this number.</p>
+          </section>
+          <section class="b-sec" aria-labelledby="b-sec-pickup">
+            <h3 class="b-sec-title" id="b-sec-pickup"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-truck"/></svg>Pickup &amp; drop</h3>
+            <div class="pk-cards" role="radiogroup" aria-label="Pickup and drop">
+              <label class="pk-card"><input type="radio" name="b-pickup" value="yes" checked><span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-truck"/></svg><b>Pick up my car</b><small>Free in our confirmed Indore areas</small></span></label>
+              <label class="pk-card"><input type="radio" name="b-pickup" value="no"><span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg><b>I’ll drop it at the garage</b><small>17, AB Rd, Choithram Mandi</small></span></label>
+            </div>
+            <p class="b-garage" data-b-garage hidden><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg><span>17, AB Rd, Choithram Mandi, Indore, Madhya Pradesh 452012</span> · <a href="https://share.google/xKw37sHP3Pm3QmCXr" target="_blank" rel="noopener noreferrer">Directions</a></p>
+            <div class="b-loc" data-addr>
+              <p class="label">Pickup address *</p>
+              <button type="button" class="b-locbtn" data-b-locate><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg><span>Use my current location</span></button>
+              <p class="b-loc-or"><span>or type it below</span></p>
+              <p class="b-loc-msg" data-b-loc-msg role="status" hidden></p>
+            </div>
+            <div class="grid-addr" data-addr>
+              <div class="field"><label for="b-address" class="sr-only">Pickup address</label><input id="b-address" autocomplete="street-address" maxlength="250" placeholder="House no., street, colony"><p class="err" hidden></p></div>
+              <div class="field"><label for="b-pin" class="sr-only">PIN code</label><input id="b-pin" inputmode="numeric" maxlength="6" autocomplete="postal-code" placeholder="PIN code"><p class="err" hidden></p></div>
+            </div>
+            <div data-b-pin-result aria-live="polite"></div>
+            <div class="b-map" data-b-map hidden><div class="b-map-canvas" data-b-map-canvas></div><p class="b-map-foot"><span>Drag the pin to your gate if needed.</span><button type="button" class="linkish" data-b-loc-clear>✕ Don’t use my location</button></p></div>
+          </section>
+          <section class="b-sec" aria-labelledby="b-sec-when">
+            <h3 class="b-sec-title" id="b-sec-when"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg>When</h3>
+            <div class="field" role="group" aria-labelledby="b-day-label"><p class="label" id="b-day-label">Which day? <span class="hint">Optional</span></p><div class="seg seg--wrap seg--sub">
+              <label class="seg-opt"><input type="radio" name="b-day" value="today"><span><b>Today</b><small data-b-day-sub="0"></small></span></label>
+              <label class="seg-opt"><input type="radio" name="b-day" value="tomorrow"><span><b>Tomorrow</b><small data-b-day-sub="1"></small></span></label>
+              <label class="seg-opt"><input type="radio" name="b-day" value="pick"><span><b>Pick a date</b><small><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg></small></span></label>
+            </div></div>
+            <div class="field" data-b-date-field hidden><label for="b-date">Preferred date</label><input id="b-date" type="date"><p class="err" hidden></p></div>
+            <div class="field" role="group" aria-labelledby="b-time-label"><p class="label" id="b-time-label">What time suits you?</p><div class="seg seg--wrap seg--sub"><label class="seg-opt"><input type="radio" name="b-time" value="" checked><span><b>Any time</b></span></label><label class="seg-opt"><input type="radio" name="b-time" value="Morning (7–12)"><span><b>Morning</b><small>7–12</small></span></label><label class="seg-opt"><input type="radio" name="b-time" value="Afternoon (12–4)"><span><b>Afternoon</b><small>12–4</small></span></label><label class="seg-opt"><input type="radio" name="b-time" value="Evening (4–8)"><span><b>Evening</b><small>4–8</small></span></label><label class="seg-opt"><input type="radio" name="b-time" value="Night (8–11:30)"><span><b>Night</b><small>8–11:30</small></span></label></div>
+            <p class="hint" data-b-passed hidden>Times that have already passed today are greyed out.</p></div>
+          </section>
+          <ul class="b-trust"><li>No advance payment</li><li>Final price after inspection</li><li>No extra work without your OK</li><li>Free pickup &amp; drop in our confirmed Indore areas</li></ul>
         </fieldset>
         <div class="step-nav"><button type="button" class="btn btn--outline btn--sm" data-b-back hidden>Back</button><button type="submit" class="btn" data-b-next><span>Next</span> <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+        <p class="b-wa-small" data-b-wa-small hidden>Prefer WhatsApp? <a data-b-quick-wa2 target="_blank" rel="noopener" href="https://wa.me/918965957978">Chat with us →</a></p>
         <p class="small muted">We only ask for what we need to service your car. See our <a href="privacy.html">privacy policy</a>.</p>
       </form>
       <div data-b-result role="status" aria-live="polite"></div>
@@ -169,19 +197,19 @@
   <a class="wa" data-wa="general" href="https://wa.me/918965957978"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg><span>WhatsApp</span></a>
   <a class="book" href="booking.html"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg><span data-i18n="nav.book">Book Service</span></a>
 </nav>
-<script defer src="assets/js/rate-card.js?v=2.5.1"></script>
-<script defer src="assets/js/config.js?v=2.5.1"></script>
-<script defer src="assets/js/backend-config.js?v=2.5.1"></script>
-<script defer src="assets/js/booking-backend.js?v=2.5.1"></script>
-<script defer src="assets/js/pricing.js?v=2.5.1"></script>
-<script defer src="assets/js/price-table.js?v=2.5.1"></script>
-<script defer src="assets/js/service-areas.js?v=2.5.1"></script>
-<script defer src="assets/js/area-check.js?v=2.5.1"></script>
-<script defer src="assets/js/gallery.js?v=2.5.1"></script>
-<script defer src="assets/js/reviews.js?v=2.5.1"></script>
-<script defer src="assets/js/forms.js?v=2.5.1"></script>
-<script defer src="assets/js/hi.js?v=2.5.1"></script>
-<script defer src="assets/js/i18n.js?v=2.5.1"></script>
-<script defer src="assets/js/app.js?v=2.5.1"></script>
+<script defer src="assets/js/rate-card.js?v=2.6.0"></script>
+<script defer src="assets/js/config.js?v=2.6.0"></script>
+<script defer src="assets/js/backend-config.js?v=2.6.0"></script>
+<script defer src="assets/js/booking-backend.js?v=2.6.0"></script>
+<script defer src="assets/js/pricing.js?v=2.6.0"></script>
+<script defer src="assets/js/price-table.js?v=2.6.0"></script>
+<script defer src="assets/js/service-areas.js?v=2.6.0"></script>
+<script defer src="assets/js/area-check.js?v=2.6.0"></script>
+<script defer src="assets/js/gallery.js?v=2.6.0"></script>
+<script defer src="assets/js/reviews.js?v=2.6.0"></script>
+<script defer src="assets/js/forms.js?v=2.6.0"></script>
+<script defer src="assets/js/hi.js?v=2.6.0"></script>
+<script defer src="assets/js/i18n.js?v=2.6.0"></script>
+<script defer src="assets/js/app.js?v=2.6.0"></script>
 </body>
 </html>
