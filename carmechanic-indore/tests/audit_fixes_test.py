@@ -33,22 +33,26 @@ try:
    if draft:p.add_init_script('sessionStorage.setItem("cmi-booking",'+json.dumps(json.dumps(draft))+');')
    p.goto(base+'/'+name);return p
   def next(p):p.locator('[data-b-next]').click()
-  def car(p,text='Maruti Swift'):
-   p.fill('#b-car',text)
+  def car(p,brand='maruti',model='Swift'):
+   p.select_option('#b-brand',brand)
+   if brand=='other' or model not in p.eval_on_selector_all('#b-model option','e=>e.map(o=>o.value)'):
+    if brand!='other':p.select_option('#b-model','__other')
+    p.fill('#b-model-other',model)
+   else:p.select_option('#b-model',model)
   def choose(p,id):
    cb=p.locator('input[name="b-svc"][value="'+id+'"]');cb.evaluate('e=>{e.closest("[data-b-more]").open=true;e.closest("details").open=true}');cb.click()
   def details(p):
    p.fill('#b-name','Fictional Audit Customer');p.fill('#b-mobile','9000000003');p.check('input[name="b-pickup"][value="no"]')
   def finish(p):next(p);details(p);next(p)
   p=page();next(p)
-  bad=p.locator('#b-car');description=bad.get_attribute('aria-describedby')
+  bad=p.locator('#b-brand');description=bad.get_attribute('aria-describedby')
   check(bad.get_attribute('aria-invalid')=='true' and description and p.locator('#'+description).is_visible(),'Invalid fields expose their visible error as an accessible description')
   car(p);p.check('input[name="b-need"][value="General service"]');next(p);check(p.evaluate('document.activeElement.tagName') in ['H2','H3'],'Booking focuses the new step heading');p.keyboard.press('Tab');check(p.evaluate('document.activeElement.id')=='b-name','Tab reaches the first new field')
   p.close()
   p=page(draft={'year':'2004','brand':'maruti','model':'Swift','fuel':'petrol'});car(p);p.check('input[name="b-need"][value="General service"]');finish(p);expect(p.locator('[data-b-result]')).to_contain_text('Request received')
   check(requests[-1]['year']=='' and requests[-1]['model']=='Swift','An unconfirmed handoff year is never submitted as fact');p.close()
   p=ctx.new_page();p.on('pageerror',lambda e:errors.append(str(e)))
-  legacy=(ROOT/'public/booking.html').read_text().replace('id="b-car"','id="b-car-old"')
+  legacy=(ROOT/'public/booking.html').read_text().replace('id="b-brand"','id="b-brand-old"')
   p.route('**/booking.html',lambda route:route.fulfill(content_type='text/html',body=legacy));p.goto(base+'/booking.html')
   check(p.locator('[data-b-stale]').is_visible() and p.locator('[data-b-stale] a[href="booking.html"]').count()==1,'A cached older booking page asks for a refresh instead of breaking');p.close()
   p=page();car(p);choose(p,'BD-01');p.fill('#bq-BD-01','0');before=len(requests);next(p)
@@ -61,13 +65,13 @@ try:
   handoff={'brand':'maruti','model':'Swift','year':'1998','yearExact':True,'fuel':'petrol','category':'hatchback','partsGrade':'genuine','services':['GS-01'],'pickup':'no','estimate':'₹3,000 – ₹4,000'}
   p=page(draft=handoff);finish(p);expect(p.locator('[data-b-result]')).to_contain_text('Request received')
   check(requests[-1]['partsGrade']=='genuine' and 'Parts preference: Genuine OEM' in requests[-1]['notes'] and requests[-1]['year']=='1998' and requests[-1]['fuel']=='petrol','The estimate’s year, fuel and parts preference reach the garage');p.close()
-  p=page();car(p,'Tata Nexon EV');p.fill('#b-notes','Makes a clicking noise');finish(p);expect(p.locator('[data-b-result]')).to_contain_text('Request received')
+  p=page();car(p,'tata','Nexon EV');p.fill('#b-notes','Makes a clicking noise');finish(p);expect(p.locator('[data-b-result]')).to_contain_text('Request received')
   check(requests[-1]['services']==['Problem described in notes'] and requests[-1]['brand']=='Tata','A described problem is enough without tapping a tile');p.close()
   for value in ['false','wrong-id','missing','invalid-json']:
    mode['value']=value;p=page();car(p);choose(p,'GS-01');finish(p);expect(p.locator('[data-b-result]')).to_contain_text("couldn't confirm")
    check(p.locator('[data-booking] form').is_visible() and p.locator('#b-name').input_value()=='Fictional Audit Customer',value+' acknowledgement never clears the form or claims receipt');p.close()
   mode['value']='success'
-  p=page('estimate.html');p.fill('#e-car','Maruti Swift');p.check('input[name="fuel"][value="petrol"]',force=True);p.check('input[name="age"][value="old"]',force=True);p.check('[data-tile="BD-01"]',force=True)
+  p=page('estimate.html');p.select_option('#e-brand','maruti');p.select_option('#e-model','Swift');p.check('input[name="fuel"][value="petrol"]',force=True);p.check('input[name="age"][value="old"]',force=True);p.check('[data-tile="BD-01"]',force=True)
   p.fill('#q-BD-01','0');p.locator('[data-next]').click();check(p.locator('[data-step="1"]').is_visible() and p.locator('#q-BD-01').get_attribute('aria-invalid')=='true','Calculator blocks an invalid quantity')
   p.fill('#q-BD-01','2');p.locator('[data-next]').click();check(p.evaluate('document.activeElement.tagName') in ['H2','H3'],'Calculator focuses the price step heading')
   p.keyboard.press('Tab');check(p.evaluate('document.activeElement.name')=='grade','Keyboard order continues with the parts-quality choice')
@@ -75,7 +79,7 @@ try:
   p=ctx.new_page();p.add_init_script("{const D=Date;const at=D.parse('2026-11-04T20:00:00Z');globalThis.Date=class extends D{constructor(...a){super(...(a.length?a:[at]))}static now(){return at}};}");p.goto(base+'/booking.html')
   check(p.locator('#b-date').get_attribute('min')=='2026-11-05','Calendar uses the India date just after midnight');p.close()
   p=page(draft=handoff);p.locator('header .lang-toggle').click();expect(p.locator('h1')).to_contain_text('कार सर्विस बुक करें');check(p.locator('[data-b-count]').text_content()=='चरण 2 / 2','A complete estimate opens booking at step 2, in Hindi too');p.locator('[data-b-back]').click()
-  check(p.locator('label[for="b-car"]').inner_text()=='कौन सी कार? *' and p.locator('[data-b-next]').inner_text()=='आगे' and p.locator('input[name="b-need"][value="AC not cooling"] + span').inner_text()=='एसी ठंडा नहीं कर रहा','Hindi covers booking headings, labels, tiles and Next')
+  check(p.locator('label[for="b-brand"]').inner_text()=='कार ब्रांड *' and p.locator('[data-b-next]').inner_text()=='आगे' and p.locator('input[name="b-need"][value="AC not cooling"] + span').inner_text()=='एसी ठंडा नहीं कर रहा','Hindi covers booking headings, labels, tiles and Next')
   finish(p)
   expect(p.locator('[data-b-result]')).to_contain_text('अनुरोध मिल गया')
   check(requests[-1]['fuel']=='petrol' and requests[-1]['partsGrade']=='genuine' and requests[-1]['year']=='1998' and requests[-1]['pickup']=='no','Hindi display does not alter submitted vehicle or preference values')

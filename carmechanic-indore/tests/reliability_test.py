@@ -39,7 +39,7 @@ try:
             return pg
         def next(pg): pg.locator('[data-b-next]').click()
         def fill(pg, service='GS-01'):
-            pg.fill('#b-car','Maruti Swift')
+            pg.select_option('#b-brand','maruti');pg.select_option('#b-model','Swift')
             pg.locator('[data-b-more] > summary').click()
             cb=pg.locator(f'input[name="b-svc"][value="{service}"]')
             cb.evaluate('e=>e.closest("details").open=true')
@@ -51,11 +51,11 @@ try:
         pg=page({'services':['bad\"selector','__proto__',None],'qty':[], 'lights':'bad'})
         check(pg.locator('[data-b-count]').text_content()=='Step 1 of 2','Corrupt persisted selections do not crash booking: '+repr(pg.locator('[data-b-count]').inner_text())+' errors='+repr(errors))
         pg.close()
-        pg=page('not an object');check(pg.locator('#b-car-list option').count()>1 and pg.input_value('#b-car')=='','Wrong-shaped session JSON is safely ignored');pg.close()
+        pg=page('not an object');check(pg.locator('#b-brand option').count()>30 and pg.input_value('#b-brand')=='','Wrong-shaped session JSON is safely ignored');pg.close()
 
         handoff={'brand':'maruti','model':'Swift','year':'2025','fuel':'petrol','category':'hatchback','partsGrade':'genuine','services':['BD-01'],'qty':{'BD-01':3},'pickup':'no','estimate':'₹6,750 – ₹9,000','time':'Evening (4–8)'}
         pg=page(handoff)
-        check(pg.input_value('#b-car')=='Maruti Suzuki Swift','Estimator car survives booking handoff')
+        check(pg.input_value('#b-brand')=='maruti' and pg.input_value('#b-model')=='Swift','Estimator car survives booking handoff')
         check(pg.input_value('#bq-BD-01')=='3','Estimator panel quantity survives booking handoff')
         check(pg.is_checked('input[name="b-time"][value="Evening (4–8)"]'),'Preferred time survives booking handoff')
         check(pg.locator('[data-b-count]').text_content()=='Step 2 of 2' and pg.locator('#b-name').is_visible(),'A complete estimate opens booking straight at your details')
@@ -75,7 +75,7 @@ try:
         pg.close()
 
         pg=page(handoff);pg.click('[data-b-back]')
-        pg.fill('#b-car','Maruti Baleno')
+        pg.select_option('#b-model','Baleno')
         check('Recalculate your estimate' in pg.locator('[data-b-estimate]').inner_text(),'Changing vehicle invalidates the old price immediately')
         next(pg);pg.fill('#b-name','Test Customer');pg.fill('#b-mobile','9876543210');next(pg)
         check('Website estimate:' not in unquote(pg.locator('[data-b-wa]').get_attribute('href')),'Stale price is absent from the final booking message');pg.close()
@@ -84,9 +84,9 @@ try:
         check('Website estimate: ₹6,750 – ₹9,000' in unquote(pg.locator('[data-b-wa]').get_attribute('href')),'Unchanged estimate is carried into the booking message');pg.close()
 
         pg=page();next(pg)
-        check(pg.locator('#b-car').get_attribute('aria-invalid')=='true' and pg.locator('[data-svc-err]').is_visible(),'Step 1 asks for the car and what it needs')
-        pg.fill('#b-car','Hyundai Creta');pg.check('input[name="b-need"][value="AC not cooling"]')
-        check(pg.locator('#b-car').get_attribute('aria-invalid') is None,'Fixing a field clears its error straight away')
+        check(pg.locator('#b-brand').get_attribute('aria-invalid')=='true' and pg.locator('[data-svc-err]').is_visible(),'Step 1 asks for the car and what it needs')
+        pg.select_option('#b-brand','hyundai');pg.select_option('#b-model','Creta');pg.check('input[name="b-need"][value="AC not cooling"]')
+        check(pg.locator('#b-brand').get_attribute('aria-invalid') is None,'Fixing a field clears its error straight away')
         next(pg)
         check(pg.locator('[data-b-count]').text_content()=='Step 2 of 2' and pg.locator('#b-address').is_visible(),'Problem tiles complete step 1; pickup address shows by default')
         pg.check('input[name="b-pickup"][value="no"]')

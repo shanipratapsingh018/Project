@@ -75,11 +75,15 @@ with sync_playwright() as p:
     check(pg.is_visible(".hero-price") and pg.locator(".hero-price [data-hero-svc]").count() == 4 and pg.evaluate("document.querySelector('.hero-price').getBoundingClientRect().bottom") < 844, "Phone home screen shows price tiles inside the first screen")
     check(not pg.is_visible(".hero .hero-ctas--desk"), "Hero button stack is replaced by the price tiles on phones (bottom bar keeps Call / WhatsApp / Book)")
     pg.click('.hero-price [data-hero-svc="BR-01"]'); pg.wait_for_timeout(600)
-    check(pg.is_checked(f'{est} [data-tile="BR-01"]') and pg.evaluate("document.activeElement.id") == "e-car", "Home price tile opens the calculator with the job ticked, ready for the car")
+    check(pg.is_checked(f'{est} [data-tile="BR-01"]') and pg.evaluate("document.activeElement.id") == "e-brand", "Home price tile opens the calculator with the job ticked, ready for the car")
     check("From ₹0" not in pg.inner_text("#services"), "Service cards never say 'From ₹0'")
 
     def fill_car(car, fuel, cat=None, age=None):
-        pg.fill("#e-car", car)
+        brand, model = car
+        pg.select_option("#e-brand", brand)
+        if brand == "other": pg.fill("#e-model-other", model)
+        elif model in pg.eval_on_selector_all("#e-model option", "e => e.map(o => o.value)"): pg.select_option("#e-model", model)
+        else: pg.select_option("#e-model", "__other"); pg.fill("#e-model-other", model)
         pg.check(f'{est} input[name="fuel"][value="{fuel}"]', force=True)
         if cat:
             if pg.is_visible(f"{est} [data-cat-change]"): pg.click(f"{est} [data-cat-change]")
@@ -102,7 +106,7 @@ with sync_playwright() as p:
         print(f"   {case}: {total} | {pg.inner_text(f'{est} .est-total .t')}")
         return total, msg, run_text
 
-    t, msg, run_text = run("Swift petrol: standard service + oil + AC service", "Maruti Swift", "petrol", ["GS-02", "GS-04", "AC-03"])
+    t, msg, run_text = run("Swift petrol: standard service + oil + AC service", ("maruti", "Swift"), "petrol", ["GS-02", "GS-04", "AC-03"])
     check(t == "₹4,200 – ₹5,800", f"Swift: standard service ₹3,000–4,000 + AC service ₹1,200–1,800 = ₹4,200–5,800 (got {t})")
     check(run_text.startswith("₹4,200 – ₹5,800"), f"Running price on step 1 matches the final price (got {run_text})")
     pg.click(f"{est} .est-breakdown > summary")
@@ -113,36 +117,36 @@ with sync_playwright() as p:
     pg.screenshot(path=f"{SHOTS}/estimate-mobile.png", full_page=False)
     pg.locator(f"{est} .estimate").screenshot(path=f"{SHOTS}/estimate-card.png")
 
-    t2, m2, _ = run("Creta diesel: brake pads + shock absorbers, genuine parts", "Hyundai Creta", "diesel", ["BR-02", "SU-02"], grade="genuine")
+    t2, m2, _ = run("Creta diesel: brake pads + shock absorbers, genuine parts", ("hyundai", "Creta"), "diesel", ["BR-02", "SU-02"], grade="genuine")
     check("+ parts quoted by model" in pg.inner_text(f"{est} .est-total") and "+ parts quoted by model" in m2, "Labour-only shock absorbers flagged 'parts quoted by model' in total and WhatsApp")
     check("SUV / MUV" in pg.inner_text(f"{est} .est-total .k"), "Creta auto-categorised as SUV")
     check("Parts: Genuine OEM" in m2, "Parts quality chosen on the result screen reaches WhatsApp")
     check(pg.locator(f"{est} [data-book-form]").get_attribute("href") == "booking.html", "Result 'Book at this price' goes to booking form")
     pg.click(f"{est} .est-breakdown > summary"); pg.click(f"{est} [data-restart]")
-    check(pg.is_visible(f'{est} [data-step="1"]') and pg.input_value("#e-car") == "" and pg.locator(f"{est} .svc-opt input:checked").count() == 0, "Start over resets the calculator")
+    check(pg.is_visible(f'{est} [data-step="1"]') and pg.input_value("#e-brand") == "" and pg.is_disabled("#e-model") and pg.locator(f"{est} .svc-opt input:checked").count() == 0, "Start over resets the calculator")
 
-    t3, m3, _ = run("Nexon EV: standard service + battery (oil change, clutch and decarbonisation switched off)", "Tata Nexon EV", "electric", ["GS-02", "TB-05"], disabled=["GS-04", "CL-02", "CL-03", "EN-08"])
-    check(pg.is_checked(f'{est} input[name="fuel"][value="electric"]'), "Typing an EV model selects electric fuel")
+    t3, m3, _ = run("Nexon EV: standard service + battery (oil change, clutch and decarbonisation switched off)", ("tata", "Nexon EV"), "electric", ["GS-02", "TB-05"], disabled=["GS-04", "CL-02", "CL-03", "EN-08"])
+    check(pg.is_checked(f'{est} input[name="fuel"][value="electric"]'), "Choosing an EV model selects electric fuel")
     pg.click(f"{est} .est-breakdown > summary")
     check("N/A" not in pg.inner_text(f"{est} .est-table"), "EV: no not-applicable jobs reach the estimate")
     check("on request" in pg.inner_text(f"{est} .est-table").lower() and "Price on request: Standard service" in m3, "EV: periodic service shown as price on request")
 
-    t4, _, _ = run("BMW X3 old: gearbox + accident only", "BMW X3", "diesel", ["CL-04", "BD-09"], age="old")
+    t4, _, _ = run("BMW X3 old: gearbox + accident only", ("bmw", "X3"), "diesel", ["CL-04", "BD-09"], age="old")
     check(t4 == "Quote after inspection", f"Inspection-only jobs show 'Quote after inspection' (got {t4})")
-    t7, m7, _ = run("Swift: new after-inspection jobs", "Maruti Swift", "petrol", ["EN-08", "SU-05", "EL-05"])
+    t7, m7, _ = run("Swift: new after-inspection jobs", ("maruti", "Swift"), "petrol", ["EN-08", "SU-05", "EL-05"])
     check(t7 == "Quote after inspection" and "Needs inspection: Engine decarbonisation" in m7, "New jobs (decarbonisation, suspension links, power window) are quoted after inspection")
 
     # luxury car: standard service becomes quote, oil change has its own luxury price
-    t6, m6, _ = run("BMW 3 Series luxury: standard service + oil change", "BMW 3 Series", "petrol", ["GS-02", "GS-04"])
+    t6, m6, _ = run("BMW 3 Series luxury: standard service + oil change", ("bmw", "3 Series"), "petrol", ["GS-02", "GS-04"])
     check(t6 == "₹4,800 – ₹6,650" and "Price on request: Standard service" in m6, f"Luxury: oil change priced ₹4,800–6,650, standard service on request (got {t6})")
-    t5, m5, _ = run("Other brand (Jeep Compass) SUV: dent & paint x3", "Jeep Compass", "diesel", ["BD-01"], cat="suv", panels=3)
+    t5, m5, _ = run("Other brand (Jeep Compass) SUV: dent & paint x3", ("other", "Jeep Compass"), "diesel", ["BD-01"], cat="suv", panels=3)
     check(t5 == "₹7,200 – ₹10,800", f"SUV dent & paint ×3 = 3 × ₹2,400–3,600 (got {t5})")
     check("Jeep Compass" in m5 and "× 3 panel" in m5, "Other brand + per-panel denting carried into WhatsApp")
     # unknown car asks for the car type
     pg.goto(BASE + "index.html"); pg.wait_for_load_state("networkidle")
-    pg.fill("#e-car", "Jeep Compass"); pg.check(f'{est} [data-tile="GS-01"]', force=True); pg.check(f'{est} input[name="fuel"][value="diesel"]', force=True)
+    pg.select_option("#e-brand", "tata"); pg.select_option("#e-model", "__other"); pg.fill("#e-model-other", "Spacio"); pg.check(f'{est} [data-tile="GS-01"]', force=True); pg.check(f'{est} input[name="fuel"][value="diesel"]', force=True)
     pg.click(f"{est} [data-next]")
-    check(pg.is_visible(f"{est} [data-cat-field]") and "car type" in pg.inner_text(f'{est} [data-err="1"]'), "An unknown car asks for the car type instead of guessing")
+    check(pg.is_visible(f"{est} [data-cat-field]") and "car type" in pg.inner_text(f'{est} [data-err="1"]'), "An unlisted model asks for the car type instead of guessing")
     # tiles, search + exclusive service levels
     pg.goto(BASE + "index.html"); pg.wait_for_load_state("networkidle")
     check(pg.locator(f"{est} [data-tile]").count() == 6 and "from ₹2,200" in pg.text_content(f"{est} [data-tile-price='GS-01']"), "Calculator opens with 6 job tiles showing starting prices")
@@ -150,7 +154,7 @@ with sync_playwright() as p:
     check(pg.is_checked(f'{est} .svc-opt input[value="AC-03"]'), "Tapping a tile ticks that job in the full list")
     pg.click(f"{est} [data-all-services] > summary")
     check(pg.locator(f"{est} .svc-opt").count() == 83, "Full list offers all 83 calculator services")
-    fill_car("Maruti Swift", "petrol")
+    fill_car(("maruti", "Swift"), "petrol")
     pg.fill("#e-search", "battery")
     vis = pg.eval_on_selector_all(f"{est} .svc-opt", "els => els.filter(e => !e.hidden).map(e => e.dataset.svc)")
     check("TB-05" in vis and "GS-04" not in vis and len(vis) < 10, f"Service search filters the list ({len(vis)} shown for 'battery')")
@@ -160,6 +164,18 @@ with sync_playwright() as p:
     pg.click(f'{est} .svc-opt[data-svc="GS-01"]'); pg.click(f'{est} .svc-opt[data-svc="GS-03"]')
     check(not pg.is_checked(f'{est} .svc-opt input[value="GS-01"]') and pg.is_checked(f'{est} .svc-opt input[value="GS-03"]') and not pg.is_checked(f'{est} [data-tile="GS-01"]'), "Only one service level (basic/standard/comprehensive) can be selected; tile follows")
     check("₹2,200" in pg.inner_text(f'{est} .svc-opt[data-svc="GS-01"]'), "Service list shows hatchback price beside each option")
+    # Brand and model dropdowns: wide coverage, older models grouped, EVs set the fuel
+    check(pg.locator("#e-brand option").count() >= 34, f"Brand dropdown lists 33 brands + Other ({pg.locator('#e-brand option').count() - 1})")
+    pg.select_option("#e-brand", "maruti")
+    groups = pg.eval_on_selector_all("#e-model optgroup", "e => e.map(g => g.label)")
+    olds = pg.eval_on_selector_all("#e-model optgroup[label='Older models'] option", "e => e.map(o => o.value)")
+    check(groups == ["Current models", "Older models"] and {"Alto 800", "Zen", "Omni", "Swift Dzire"} <= set(olds), "Model dropdown groups current and older models (Alto 800, Zen, Omni…)")
+    pg.select_option("#e-brand", "chevrolet")
+    check("Beat" in pg.eval_on_selector_all("#e-model option", "e => e.map(o => o.value)"), "Discontinued brands such as Chevrolet are listed")
+    pg.select_option("#e-brand", "mahindra"); pg.select_option("#e-model", "XUV400 EV")
+    check(pg.is_checked(f'{est} input[name="fuel"][value="electric"]') and "SUV / MUV" in pg.text_content(f"{est} [data-cat-label]"), "Choosing an EV model selects Electric and the car type")
+    pg.select_option("#e-model", "XUV500")
+    check(pg.evaluate("!document.querySelector('#estimate input[name=fuel]:checked')"), "Switching to a non-EV model clears the automatic Electric choice")
 
     # Package button presets estimator
     pg.goto(BASE + "index.html"); pg.wait_for_load_state("networkidle")
@@ -196,7 +212,7 @@ with sync_playwright() as p:
     # Booking form
     pg.goto(BASE + "booking.html"); pg.wait_for_load_state("networkidle")
     check("Carried over" in pg.inner_text("[data-b-estimate]"), "Booking form receives estimate from calculator")
-    check(pg.input_value("#b-car") == "Jeep Compass", "Booking prefilled car from estimate (other brand)")
+    check(pg.input_value("#b-brand") == "other" and pg.input_value("#b-model-other") == "Jeep Compass", "Booking prefilled car from estimate (other brand)")
     check(pg.locator('input[name="b-svc"]:checked').count() >= 1 and pg.locator("[data-b-more]").get_attribute("open") is not None, "Booking shows the services carried over from the estimate")
     check(pg.inner_text("[data-b-count]").lower() == "step 2 of 2", "Booking from the calculator opens straight at step 2 (your details)")
     pg.fill("#b-name", "Asha"); pg.fill("#b-mobile", "12345")
