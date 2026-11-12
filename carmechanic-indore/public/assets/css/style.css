@@ -1043,3 +1043,70 @@ html:has(.est-foot) { scroll-padding-bottom: 110px; }
 .est-run { min-width: min(100%, 9em); }
 .est-body { display: grid; gap: 14px; }
 .est-carhint { margin: -6px 0 0; font-size: .85rem; color: var(--ink-2); }
+
+/* ===== v2.6.0 booking step 2: summary, sections, pickup cards, optional location ===== */
+[data-b-estimate].on-step2 { display: none; }
+.b-summary { display: flex; align-items: flex-start; gap: 12px; background: var(--char-900); color: #fff; border-radius: var(--r-sm); padding: 14px 16px; }
+.b-summary:empty { display: none; }
+.b-sum-main { display: grid; gap: 3px; min-width: 0; flex: 1; }
+.b-sum-car { font: 700 1.15rem/1.15 var(--f-display); letter-spacing: .03em; text-transform: uppercase; overflow-wrap: anywhere; }
+.b-sum-needs { font-size: .9rem; color: #cfd5dc; overflow-wrap: anywhere; }
+.b-sum-est { display: grid; margin-top: 4px; }
+.b-sum-est small { font: 600 .7rem/1.2 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--fog); }
+.b-sum-est strong { font: 700 1.3rem/1.15 var(--f-display); color: var(--signal); }
+.b-sum-edit { flex: none; min-height: 34px; padding: 4px 14px; border-radius: 999px; border: 1px solid #555c64; background: none; color: #fff; font: 600 .85rem var(--f-body); cursor: pointer; }
+.b-sum-edit:hover { border-color: var(--signal); color: var(--signal); }
+.b-sec { border: 1px solid var(--line); border-radius: var(--r-sm); padding: 14px; display: grid; gap: 12px; background: #fff; }
+.b-sec-title { display: flex; align-items: center; gap: 8px; font: 700 1.05rem/1.1 var(--f-display); letter-spacing: .05em; text-transform: uppercase; }
+.b-sec-title svg { width: 28px; height: 28px; padding: 5px; border-radius: 8px; background: #fff1e8; color: var(--signal-ink); flex: none; }
+.b-hint { margin: -6px 0 0; }
+.inp-pre { display: flex; align-items: stretch; border: 1.5px solid #c9ced4; border-radius: var(--r-sm); background: #fff; overflow: hidden; }
+.inp-pre > span { display: flex; align-items: center; padding: 0 10px; font-weight: 700; color: var(--ink); background: var(--paper); border-right: 1px solid #dfe3e7; }
+.inp-pre input { border: 0; border-radius: 0; min-width: 0; }
+.inp-pre:focus-within { outline: 3px solid var(--signal); outline-offset: 1px; }
+.inp-pre input:focus { outline: none; }
+.inp-pre:has(input[aria-invalid="true"]) { border-color: var(--bad); }
+.pk-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12em), 1fr)); gap: 8px; }
+.pk-card { position: relative; display: block; }
+.pk-card input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; min-height: 0; margin: 0; cursor: pointer; }
+.pk-card > span { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 10px; align-items: center; height: 100%; padding: 12px; border: 1.5px solid #c9ced4; border-radius: var(--r-sm); background: #fff; cursor: pointer; }
+.pk-card svg { grid-row: span 2; width: 26px; height: 26px; color: var(--ink-2); }
+.pk-card b { font-size: .97rem; line-height: 1.2; }
+.pk-card small { font-size: .84rem; color: var(--ink-2); line-height: 1.3; overflow-wrap: anywhere; }
+.pk-card input:checked + span { border-color: var(--signal); background: #fff3ea; box-shadow: inset 0 0 0 1px var(--signal); }
+.pk-card input:checked + span svg { color: var(--signal); }
+.pk-card input:focus-visible + span { outline: 3px solid var(--signal); outline-offset: 2px; }
+.b-garage { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 0; font-size: .9rem; color: var(--ink-2); }
+.b-garage svg { width: 18px; height: 18px; color: var(--signal-ink); }
+.b-garage a { color: var(--signal-ink); font-weight: 600; }
+.b-loc { display: grid; gap: 8px; }
+.b-loc .label { margin: 0; font-weight: 600; font-size: .95rem; }
+.b-locbtn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 8px 14px; border: 1.5px dashed var(--signal); border-radius: var(--r-sm); background: #fff6f0; color: var(--signal-ink); font: 700 .97rem var(--f-body); cursor: pointer; }
+.b-locbtn svg { width: 20px; height: 20px; }
+.b-locbtn:hover { background: #ffeadb; }
+.b-locbtn.busy { opacity: .75; cursor: progress; }
+.b-locbtn.busy svg { animation: locpulse 1s ease-in-out infinite; }
+@keyframes locpulse { 50% { transform: scale(.8); opacity: .5; } }
+.b-loc-or { display: flex; align-items: center; gap: 10px; margin: 0; font-size: .82rem; color: var(--ink-2); }
+.b-loc-or::before, .b-loc-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.b-loc-msg { margin: 0; font-size: .88rem; padding: 8px 10px; border-radius: 8px; background: var(--paper); }
+.b-loc-msg--ok { background: var(--ok-bg); color: #0f5a2d; }
+.b-loc-msg--warn { background: var(--warn-bg); color: #5a3a00; }
+.b-map { display: grid; gap: 6px; }
+.b-map-canvas { height: 200px; border-radius: var(--r-sm); border: 1px solid var(--line); overflow: hidden; z-index: 0; }
+.b-map-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; margin: 0; font-size: .84rem; color: var(--ink-2); }
+.seg--sub .seg-opt span { flex-direction: column; gap: 1px; padding: 6px 12px; }
+.seg--sub .seg-opt span b { font-weight: 600; }
+.seg--sub .seg-opt span small { font-size: .78rem; font-weight: 500; opacity: .75; }
+.seg--sub .seg-opt span small svg { width: 14px; height: 14px; }
+.seg-opt.off span { opacity: .45; text-decoration: line-through; cursor: not-allowed; }
+.seg-opt.off input { cursor: not-allowed; }
+.b-trust { list-style: none; margin: 0; padding: 12px 14px; display: grid; gap: 5px; background: var(--ok-bg); border-radius: var(--r-sm); color: #0f5a2d; font-size: .93rem; font-weight: 600; }
+.b-trust li { padding-left: 22px; position: relative; }
+.b-trust li::before { content: "✓"; position: absolute; left: 2px; font-weight: 700; color: var(--ok); }
+.b-wa-small { margin: -6px 0 0; text-align: center; font-size: .92rem; color: var(--ink-2); }
+.b-wa-small a { color: var(--wa); font-weight: 700; }
+.b-wa-small[hidden] { display: none; }
+legend.sr-only { position: absolute; }
+.b-sec .hint { font-size: .85rem; color: var(--ink-2); margin: 0; }
+.b-sec .b-hint { margin-top: -6px; }
