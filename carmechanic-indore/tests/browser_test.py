@@ -211,7 +211,9 @@ with sync_playwright() as p:
 
     # Booking form
     pg.goto(BASE + "booking.html"); pg.wait_for_load_state("networkidle")
-    check("Carried over" in pg.inner_text("[data-b-estimate]"), "Booking form receives estimate from calculator")
+    summary = pg.text_content("[data-b-summary]")
+    check("Jeep Compass" in summary and "₹" in summary and "Edit" in summary, "Step 2 summary card shows the car, jobs and carried-over estimate")
+    check(pg.is_hidden(".b-quick") and pg.is_visible("[data-b-wa-small]"), "On step 2 the big WhatsApp button becomes a small link")
     check(pg.input_value("#b-brand") == "other" and pg.input_value("#b-model-other") == "Jeep Compass", "Booking prefilled car from estimate (other brand)")
     check(pg.locator('input[name="b-svc"]:checked').count() >= 1 and pg.locator("[data-b-more]").get_attribute("open") is not None, "Booking shows the services carried over from the estimate")
     check(pg.inner_text("[data-b-count]").lower() == "step 2 of 2", "Booking from the calculator opens straight at step 2 (your details)")

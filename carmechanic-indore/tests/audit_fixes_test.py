@@ -47,7 +47,7 @@ try:
   p=page();next(p)
   bad=p.locator('#b-brand');description=bad.get_attribute('aria-describedby')
   check(bad.get_attribute('aria-invalid')=='true' and description and p.locator('#'+description).is_visible(),'Invalid fields expose their visible error as an accessible description')
-  car(p);p.check('input[name="b-need"][value="General service"]');next(p);check(p.evaluate('document.activeElement.tagName') in ['H2','H3'],'Booking focuses the new step heading');p.keyboard.press('Tab');check(p.evaluate('document.activeElement.id')=='b-name','Tab reaches the first new field')
+  car(p);p.check('input[name="b-need"][value="General service"]');next(p);check(p.evaluate('document.activeElement.tagName') in ['H2','H3'],'Booking focuses the new step heading');p.keyboard.press('Tab');check(p.evaluate('document.activeElement.hasAttribute("data-b-edit-step1")'),'Tab reaches the summary Edit button first');p.keyboard.press('Tab');check(p.evaluate('document.activeElement.id')=='b-name','Tab then reaches the first new field')
   p.close()
   p=page(draft={'year':'2004','brand':'maruti','model':'Swift','fuel':'petrol'});car(p);p.check('input[name="b-need"][value="General service"]');finish(p);expect(p.locator('[data-b-result]')).to_contain_text('Request received')
   check(requests[-1]['year']=='' and requests[-1]['model']=='Swift','An unconfirmed handoff year is never submitted as fact');p.close()

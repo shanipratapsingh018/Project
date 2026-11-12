@@ -97,6 +97,46 @@ try:
         pg.locator('input[name="b-pickup"][value="yes"]').evaluate('e=>e.closest("label").click()');pg.evaluate('document.activeElement.blur()');pg.wait_for_timeout(350)
         check(pg.evaluate('()=>!document.body.classList.contains("is-typing") && document.querySelector(".mbar").getBoundingClientRect().bottom<=innerHeight+1'),'The bottom action bar returns after typing');pg.close()
 
+        # Optional location: fills address + PIN from GPS, adds a map link; typing still works; blocked permission is handled.
+        import base64
+        TILE=base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/x8AAwMB/axs0WQAAAAASUVORK5CYII=")
+        def loc_ctx(allow):
+            c=browser.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True,geolocation={'latitude':22.7533,'longitude':75.8937,'accuracy':25},permissions=['geolocation'] if allow else [])
+            c.on('page',lambda pg: pg.on('pageerror',lambda e:errors.append(str(e))))
+            c.route('**/assets/js/backend-config.js*',lambda route:route.fulfill(content_type='text/javascript',body='window.GW_BACKEND={url:"",publishableKey:"",bookingEnabled:false};'))
+            c.route('https://nominatim.openstreetmap.org/**',lambda r:r.fulfill(content_type='application/json',headers={'Access-Control-Allow-Origin':'*'},body=json.dumps({'address':{'road':'Scheme 54 Road','suburb':'Vijay Nagar','city':'Indore','postcode':'452010'}})))
+            c.route('https://tile.openstreetmap.org/**',lambda r:r.fulfill(content_type='image/png',body=TILE))
+            return c
+        lc=loc_ctx(True);pg=lc.new_page();pg.goto(base+'booking.html');pg.wait_for_load_state('networkidle')
+        pg.select_option('#b-brand','maruti');pg.select_option('#b-model','Swift');pg.check('input[name="b-need"][value="General service"]');next(pg);pg.check('input[name="b-pickup"][value="yes"]')
+        check(pg.locator('#b-address').input_value()=='' and pg.locator('[data-b-map]').is_hidden(),'Location is never requested until the customer taps the button')
+        pg.click('[data-b-locate]');expect(pg.locator('#b-pin')).to_have_value('452010')
+        check(pg.locator('#b-address').input_value()=='Scheme 54 Road, Vijay Nagar, Indore' and pg.locator('[data-b-pin-result]').inner_text().strip()!='','“Use my current location” fills the address and PIN and checks free pickup')
+        expect(pg.locator('[data-b-map] .leaflet-marker-icon')).to_be_visible()
+        check(pg.locator('[data-b-map]').is_visible(),'A map with a draggable pin appears after locating')
+        pg.fill('#b-address','12B, Scheme 54 Road, Vijay Nagar, Indore');pg.fill('#b-name','Test Customer');pg.fill('#b-mobile','9876543210');next(pg)
+        msg=unquote(pg.locator('[data-b-wa]').get_attribute('href'))
+        check('Pickup location (map): https://maps.google.com/?q=22.753300,75.893700' in msg and '12B, Scheme 54 Road' in msg,'The booking carries the typed address plus a Google Maps link to the spot')
+        pg.locator('[data-b-edit]').click();pg.click('[data-b-loc-clear]')
+        check(pg.locator('[data-b-map]').is_hidden() and pg.locator('#b-address').input_value().startswith('12B'),'“Don’t use my location” removes the pin but keeps what the customer typed')
+        check(pg.locator('#b-pin').input_value()=='','Auto-filled PIN is cleared with the location')
+        pg.fill('#b-pin','452010');next(pg)
+        check('Pickup location' not in unquote(pg.locator('[data-b-wa]').get_attribute('href')),'Without location, no map link is sent');pg.close();lc.close()
+        lc=loc_ctx(False);pg=lc.new_page();pg.goto(base+'booking.html');pg.wait_for_load_state('networkidle')
+        pg.select_option('#b-brand','maruti');pg.select_option('#b-model','Swift');pg.check('input[name="b-need"][value="General service"]');next(pg);pg.check('input[name="b-pickup"][value="yes"]')
+        pg.click('[data-b-locate]');expect(pg.locator('[data-b-loc-msg]')).to_contain_text('type your address',timeout=20000)
+        check(pg.locator('#b-address').is_editable() and pg.locator('[data-b-locate]').is_enabled(),'If location is blocked, the customer is told to type the address and nothing is stuck');pg.close();lc.close()
+        # Past time slots: late evening in India, "Today" greys out Morning/Afternoon/Evening.
+        lc=loc_ctx(False);pg=lc.new_page()
+        pg.add_init_script("{const D=Date;const at=D.parse('2026-11-13T15:45:00Z');globalThis.Date=class extends D{constructor(...a){super(...(a.length?a:[at]))}static now(){return at}};}")
+        pg.goto(base+'booking.html');pg.wait_for_load_state('networkidle')
+        pg.select_option('#b-brand','maruti');pg.select_option('#b-model','Swift');pg.check('input[name="b-need"][value="General service"]');next(pg);pg.check('input[name="b-pickup"][value="no"]')
+        pg.check('input[name="b-day"][value="today"]')
+        check(pg.locator('[data-b-garage]').is_visible() and pg.locator('[data-b-locate]').is_hidden(),'Drop-off hides the location button and shows the garage address with directions')
+        off=pg.locator('input[name="b-time"]:disabled').evaluate_all('e=>e.map(x=>x.value)')
+        check(off==['Morning (7–12)','Afternoon (12–4)','Evening (4–8)'] and pg.locator('[data-b-passed]').is_visible(),f'At 9:15 PM, Today greys out the slots that have passed ({off})')
+        check(pg.locator('[data-b-day-sub="0"]').text_content()=='Fri 13','Day buttons show the real date');pg.close();lc.close()
+
         requests=[]
         def success(route): requests.append(route.request.post_data_json);route.fulfill(status=201,content_type='application/json',body='{"received":true}')
         pg=page(api=success);fill(pg);next(pg)
