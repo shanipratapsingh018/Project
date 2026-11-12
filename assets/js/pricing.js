@@ -37,8 +37,9 @@
 
   /** What a single service shows before any car details (used by lists and price tables). */
   function serviceStatus(s, fuel) {
-    if (s.inspectionRequired) return "inspection";
+    // A job that can't apply to this fuel (e.g. clutch work on an EV) is switched off, even if it would need inspection.
     if (fuel && (s.notFor || []).includes(fuel)) return "not-applicable";
+    if (s.inspectionRequired) return "inspection";
     if (fuel && (s.quoteFor || []).includes(fuel)) return "quote";
     if (!s.labour) return "quote";
     return "priced";

@@ -15,6 +15,20 @@
     if ((m = /^Enter a whole number from 1 to (\d+)\.$/.exec(key))) return `1 से ${m[1]} तक की पूरी संख्या लिखें।`;
     if ((m = /^Please choose your (.+)\.$/.exec(key))) return "कृपया निर्माता, मॉडल, वर्ष, ईंधन और वाहन श्रेणी चुनें।";
     if ((m = /^We'll contact you on (.+) to confirm the slot and quotation\. Your booking is confirmed only after we call or message you\.$/.exec(key))) return `समय और कोटेशन की पुष्टि के लिए हम ${m[1]} पर संपर्क करेंगे। हमारी कॉल या संदेश के बाद ही बुकिंग पक्की होगी।`;
+    if ((m = /^(.+) — the price above updates when you change this\.$/.exec(key))) return `${translate(m[1])} — इसे बदलने पर ऊपर की कीमत बदल जाएगी।`;
+    if ((m = /^Select one or more\. Overlapping jobs are counted once\. Prices shown are for a (.+?)(?: \((.+)\))?; your estimate also reflects the car's age and parts quality\.( Jobs that don't apply to electric cars are switched off\.)?$/.exec(key))) {
+      const cap = (x) => x.split(" / ").map((w) => w.length <= 3 ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1)).join(" / ");
+      return `एक या ज़्यादा चुनें। एक जैसे काम एक ही बार गिने जाते हैं। कीमतें ${translate(cap(m[1]))}${m[2] ? " (" + translate(cap(m[2])) + ")" : ""} के लिए हैं; अनुमान में कार की उम्र और पार्ट्स की गुणवत्ता भी शामिल है।${m[3] ? " इलेक्ट्रिक कारों पर लागू न होने वाले काम बंद हैं।" : ""}`;
+    }
+    if (key === "Select one or more. Overlapping jobs are counted once. Prices shown are for a hatchback; your estimate adjusts for your car.") return "एक या ज़्यादा चुनें। एक जैसे काम एक ही बार गिने जाते हैं। कीमतें हैचबैक के लिए हैं; अनुमान आपकी कार के अनुसार बदलेगा।";
+    if ((m = /^Step (\d) of 2$/i.exec(key))) return `चरण ${m[1]} / 2`;
+    if ((m = /^Search all (\d+) services$/.exec(key))) return `सभी ${m[1]} सेवाएँ खोजें`;
+    if ((m = /^from (₹[\d,]+)( \/ (.+))?$/.exec(key))) return `${m[1]} से${m[3] ? " / " + translate(m[3]) : ""}`;
+    if ((m = /^Estimate · (\d+) jobs?$/.exec(key))) return `अनुमान · ${m[1]} काम`;
+    if ((m = /^(\d+) jobs? selected$/.exec(key))) return `${m[1]} काम चुने गए`;
+    if ((m = /^· (\d+) selected$/.exec(key))) return `· ${m[1]} चुने गए`;
+    if ((m = /^Not for (.+) cars$/.exec(key))) return `${translate(m[1][0].toUpperCase() + m[1].slice(1))} कारों के लिए नहीं`;
+    if ((m = /^Please add your (.+)\.$/.exec(key))) return "कृपया " + m[1].split(", ").map((x) => ({ car: "कार", fuel: "ईंधन", "car type": "कार का प्रकार" }[x] || x)).join(", ") + " जोड़ें।";
     if ((m = /^Request received, (.+)!$/.exec(key))) return `अनुरोध मिल गया, ${m[1]}!`;
     if ((m = /^Yes — (\d{6})$/.exec(key))) return `हाँ — ${m[1]}`;
     if ((m = /^Carried over from your estimate: (.+)$/.exec(key))) return `आपके अनुमान से: ${m[1]}`;
