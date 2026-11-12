@@ -1,3 +1,15 @@
+# v2.5.1 — Car brand and model dropdowns, many more cars
+
+- The calculator and the booking form now ask for the car with two dropdowns: **Car brand**, then **Model**.
+- The car list grows from 16 brands / 98 models to **33 brands / 389 models**, built from the admin vehicle catalogue and trimmed to cars sold in India:
+  - older and discontinued models, listed under "Older models" (e.g. Maruti 800, Alto 800, Zen, Omni, Hyundai Santro, i10, Tata Indica, Indigo, Mahindra Scorpio, XUV500, Toyota Innova, Etios, Honda Brio, Civic);
+  - brands no longer sold but still serviced (Chevrolet, Fiat, Datsun, Mitsubishi, Hindustan Motors, Premier);
+  - newer brands and models (Citroën, Jeep, BYD, Force, Isuzu, Tata EVs, Mahindra BE 6 / XEV 9e) and more luxury brands (Jaguar, Land Rover, Lexus, MINI, Porsche, Volvo).
+- Every model has a car type (hatchback / sedan / SUV-MUV / luxury), so the price band is set automatically. All 98 earlier models keep their car type, so their prices are unchanged.
+- Choosing an EV or hybrid model selects Electric or Hybrid fuel; switching to a non-EV model clears it again.
+- "My model isn't listed" (and "Other brand") opens a text box and asks for the car type, so no customer is blocked.
+- Hindi translations for the new labels, including the "Current models" / "Older models" groups.
+
 # v2.5.0 — Simpler cost calculator and 16 more services
 
 **Calculator**
