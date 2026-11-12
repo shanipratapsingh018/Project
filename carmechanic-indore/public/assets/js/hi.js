@@ -42,7 +42,26 @@
     "Morning (7–12)":"सुबह (7–12)", "Evening (4–8)":"शाम (4–8)", "Night (8–11:30)":"रात (8–11:30)",
     "To check a slot for your car,":"अपनी कार के लिए समय जाँचने हेतु", "call or WhatsApp us":"हमें कॉल या व्हाट्सऐप करें", "before visiting.":"आने से पहले।",
     "Call now":"अभी कॉल करें", "Get directions":"रास्ता देखें", "Open daily":"रोज़ खुला", "Open now":"अभी खुला है", "Closed now":"अभी बंद है",
-    "Help & policies":"मदद और नीतियाँ", "Language":"भाषा"
+    "Help & policies":"मदद और नीतियाँ", "Language":"भाषा",
+    "Book a car service":"कार सर्विस बुक करें", "Takes about a minute. We confirm the slot and price with you before any work starts.":"बस एक मिनट लगता है। काम शुरू होने से पहले हम आपसे समय और कीमत पक्की करते हैं।",
+    "Book on WhatsApp instead":"इसके बजाय व्हाट्सऐप पर बुक करें", "or fill this short form":"या यह छोटा फ़ॉर्म भरें",
+    "Your car & the problem":"आपकी कार और समस्या", "Which car? *":"कौन सी कार? *", "e.g. Maruti Swift":"जैसे Maruti Swift",
+    "What does it need? *":"क्या करवाना है? *", "Tap all that apply":"जो लागू हों, सब पर टैप करें",
+    "General service":"जनरल सर्विस", "AC not cooling":"एसी ठंडा नहीं कर रहा", "Brakes / noise":"ब्रेक / आवाज़", "Dent & paint":"डेंट और पेंट",
+    "Battery / won't start":"बैटरी / स्टार्ट नहीं हो रही", "Warning light / engine":"वार्निंग लाइट / इंजन", "Not sure — please check":"पता नहीं — कृपया जाँचें",
+    "Know the exact job? Choose from all services":"सही काम पता है? सभी सेवाओं में से चुनें", "Anything else? (optional)":"कुछ और? (वैकल्पिक)",
+    "e.g. squeaking noise when I brake":"जैसे ब्रेक लगाने पर चीं-चीं की आवाज़", "Your details & time":"आपकी जानकारी और समय",
+    "Your name *":"आपका नाम *", "Mobile / WhatsApp number *":"मोबाइल / व्हाट्सऐप नंबर *", "Pick up my car":"मेरी कार ले जाएँ",
+    "I’ll drop it at the garage":"मैं गैराज पर छोड़ दूँगा", "House / street / colony":"मकान / गली / कॉलोनी", "Which day?":"कौन सा दिन?", "Optional":"वैकल्पिक",
+    "Today":"आज", "Tomorrow":"कल", "Pick a date":"तारीख चुनें", "Any day":"कोई भी दिन", "What time suits you?":"कौन सा समय ठीक रहेगा?", "Send request":"अनुरोध भेजें",
+    "Type your car, e.g. Maruti Swift.":"अपनी कार लिखें, जैसे Maruti Swift।", "Tap what your car needs — or choose “Not sure — please check”.":"कार में क्या करवाना है उस पर टैप करें — या “पता नहीं — कृपया जाँचें” चुनें।",
+    "Choose a date, or pick Today / Tomorrow.":"तारीख चुनें, या आज / कल चुनें।",
+    "We'll WhatsApp or call you on":"स्लॉट पक्का करने के लिए हम आपको", "to confirm your slot.":"पर व्हाट्सऐप या कॉल करेंगे।",
+    "Car":"कार", "Needs":"काम", "Pickup":"पिकअप", "When":"कब", "No, I'll drop it":"नहीं, मैं छोड़ दूँगा", "Problem described in notes":"समस्या नोट्स में लिखी है",
+    "What happens next":"आगे क्या होगा", "We confirm your slot":"हम आपका समय पक्का करेंगे", "on WhatsApp or a call, with the pickup time.":"व्हाट्सऐप या कॉल पर, पिकअप के समय के साथ।",
+    "on WhatsApp or a call.":"व्हाट्सऐप या कॉल पर।", "We check the car":"हम कार की जाँच करेंगे", "and tell you the final price.":"और आपको अंतिम कीमत बताएँगे।",
+    "Work starts only after you say OK.":"आपकी मंज़ूरी के बाद ही काम शुरू होगा।", "No extra work without your approval.":"आपकी मंज़ूरी के बिना कोई अतिरिक्त काम नहीं।",
+    "Your booking is confirmed only after we call or message you.":"हमारी कॉल या संदेश के बाद ही बुकिंग पक्की होगी।", "Call us":"हमें कॉल करें", "WhatsApp us":"हमें व्हाट्सऐप करें"
   });
   root.CMI_HI = text;
 })(window);

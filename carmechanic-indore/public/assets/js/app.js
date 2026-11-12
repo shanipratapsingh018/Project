@@ -725,60 +725,118 @@
     });
   }
 
-  /* ---------- Booking form ---------- */
+  /* ---------- Booking form (2 steps) ---------- */
+  // Match a typed car ("maruti swift", "Swift", "Hyundai i20") to the vehicle list. Anything
+  // unmatched is still accepted as the model text, so no customer is blocked by the list.
+  const carKey = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  function resolveCar(text) {
+    const raw = String(text || "").trim().replace(/\s+/g, " ");
+    const words = raw.toLowerCase();
+    if (!raw) return { brand: "", model: "", category: "" };
+    const findModel = (b, rest) => {
+      const k = carKey(rest);
+      if (!k) return null;
+      return b.models.find((m) => carKey(m[0]) === k) || b.models.find((m) => carKey(m[0]).startsWith(k) && k.length >= 3) || null;
+    };
+    for (const b of C.brands) {
+      if (!b.models.length) continue;
+      const names = [b.name, b.name.split(/[\s-]/)[0]].map((n) => n.toLowerCase());
+      const hit = names.find((n) => words === n || words.startsWith(n + " "));
+      if (hit) {
+        const rest = raw.slice(hit.length).trim();
+        const m = findModel(b, rest);
+        return m ? { brand: b.name, model: m[0], category: m[1] } : { brand: b.name, model: rest || raw, category: "" };
+      }
+    }
+    for (const b of C.brands) {
+      const m = b.models.find((x) => carKey(x[0]) === carKey(raw));
+      if (m) return { brand: b.name, model: m[0], category: m[1] };
+    }
+    return { brand: "", model: raw.slice(0, 80), category: "" };
+  }
+  function isoPlusDays(iso, days) {
+    const d = new Date(iso + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + days);
+    return d.toISOString().slice(0, 10);
+  }
+  function prettyDate(iso) {
+    try { return new Date(iso + "T00:00:00Z").toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }); } catch (e) { return iso; }
+  }
   function mountBooking(root) {
     const pre = F.draft(C, store.get("cmi-booking"));
     try { const qs = new URLSearchParams(location.search).get("service"); if (qs && Object.hasOwn(svcById, qs) && !(pre.services || []).includes(qs)) { pre.services = [qs]; delete pre.estimate; } } catch (e) {}
     const steps = $$("[data-bstep]", root);
     let step = 0, sending = false, requestSignature = "", requestId = "";
     const f = $("form", root);
-    const brand = $("#b-brand", f), model = $("#b-model", f), modelOther = $("#b-model-other", f), year = $("#b-year", f);
-    let grade = $("#b-grade", f);
-    if (!grade) {
-      const field = document.createElement("div"); field.className = "field";
-      field.innerHTML = '<label for="b-grade">Parts preference</label><select id="b-grade"></select>';
-      steps[1].appendChild(field); grade = $("#b-grade", f);
+    const car = $("#b-car", f), notes = $("#b-notes", f), more = $("[data-b-more]", f);
+    // A page cached from before the 2-step form can load this script; ask for a refresh instead of breaking.
+    if (!car || !more) {
+      const body = $(".jobcard-body", root) || root;
+      body.insertAdjacentHTML("afterbegin", `<p class="notice" data-b-stale>This booking page was updated. <a href="booking.html">Refresh the page</a> to book online, or <a href="${waUrl("")}" target="_blank" rel="noopener">book on WhatsApp</a>.</p>`);
+      if (f) f.hidden = true;
+      return;
     }
-    grade.innerHTML = Object.entries(C.pricing.partsGrade).map(([id, g]) => `<option value="${id}">${esc(g.label)}</option>`).join("");
-    grade.value = Object.hasOwn(C.pricing.partsGrade, pre.partsGrade) ? pre.partsGrade : "standard";
-    fillBrands(brand); fillModels(model, ""); fillYears(year);
-    $("#b-fuel", f).innerHTML = '<option value="">Select fuel</option>' + C.fuels.map((x) => `<option value="${x.id}">${x.label}</option>`).join("");
+    const radioVal = (name) => { const r = $(`input[name="${name}"]:checked`, f); return r ? r.value : ""; };
+    const setRadio = (name, value) => { const r = $$(`input[name="${name}"]`, f).find((x) => x.value === value); if (r) r.checked = true; return !!r; };
+    const quickWa = $("[data-b-quick-wa]", root);
+    if (quickWa) quickWa.href = waUrl(`Hello ${B.name}, I want to book a car service.\nCar: \nProblem: \nArea / PIN: `);
+
+    // Full service list, tucked away for customers who know the exact job.
     {
       const groups = {};
       C.services.filter((s) => s.inCalculator !== false).forEach((s) => { (groups[s.group] = groups[s.group] || []).push(s); });
       const pick = new Set(pre.services || []);
       $("[data-b-services]", f).innerHTML = Object.entries(groups).map(([g, list]) => `<details class="b-group"${list.some((s) => pick.has(s.id)) ? " open" : ""}><summary>${esc(g)} <span class="small muted" data-b-count-g></span></summary><div class="chips">${list.map((s) => `<label class="chip"><input type="checkbox" name="b-svc" value="${s.id}"><span>${esc(s.name)}</span></label>`).join("")}</div></details>`).join("");
-      const recount = () => $$(".b-group", f).forEach((d) => { const n = $$("input:checked", d).length; $("[data-b-count-g]", d).textContent = n ? "· " + n + " selected" : ""; });
-      $("[data-b-services]", f).addEventListener("change", (e) => {
-        const cb = e.target;
-        const svc = svcById[cb.value];
-        if (cb.checked && svc && svc.exclusive) {
-          $$('input[name="b-svc"]:checked', f).forEach((other) => {
-            if (other !== cb && svcById[other.value].exclusive === svc.exclusive) other.checked = false;
-          });
-        }
-        if ($$('input[name="b-svc"]:checked', f).length > F.maxServices) {
-          cb.checked = false; const box = $("[data-svc-err]", f); box.hidden = false; box.textContent = `Choose up to ${F.maxServices} services per request.`;
-        }
-        recount(); renderBookingQty();
-      });
-      setTimeout(recount);
     }
-    brand.addEventListener("change", () => { const o = brand.value === "other"; model.hidden = o; modelOther.hidden = !o; fillModels(model, brand.value); });
-    $("#b-date", f).min = today();
-    // Prefill from estimator
-    if (pre.brand) { brand.value = pre.brand; brand.dispatchEvent(new Event("change")); if (pre.brand === "other") modelOther.value = pre.model || ""; else model.value = pre.model || ""; }
-    if (pre.year) year.value = pre.year;
-    if (pre.fuel) $("#b-fuel", f).value = pre.fuel;
+    const recount = () => {
+      $$(".b-group", f).forEach((d) => { const n = $$("input:checked", d).length; $("[data-b-count-g]", d).textContent = n ? "· " + n + " selected" : ""; });
+      const total = $$('input[name="b-svc"]:checked', f).length;
+      $("[data-b-more-count]", f).textContent = total ? "· " + total + " selected" : "";
+    };
+    const svcErr = $("[data-svc-err]", f);
+    const clearSvcErr = () => { svcErr.hidden = true; svcErr.textContent = ""; };
+    $("[data-b-services]", f).addEventListener("change", (e) => {
+      const cb = e.target;
+      const svc = svcById[cb.value];
+      if (cb.checked && svc && svc.exclusive) {
+        $$('input[name="b-svc"]:checked', f).forEach((other) => {
+          if (other !== cb && svcById[other.value].exclusive === svc.exclusive) other.checked = false;
+        });
+      }
+      if (selectedCount() > F.maxServices) {
+        cb.checked = false; svcErr.hidden = false; svcErr.textContent = `Choose up to ${F.maxServices} services per request.`;
+      } else clearSvcErr();
+      recount(); renderBookingQty();
+    });
+    $("[data-b-needs]", f).addEventListener("change", (e) => {
+      if (selectedCount() > F.maxServices) { e.target.checked = false; svcErr.hidden = false; svcErr.textContent = `Choose up to ${F.maxServices} services per request.`; }
+      else clearSvcErr();
+    });
+    function selectedCount() { return $$('input[name="b-svc"]:checked, input[name="b-need"]:checked', f).length; }
+
+    // Prefill from the estimator (or ?service=ID).
+    const preBrand = brandById[pre.brand];
+    if (pre.model || preBrand) car.value = [preBrand && pre.brand !== "other" ? preBrand.name : "", pre.model || ""].filter(Boolean).join(" ");
     (pre.services || []).forEach((id) => { const c = f.querySelector(`input[name="b-svc"][value="${id}"]`); if (c) c.checked = true; });
+    if ((pre.services || []).length) more.open = true;
     if (pre.name) $("#b-name", f).value = pre.name;
-    $("#b-notes", f).value = [pre.symptoms, pre.lights && pre.lights.length ? "Warning lights: " + pre.lights.join(", ") : ""].filter(Boolean).join("\n");
-    if (pre.area) $("#b-pin", f).value = /^\d{6}$/.test(pre.area) ? pre.area : "";
-    if (pre.area && !/^\d{6}$/.test(pre.area)) $("#b-address", f).value = pre.area;
-    if (pre.date && !F.dateError(pre.date, today())) $("#b-date", f).value = pre.date;
-    if (pre.time) $("#b-time", f).value = pre.time;
-    if (pre.pickup === "no") $("#b-pickup", f).value = "no";
+    notes.value = [pre.symptoms, pre.lights && pre.lights.length ? "Warning lights: " + pre.lights.join(", ") : ""].filter(Boolean).join("\n");
+    if (pre.area) { if (/^\d{6}$/.test(pre.area)) $("#b-pin", f).value = pre.area; else $("#b-address", f).value = pre.area; }
+    const dateIn = $("#b-date", f), dateField = $("[data-b-date-field]", f);
+    dateIn.min = today();
+    if (pre.date && !F.dateError(pre.date, today())) {
+      if (pre.date === today()) setRadio("b-day", "today");
+      else if (pre.date === isoPlusDays(today(), 1)) setRadio("b-day", "tomorrow");
+      else { setRadio("b-day", "pick"); dateIn.value = pre.date; }
+    }
+    if (pre.time && !setRadio("b-time", pre.time)) {
+      const opt = document.createElement("label"); opt.className = "seg-opt";
+      opt.innerHTML = `<input type="radio" name="b-time" value="${esc(pre.time)}"><span>${esc(pre.time)}</span>`;
+      $('input[name="b-time"]', f).closest(".seg").appendChild(opt); setRadio("b-time", pre.time);
+    }
+    if (pre.pickup === "no") setRadio("b-pickup", "no");
     if (pre.estimate) { const n = $("[data-b-estimate]", root); n.hidden = false; n.innerHTML = `<div class="status status--ok"><div><strong>Carried over from your estimate: ${esc(pre.estimate)}</strong>${C.pricing.isDemo ? "Demo prices — " : ""}final quote after inspection.</div></div>`; }
+    recount();
+
     // Quantity must survive the estimator → booking handoff.
     const quantities = { ...pre.qty };
     function renderBookingQty() {
@@ -794,9 +852,10 @@
       quantities[id] = e.target.value;
       fieldError(e.target, F.quantityError(e.target.value, svcById[id].qty.max));
     });
-    // A carried price is valid only while the vehicle, jobs and quantities stay the same.
+
+    // A carried price is valid only while the car, jobs, quantities and pickup stay the same.
     function priceSelection() {
-      return JSON.stringify([brand.value, model.value, modelOther.value.trim(), year.value, grade.value, $("#b-fuel", f).value, $("#b-pickup", f).value, $("#b-pin", f).value.trim(),
+      return JSON.stringify([carKey(car.value), radioVal("b-pickup"), $("#b-pin", f).value.trim(),
         $$('input[name="b-svc"]:checked', f).map((cb) => [cb.value, quantities[cb.value] || 1])]);
     }
     const originalSelection = priceSelection();
@@ -807,107 +866,150 @@
       $("[data-b-estimate]", root).innerHTML = '<p class="notice">Your vehicle or services changed. <a href="estimate.html">Recalculate your estimate</a>, or request a fresh quote with this booking.</p>';
       store.remove("cmi-booking");
     }
-    const changed = () => { invalidateEstimate(); if (!sending) $("[data-b-result]", root).textContent = ""; };
+    const changed = (e) => {
+      invalidateEstimate(); if (!sending) $("[data-b-result]", root).textContent = "";
+      // Clear a field's message as soon as the customer fixes it.
+      const t = e && e.target;
+      if (t && t.getAttribute && t.getAttribute("aria-invalid") === "true" && !t.matches("[data-b-qty-for]")) fieldError(t, "");
+    };
     f.addEventListener("change", changed);
     f.addEventListener("input", changed);
-    const pickupSel = $("#b-pickup", f);
-    const toggleAddr = () => { $$("[data-addr]", f).forEach((el) => { el.hidden = pickupSel.value === "no"; }); };
-    pickupSel.addEventListener("change", toggleAddr); toggleAddr();
+
+    const toggleAddr = () => { $$("[data-addr]", f).forEach((el) => { el.hidden = radioVal("b-pickup") === "no"; }); if (radioVal("b-pickup") === "no") pinOut.innerHTML = ""; };
+    const toggleDate = () => { dateField.hidden = radioVal("b-day") !== "pick"; };
     const pinIn = $("#b-pin", f), pinOut = $("[data-b-pin-result]", f);
+    $$('input[name="b-pickup"]', f).forEach((r) => r.addEventListener("change", toggleAddr));
+    $$('input[name="b-day"]', f).forEach((r) => r.addEventListener("change", () => { toggleDate(); if (radioVal("b-day") === "pick") dateIn.focus(); else fieldError(dateIn, ""); }));
+    toggleAddr(); toggleDate();
     let pinT;
     const pinCheck = () => { const v = pinIn.value.trim(); pinOut.innerHTML = v && !/^\d{1,5}$/.test(v) ? areaMessage(checkArea(v), v) : ""; };
     pinIn.addEventListener("input", () => { clearTimeout(pinT); pinT = setTimeout(pinCheck, /^\d{6}$/.test(pinIn.value.trim()) ? 0 : 700); });
+    if (pinIn.value) pinCheck();
 
-    function setErr(el, msg) {
-      return fieldError(el, msg);
+    function chosenDate() {
+      const d = radioVal("b-day");
+      if (d === "today") return today();
+      if (d === "tomorrow") return isoPlusDays(today(), 1);
+      if (d === "pick") return dateIn.value;
+      return "";
     }
     function validate(i) {
       let ok = true;
       if (i === 0) {
-        ok = setErr($("#b-name", f), $("#b-name", f).value.trim().length >= 2 ? "" : "Enter your name.") && ok;
-        ok = setErr($("#b-mobile", f), cleanMobile($("#b-mobile", f).value) ? "" : "Enter a valid 10-digit Indian mobile number.") && ok;
+        ok = fieldError(car, car.value.trim().length >= 2 ? "" : "Type your car, e.g. Maruti Swift.") && ok;
+        const count = selectedCount();
+        const msg = !count && notes.value.trim().length < 3 ? "Tap what your car needs — or choose “Not sure — please check”." : count > F.maxServices ? `Choose up to ${F.maxServices} services per request.` : "";
+        svcErr.hidden = !msg; svcErr.textContent = msg;
+        if (msg && ok) { svcErr.tabIndex = -1; svcErr.focus(); }
+        ok = !msg && ok;
+        for (const el of $$("[data-b-qty-for]", f)) ok = fieldError(el, F.quantityError(el.value, svcById[el.dataset.bQtyFor].qty.max)) && ok;
       }
       if (i === 1) {
-        ok = setErr(brand, brand.value ? "" : "Select the manufacturer.") && ok;
-        const m = brand.value === "other" ? modelOther : model;
-        ok = setErr(m, m.value.trim() ? "" : "Select or type the model.") && ok;
-        ok = setErr(year, year.value ? "" : "Select the year.") && ok;
-        ok = setErr($("#b-fuel", f), $("#b-fuel", f).value ? "" : "Select the fuel type.") && ok;
-        const reg = $("#b-reg", f); const rv = reg.value.trim().toUpperCase().replace(/\s+/g, "");
-        ok = setErr(reg, !rv || /^[A-Z]{2}\d{1,2}[A-Z]{0,3}\d{1,4}$|^\d{2}BH\d{4}[A-Z]{1,2}$/.test(rv) ? "" : "Check the format, e.g. MP09 AB 1234 (or leave blank).") && ok;
-      }
-      if (i === 2) {
-        const count = $$('input[name="b-svc"]:checked', f).length;
-        const msg = !count ? "Select at least one service." : count > F.maxServices ? `Choose up to ${F.maxServices} services per request.` : "";
-        const box = $("[data-svc-err]", f); box.hidden = !msg; box.textContent = msg; box.id = "booking-services-error"; box.setAttribute("role", "alert");
-        if (msg) { box.tabIndex = -1; box.focus(); }
-        ok = !msg;
-        for (const el of $$("[data-b-qty-for]", f)) ok = setErr(el, F.quantityError(el.value, svcById[el.dataset.bQtyFor].qty.max)) && ok;
-      }
-      if (i === 3) ok = setErr($("#b-date", f), dateIssue($("#b-date", f))) && ok;
-      if (i === 3 && pickupSel.value === "yes") {
-        ok = setErr($("#b-address", f), $("#b-address", f).value.trim().length >= 5 ? "" : "Enter the pickup address.") && ok;
-        ok = setErr($("#b-pin", f), F.validPin($("#b-pin", f).value) ? "" : "Enter a 6-digit PIN code (it cannot start with 0).") && ok;
+        ok = fieldError($("#b-name", f), $("#b-name", f).value.trim().length >= 2 ? "" : "Enter your name.") && ok;
+        ok = fieldError($("#b-mobile", f), cleanMobile($("#b-mobile", f).value) ? "" : "Enter a valid 10-digit Indian mobile number.") && ok;
+        if (radioVal("b-pickup") === "yes") {
+          ok = fieldError($("#b-address", f), $("#b-address", f).value.trim().length >= 5 ? "" : "Enter the pickup address.") && ok;
+          ok = fieldError(pinIn, F.validPin(pinIn.value) ? "" : "Enter a 6-digit PIN code (it cannot start with 0).") && ok;
+        }
+        if (radioVal("b-day") === "pick") ok = fieldError(dateIn, dateIn.value ? dateIssue(dateIn) : "Choose a date, or pick Today / Tomorrow.") && ok;
+        else fieldError(dateIn, "");
       }
       if (!ok) { const inv = $('[aria-invalid="true"]', steps[i]); if (inv) inv.focus(); }
       return ok;
     }
     function payload() {
-      const b = brandById[brand.value];
+      const v = resolveCar(car.value);
+      const needs = $$('input[name="b-need"]:checked', f).map((i) => i.value);
+      const picked = $$('input[name="b-svc"]:checked', f).map((i) => {
+        const s = svcById[i.value];
+        return s.name + (s.qty ? " × " + (quantities[s.id] || 1) + " " + s.unit.replace(/^per /, "") + "(s)" : "");
+      });
+      let services = [...needs, ...picked].slice(0, 30);
+      if (!services.length) services = ["Problem described in notes"];
+      const category = v.category || (estimateValid ? pre.category || "" : "");
+      const partsGrade = estimateValid && Object.hasOwn(C.pricing.partsGrade, pre.partsGrade) ? pre.partsGrade : "";
+      const pickup = radioVal("b-pickup") === "no" ? "no" : "yes";
       return {
-        name: $("#b-name", f).value.trim(), mobile: cleanMobile($("#b-mobile", f).value), contactMethod: $("#b-contact", f).value,
-        brand: b ? b.name : "", model: brand.value === "other" ? modelOther.value.trim() : model.value, registration: $("#b-reg", f).value.trim().toUpperCase(),
-        year: year.value, fuel: $("#b-fuel", f).value,
-        services: $$('input[name="b-svc"]:checked', f).map((i) => {
-          const s = svcById[i.value];
-          return s.name + (s.qty ? " × " + (quantities[s.id] || 1) + " " + s.unit.replace(/^per /, "") + "(s)" : "");
-        }),
+        name: $("#b-name", f).value.trim(), mobile: cleanMobile($("#b-mobile", f).value), contactMethod: "WhatsApp",
+        brand: v.brand, model: v.model, registration: "",
+        year: estimateValid && pre.year ? String(pre.year) : "", fuel: estimateValid && pre.fuel ? pre.fuel : "",
+        services,
         serviceItems: $$('input[name="b-svc"]:checked', f).map((i) => ({ id: i.value, qty: svcById[i.value].qty ? Number(quantities[i.value] || 1) : 1 })),
-        partsGrade: grade.value, category: estimateValid ? pre.category || "" : "",
-        // Notes are also retained by the already deployed handler.
-        notes: [$("#b-notes", f).value.trim(), `Parts preference: ${C.pricing.partsGrade[grade.value].label}`, estimateValid && pre.category ? `Vehicle category: ${pre.category}` : ""].filter(Boolean).join("\n"),
-        pickup: pickupSel.value, address: pickupSel.value === "yes" ? $("#b-address", f).value.trim() : "", pin: pickupSel.value === "yes" ? $("#b-pin", f).value.trim() : "",
-        date: $("#b-date", f).value, time: $("#b-time", f).value, estimate: estimateValid ? pre.estimate : ""
+        partsGrade, category,
+        notes: [notes.value.trim(), partsGrade ? `Parts preference: ${C.pricing.partsGrade[partsGrade].label}` : "", estimateValid && pre.category ? `Vehicle category: ${pre.category}` : ""].filter(Boolean).join("\n"),
+        pickup, address: pickup === "yes" ? $("#b-address", f).value.trim() : "", pin: pickup === "yes" ? pinIn.value.trim() : "",
+        date: chosenDate(), time: radioVal("b-time"), estimate: estimateValid ? pre.estimate : ""
       };
     }
     function bookingText(p) {
-      const fuel = (C.fuels.find((x) => x.id === p.fuel) || {}).label || p.fuel;
+      const fuel = p.fuel ? ((C.fuels.find((x) => x.id === p.fuel) || {}).label || p.fuel) : "";
       const area = p.pickup === "yes" ? checkArea(p.pin) : null;
       return [
         `Hello ${B.name}, booking request from your website.`,
-        `Name: ${p.name}`, `Mobile: ${p.mobile}`, `Contact me by: ${p.contactMethod}`,
-        `Car: ${[p.brand !== "Other brand" ? p.brand : "", p.model, "(" + p.year + ")"].filter(Boolean).join(" ")}, ${fuel}`,
-        p.registration ? `Registration: ${p.registration}` : null,
-        `Services: ${p.services.join(", ")}`,
+        `Name: ${p.name}`, `Mobile: ${p.mobile}`,
+        `Car: ${[p.brand, p.model, p.year ? "(" + p.year + ")" : ""].filter(Boolean).join(" ")}${fuel ? ", " + fuel : ""}`,
+        `Needs: ${p.services.join(", ")}`,
         p.estimate ? `Website estimate: ${p.estimate}` : null,
-        p.partsGrade ? `Parts grade: ${((C.pricing.partsGrade || {})[p.partsGrade] || {}).label || p.partsGrade}` : null,
         p.notes ? `Notes: ${p.notes}` : null,
         p.pickup === "yes" ? `Pickup & drop: Yes — ${p.address}, ${p.pin}${area && area.status === "covered" ? " (in your confirmed service area)" : " (please confirm availability)"}` : "Pickup & drop: No, I'll drop the car",
-        p.date || p.time ? `Preferred: ${[p.date, p.time].filter(Boolean).join(", ")}` : null,
+        p.date || p.time ? `Preferred: ${[p.date ? prettyDate(p.date) : "", p.time].filter(Boolean).join(", ")}` : null,
         "Please confirm the slot."
       ].filter(Boolean).join("\n");
+    }
+    function whenText(p) {
+      const day = p.date === today() ? "Today" : p.date === isoPlusDays(today(), 1) ? "Tomorrow" : p.date ? prettyDate(p.date) : "Any day";
+      return [day, p.time || "Any time"];
+    }
+    // What happens next — shown once the garage has the request.
+    function successHtml(p) {
+      const first = p.name.split(/\s+/)[0];
+      const reply = B.bookingReplyTime ? ` ${esc(B.bookingReplyTime)}` : "";
+      // Each item gets its own element so the Hindi view can translate it.
+      const rows = [
+        ["Car", [[p.brand, p.model].filter(Boolean).join(" ")]],
+        ["Needs", p.services],
+        ["Pickup", [p.pickup === "yes" ? `Yes — ${p.pin}` : "No, I'll drop it"]],
+        ["When", whenText(p)]
+      ];
+      return `<div class="b-done">
+        <div class="b-done-head"><span class="b-done-tick" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span><div><h2>Request received, ${esc(first)}!</h2><p>We'll WhatsApp or call you on <strong>${esc(p.mobile)}</strong>${reply} to confirm your slot.</p></div></div>
+        <dl class="b-done-sum">${rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v.map((x) => `<span>${esc(x)}</span>`).join(", ")}</dd></div>`).join("")}</dl>
+        <h3 class="b-done-title">What happens next</h3>
+        <ol class="b-next">
+          <li><strong>We confirm your slot</strong><span>on WhatsApp or a call${p.pickup === "yes" ? ", with the pickup time" : ""}.</span></li>
+          <li><strong>We check the car</strong><span>and tell you the final price.</span></li>
+          <li><strong>Work starts only after you say OK.</strong><span>No extra work without your approval.</span></li>
+        </ol>
+        <p class="small muted">Your booking is confirmed only after we call or message you.</p>
+        <div class="b-done-actions"><a class="btn btn--outline" data-tel href="tel:${esc(B.phoneE164)}">${ICON.phone} Call us</a><a class="btn btn--wa" target="_blank" rel="noopener" href="${waUrl(`Hello ${B.name}, I just sent a booking request on your website (name: ${p.name}, mobile: ${p.mobile}).`)}">${ICON.wa} WhatsApp us</a></div>
+      </div>`;
     }
     function show(i, moveFocus = true) {
       step = i;
       steps.forEach((s, k) => { s.hidden = k !== i; });
       $$(".steps-bar span", root).forEach((s, k) => s.classList.toggle("on", k <= i));
       $("[data-b-back]", root).hidden = i === 0;
-      $("[data-b-next] span", root).textContent = i === steps.length - 1 ? (B.bookingEndpoint ? "Submit request" : "Review & send") : "Next";
+      $("[data-b-next] span", root).textContent = i === steps.length - 1 ? (B.bookingEndpoint ? "Send request" : "Review & send") : "Next";
       $("[data-b-count]", root).textContent = `Step ${i + 1} of ${steps.length}`;
-      if (moveFocus) focusStep(steps[i]);
+      if (moveFocus) {
+        focusStep(steps[i]);
+        const top = root.getBoundingClientRect().top;
+        if (top < 0) root.scrollIntoView({ block: "start" });
+      }
     }
     $("[data-b-back]", root).addEventListener("click", () => show(Math.max(0, step - 1)));
     // Tell the customer what actually happened. Resending unchanged details reuses the same
-    // request ID, and the server ignores duplicates, so "press Submit again" is safe.
+    // request ID, and the server ignores duplicates, so "press Send again" is safe.
     function bookingFailure(err, timedOut) {
       const status = err && err.status;
-      if (err && err.offline) return { title: "You're offline. Your request was not sent.", text: "Connect to the internet and press Submit request again, or send the same details on WhatsApp.", button: "Send on WhatsApp" };
+      if (err && err.offline) return { title: "You're offline. Your request was not sent.", text: "Connect to the internet and press Send request again, or send the same details on WhatsApp.", button: "Send on WhatsApp" };
       if (status === 400 || status === 413 || status === 415) return { title: "We couldn't accept these details.", text: "Your request was not saved. Please check your details and try again, or send them on WhatsApp.", button: "Send on WhatsApp" };
       if (status === 429) return { title: "Too many requests from this number.", text: "Your request was not saved. Please call or WhatsApp the garage to book.", button: "Send on WhatsApp" };
       if (status === 403 || status === 404 || status === 405) return { title: "Online booking isn't available right now.", text: "Your request was not saved. Please send it on WhatsApp or call the garage.", button: "Send on WhatsApp" };
       if (status === 409) return { title: "An earlier version of this request already reached us.", text: "Please message the garage on WhatsApp with any changes instead of resending.", button: "Message on WhatsApp" };
-      return { title: timedOut ? "The request timed out." : "We couldn't confirm your request.", text: "It may or may not have reached the garage. You can safely press Submit request again — the same request is never booked twice — or check with us on WhatsApp.", button: "Check on WhatsApp" };
+      return { title: timedOut ? "The request timed out." : "We couldn't confirm your request.", text: "It may or may not have reached the garage. You can safely press Send request again — the same request is never booked twice — or check with us on WhatsApp.", button: "Check on WhatsApp" };
     }
+    function hideQuick(hidden) { const q = $(".b-quick", root); if (q) q.hidden = hidden; $(".jobcard-head", root).hidden = hidden; $(".steps-bar", root).hidden = hidden; }
     f.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (sending || !validate(step)) return;
@@ -940,21 +1042,20 @@
           if (!res.ok) { const httpErr = new Error("HTTP " + res.status); httpErr.status = res.status; throw httpErr; }
           const acknowledgement = await res.json();
           if (!F.receipt(acknowledgement, B.bookingIdempotency ? requestId : "")) throw new Error("Receipt not confirmed");
-          f.hidden = true; store.remove("cmi-booking");
-          out.innerHTML = `<div class="success"><div class="status status--ok"><div><strong>Request received.</strong>We'll contact you on ${esc(p.mobile)} to confirm the slot and quotation. Your booking is confirmed only after we call or message you.</div></div></div>`;
+          f.hidden = true; store.remove("cmi-booking"); hideQuick(true); $("[data-b-estimate]", root).hidden = true;
+          out.innerHTML = successHtml(p);
         } catch (err) {
           const fail = bookingFailure(err, controller.signal.aborted);
           out.innerHTML = `<div class="status status--bad" role="alert"><div><strong>${esc(fail.title)}</strong>${esc(fail.text)}</div></div><a class="btn btn--wa" target="_blank" rel="noopener" href="${waUrl(bookingText(p))}">${ICON.wa} ${esc(fail.button)}</a>`;
         } finally {
           clearTimeout(timer); sending = false; f.inert = false; f.removeAttribute("aria-busy");
           btn.disabled = false; $("[data-b-back]", root).disabled = false; show(step, false);
-          if (f.hidden) out.setAttribute("tabindex", "-1");
-          if (f.hidden) out.focus();
+          if (f.hidden) { out.setAttribute("tabindex", "-1"); out.focus({ preventScroll: true }); root.scrollIntoView({ block: "start" }); }
         }
         return;
       }
       // No backend configured → WhatsApp fallback
-      f.hidden = true;
+      f.hidden = true; hideQuick(true);
       out.innerHTML = `<div class="success">
         <div class="step-title"><span class="num">Last step</span><h2>Send your request on WhatsApp</h2></div>
         <pre class="summary-chip" style="white-space:pre-wrap;margin:0">${esc(bookingText(p))}</pre>
@@ -962,12 +1063,12 @@
         <p class="small muted"><strong>How bookings work:</strong> this website doesn't store bookings in a database. Your details go to the garage only through the WhatsApp message you send. Your request is placed only when you press send in WhatsApp. We'll reply to confirm the slot and quotation. If WhatsApp doesn't open, call <span class="phone-line" style="color:inherit">${esc(B.phoneDisplay)}</span>.</p>
         <button type="button" class="btn btn--outline btn--sm" data-b-edit>Edit details</button>
         <div data-b-after></div></div>`;
-      out.setAttribute("tabindex", "-1"); out.focus();
+      out.setAttribute("tabindex", "-1"); out.focus({ preventScroll: true }); root.scrollIntoView({ block: "start" });
       $("[data-b-wa]", out).addEventListener("click", () => {
         store.remove("cmi-booking");
         $("[data-b-after]", out).innerHTML = `<div class="status status--ok"><div><strong>WhatsApp opened with your details.</strong>Press send in WhatsApp to complete the request.</div></div>`;
       });
-      $("[data-b-edit]", out).addEventListener("click", () => { f.hidden = false; out.innerHTML = ""; });
+      $("[data-b-edit]", out).addEventListener("click", () => { f.hidden = false; hideQuick(false); out.innerHTML = ""; });
     });
     show(0, false);
   }
@@ -998,6 +1099,12 @@
     if (mobileActions && typeof ResizeObserver !== "undefined") new ResizeObserver(() => {
       document.documentElement.style.setProperty("--mobile-actions-height", Math.ceil(mobileActions.getBoundingClientRect().height) + "px");
     }).observe(mobileActions);
+    // Slide the bottom action bar away while someone types, so it never sits over a field.
+    if (mobileActions) {
+      const typingField = (el) => el && el.matches && el.matches("input:not([type=radio]):not([type=checkbox]):not([type=button]):not([type=submit]), textarea, select");
+      document.addEventListener("focusin", (e) => { if (typingField(e.target)) document.body.classList.add("is-typing"); });
+      document.addEventListener("focusout", (e) => { if (!typingField(e.relatedTarget)) document.body.classList.remove("is-typing"); });
+    }
     wireWhatsApp();
     $$("[data-phone]").forEach((el) => { el.textContent = B.phoneDisplay; });
     const menu = $(".menu-btn"), nav = $(".nav");

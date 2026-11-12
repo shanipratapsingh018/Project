@@ -15,6 +15,8 @@
     if ((m = /^Enter a whole number from 1 to (\d+)\.$/.exec(key))) return `1 से ${m[1]} तक की पूरी संख्या लिखें।`;
     if ((m = /^Please choose your (.+)\.$/.exec(key))) return "कृपया निर्माता, मॉडल, वर्ष, ईंधन और वाहन श्रेणी चुनें।";
     if ((m = /^We'll contact you on (.+) to confirm the slot and quotation\. Your booking is confirmed only after we call or message you\.$/.exec(key))) return `समय और कोटेशन की पुष्टि के लिए हम ${m[1]} पर संपर्क करेंगे। हमारी कॉल या संदेश के बाद ही बुकिंग पक्की होगी।`;
+    if ((m = /^Request received, (.+)!$/.exec(key))) return `अनुरोध मिल गया, ${m[1]}!`;
+    if ((m = /^Yes — (\d{6})$/.exec(key))) return `हाँ — ${m[1]}`;
     if ((m = /^Carried over from your estimate: (.+)$/.exec(key))) return `आपके अनुमान से: ${m[1]}`;
     if ((m = /^([\d. –-]+) hours$/.exec(key))) return `${m[1]} घंटे`;
     if ((m = /^([\d. –-]+) working days?$/.exec(key))) return `${m[1]} कार्य दिवस`;
