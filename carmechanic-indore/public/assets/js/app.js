@@ -37,7 +37,7 @@
     return !message;
   }
   function focusStep(step) {
-    const heading = $(".step-title h3, .step-title h2", step) || $("legend", step);
+    const heading = $(".step-title h3, .step-title h2, legend h2", step) || $("legend", step);
     if (heading) { heading.tabIndex = -1; heading.focus({ preventScroll: true }); }
   }
 
@@ -821,7 +821,10 @@
     const radioVal = (name) => { const r = $(`input[name="${name}"]:checked`, f); return r ? r.value : ""; };
     const setRadio = (name, value) => { const r = $$(`input[name="${name}"]`, f).find((x) => x.value === value); if (r) r.checked = true; return !!r; };
     const quickWa = $("[data-b-quick-wa]", root);
-    if (quickWa) quickWa.href = waUrl(`Hello ${B.name}, I want to book a car service.\nCar: \nProblem: \nArea / PIN: `);
+    const quickText = `Hello ${B.name}, I want to book a car service.\nCar: \nProblem: \nArea / PIN: `;
+    if (quickWa) quickWa.href = waUrl(quickText);
+    const quickWa2 = $("[data-b-quick-wa2]", root);
+    if (quickWa2) quickWa2.href = waUrl(quickText);
 
     // Full service list, tucked away for customers who know the exact job.
     {
@@ -919,16 +922,134 @@
     f.addEventListener("change", changed);
     f.addEventListener("input", changed);
 
-    const toggleAddr = () => { $$("[data-addr]", f).forEach((el) => { el.hidden = radioVal("b-pickup") === "no"; }); if (radioVal("b-pickup") === "no") pinOut.innerHTML = ""; };
+    const toggleAddr = () => {
+      const drop = radioVal("b-pickup") === "no";
+      $$("[data-addr]", f).forEach((el) => { el.hidden = drop; });
+      if (drop) pinOut.innerHTML = "";
+      const garage = $("[data-b-garage]", f); if (garage) garage.hidden = !drop;
+      const map = $("[data-b-map]", f); if (map) map.hidden = drop || !loc;
+    };
+    let loc = null; // set only when the customer taps "Use my current location"
     const toggleDate = () => { dateField.hidden = radioVal("b-day") !== "pick"; };
     const pinIn = $("#b-pin", f), pinOut = $("[data-b-pin-result]", f);
     $$('input[name="b-pickup"]', f).forEach((r) => r.addEventListener("change", toggleAddr));
     $$('input[name="b-day"]', f).forEach((r) => r.addEventListener("change", () => { toggleDate(); if (radioVal("b-day") === "pick") dateIn.focus(); else fieldError(dateIn, ""); }));
     toggleAddr(); toggleDate();
     let pinT;
-    const pinCheck = () => { const v = pinIn.value.trim(); pinOut.innerHTML = v && !/^\d{1,5}$/.test(v) ? areaMessage(checkArea(v), v) : ""; };
+    const pinCheck = () => { const v = pinIn.value.trim(); pinOut.innerHTML = v && !/^\d{1,5}$/.test(v) ? areaMessage(checkArea(v), v, { noButton: true }) : ""; };
     pinIn.addEventListener("input", () => { clearTimeout(pinT); pinT = setTimeout(pinCheck, /^\d{6}$/.test(pinIn.value.trim()) ? 0 : 700); });
     if (pinIn.value) pinCheck();
+
+    // Day buttons show the real date; on "Today", time slots that have already passed are switched off.
+    const dayLabel = (iso) => { try { return new Date(iso + "T00:00:00Z").toLocaleDateString("en-IN", { weekday: "short", day: "numeric", timeZone: "UTC" }); } catch (e) { return ""; } };
+    $$("[data-b-day-sub]", f).forEach((el) => { el.textContent = dayLabel(isoPlusDays(today(), Number(el.dataset.bDaySub))); });
+    function slotEnds() {   // "Morning (7–12)" … "Night (8–11:30)" → end hour on a 24-hour clock
+      let last = 0;
+      return B.timeSlots.map((t) => {
+        const m = /[–-]\s*(\d{1,2})(?::(\d{2}))?\)?\s*$/.exec(t);
+        if (!m) return 24;
+        let end = Number(m[1]) + (m[2] ? Number(m[2]) / 60 : 0);
+        while (end <= last) end += 12;
+        last = end; return end;
+      });
+    }
+    const ends = slotEnds();
+    function nowHourIST() {
+      try {
+        const parts = new Intl.DateTimeFormat("en-GB", { timeZone: B.timeZone || "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date());
+        const g = (k) => Number((parts.find((x) => x.type === k) || {}).value || 0);
+        return g("hour") + g("minute") / 60;
+      } catch (e) { return new Date().getHours(); }
+    }
+    function updateSlots() {
+      const isToday = radioVal("b-day") === "today", h = nowHourIST();
+      let anyOff = false;
+      $$('input[name="b-time"]', f).forEach((r) => {
+        const i = B.timeSlots.indexOf(r.value);
+        const off = isToday && i >= 0 && h >= ends[i];
+        r.disabled = off; r.closest(".seg-opt").classList.toggle("off", off);
+        if (off) { anyOff = true; if (r.checked) setRadio("b-time", ""); }
+      });
+      const note = $("[data-b-passed]", f); if (note) note.hidden = !anyOff;
+      // Late at night "Today" has no slots left.
+      const todayBtn = $('input[name="b-day"][value="today"]', f);
+      const closed = h >= Math.max(...ends);
+      todayBtn.disabled = closed; todayBtn.closest(".seg-opt").classList.toggle("off", closed);
+      if (closed && todayBtn.checked) { todayBtn.checked = false; toggleDate(); }
+    }
+    $$('input[name="b-day"]', f).forEach((r) => r.addEventListener("change", updateSlots));
+    updateSlots();
+
+    // Optional: fill the pickup address from the phone's location. Typing always works too.
+    const addrIn = $("#b-address", f), locBtn = $("[data-b-locate]", f), locMsg = $("[data-b-loc-msg]", f), mapBox = $("[data-b-map]", f);
+    let autoAddr = "", autoPin = "", map = null, marker = null, geoT = null;
+    const locSay = (text, kind = "") => { locMsg.textContent = text || ""; locMsg.hidden = !text; locMsg.className = "b-loc-msg" + (kind ? " b-loc-msg--" + kind : ""); };
+    const locBusy = (busy) => { locBtn.disabled = busy; $("span", locBtn).textContent = busy ? "Finding your location…" : loc ? "Update my location" : "Use my current location"; locBtn.classList.toggle("busy", busy); };
+    async function reverseGeocode(lat, lng) {
+      const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), 8000);
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&zoom=18&accept-language=en&lat=${lat}&lon=${lng}`, { signal: ctl.signal, referrerPolicy: "strict-origin-when-cross-origin", credentials: "omit" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const a = (await res.json()).address || {};
+        const parts = [a.house_number && a.road ? a.house_number + " " + a.road : a.road, a.neighbourhood || a.quarter, a.suburb, a.city_district && a.city_district !== a.suburb ? a.city_district : "", a.city || a.town || a.village || a.county]
+          .filter(Boolean).filter((x, i, arr) => arr.indexOf(x) === i);
+        const pin = String(a.postcode || "").replace(/\s/g, "");
+        return { address: parts.join(", ").slice(0, 200), pin: /^[1-9]\d{5}$/.test(pin) ? pin : "" };
+      } finally { clearTimeout(timer); }
+    }
+    async function fillFromLocation(fromDrag) {
+      let found = null;
+      try { found = await reverseGeocode(loc.lat, loc.lng); } catch (e) { found = null; }
+      if (!found || (!found.address && !found.pin)) { locSay("We saved your map location, but couldn't look up the street. Please type your address.", "warn"); return; }
+      const typed = addrIn.value.trim();
+      if (found.address && (!typed || typed === autoAddr)) { addrIn.value = found.address; autoAddr = found.address; fieldError(addrIn, ""); }
+      if (found.pin && (!pinIn.value.trim() || pinIn.value.trim() === autoPin)) { pinIn.value = found.pin; autoPin = found.pin; fieldError(pinIn, ""); pinCheck(); }
+      changed({});
+      if (loc.acc > 500) locSay(`Your location is approximate (about ${Math.round(loc.acc / 100) / 10} km). Please check the address and drag the pin if needed.`, "warn");
+      else locSay(typed && typed !== autoAddr ? "Location added. We kept the address you typed — check the PIN." : "Location found. Please add your house number or a landmark.", "ok");
+      if (!fromDrag && (!typed || typed === autoAddr)) { addrIn.focus({ preventScroll: true }); try { addrIn.setSelectionRange(0, 0); } catch (e) {} }
+    }
+    function loadLeaflet() {
+      if (window.L) return Promise.resolve(window.L);
+      const base = "assets/vendor/leaflet/";
+      if (!document.querySelector('link[data-leaflet]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = base + "leaflet.css"; l.dataset.leaflet = ""; document.head.appendChild(l); }
+      return new Promise((resolve, reject) => { const sc = document.createElement("script"); sc.src = base + "leaflet.js"; sc.onload = () => resolve(window.L); sc.onerror = reject; document.head.appendChild(sc); });
+    }
+    async function showMap() {
+      mapBox.hidden = false;
+      try {
+        const Lf = await loadLeaflet();
+        if (!map) {
+          Lf.Icon.Default.imagePath = "assets/vendor/leaflet/images/";
+          map = Lf.map($("[data-b-map-canvas]", f), { zoomControl: true, attributionControl: true }).setView([loc.lat, loc.lng], 17);
+          Lf.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' }).addTo(map);
+          marker = Lf.marker([loc.lat, loc.lng], { draggable: true, keyboard: true, title: "Your pickup spot" }).addTo(map);
+          marker.on("dragend", () => {
+            const ll = marker.getLatLng(); loc = { lat: ll.lat, lng: ll.lng, acc: 10 };
+            clearTimeout(geoT); geoT = setTimeout(() => fillFromLocation(true), 600);
+          });
+        } else { map.setView([loc.lat, loc.lng], 17); marker.setLatLng([loc.lat, loc.lng]); }
+        setTimeout(() => map.invalidateSize(), 60);
+      } catch (e) { mapBox.querySelector("[data-b-map-canvas]").hidden = true; }
+    }
+    locBtn.addEventListener("click", () => {
+      if (!("geolocation" in navigator)) { locSay("Location isn't available on this device. Please type your address below.", "warn"); return; }
+      locBusy(true); locSay("");
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        loc = { lat: pos.coords.latitude, lng: pos.coords.longitude, acc: pos.coords.accuracy || 0 };
+        await fillFromLocation(false); locBusy(false); showMap();
+      }, (err) => {
+        locBusy(false);
+        locSay(err && err.code === 1 ? "Location permission is blocked. No problem — please type your address below." : "Couldn't get your location. Please type your address below.", "warn");
+      }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+    });
+    $("[data-b-loc-clear]", f).addEventListener("click", () => {
+      loc = null; mapBox.hidden = true;
+      if (addrIn.value.trim() === autoAddr) addrIn.value = "";
+      if (pinIn.value.trim() === autoPin) { pinIn.value = ""; pinOut.innerHTML = ""; }
+      autoAddr = autoPin = ""; locSay(""); locBusy(false); changed({}); addrIn.focus();
+    });
+    const mapLink = () => loc ? `https://maps.google.com/?q=${loc.lat.toFixed(6)},${loc.lng.toFixed(6)}` : "";
 
     function chosenDate() {
       const d = radioVal("b-day");
@@ -983,7 +1104,7 @@
         services,
         serviceItems: $$('input[name="b-svc"]:checked', f).map((i) => ({ id: i.value, qty: svcById[i.value].qty ? Number(quantities[i.value] || 1) : 1 })),
         partsGrade, category,
-        notes: [notes.value.trim(), partsGrade ? `Parts preference: ${C.pricing.partsGrade[partsGrade].label}` : "", estimateValid && pre.category ? `Vehicle category: ${pre.category}` : ""].filter(Boolean).join("\n"),
+        notes: [notes.value.trim(), partsGrade ? `Parts preference: ${C.pricing.partsGrade[partsGrade].label}` : "", estimateValid && pre.category ? `Vehicle category: ${pre.category}` : "", pickup === "yes" && loc ? `Pickup location (map): ${mapLink()}` : ""].filter(Boolean).join("\n"),
         pickup, address: pickup === "yes" ? $("#b-address", f).value.trim() : "", pin: pickup === "yes" ? pinIn.value.trim() : "",
         date: chosenDate(), time: radioVal("b-time"), estimate: estimateValid ? pre.estimate : ""
       };
@@ -991,14 +1112,19 @@
     function bookingText(p) {
       const fuel = p.fuel ? ((C.fuels.find((x) => x.id === p.fuel) || {}).label || p.fuel) : "";
       const area = p.pickup === "yes" ? checkArea(p.pin) : null;
+      // The map link gets its own line, right under the pickup address.
+      const noteLines = (p.notes || "").split("\n");
+      const locLine = noteLines.find((l) => l.startsWith("Pickup location (map):")) || "";
+      const notesText = noteLines.filter((l) => l !== locLine).join("\n");
       return [
         `Hello ${B.name}, booking request from your website.`,
         `Name: ${p.name}`, `Mobile: ${p.mobile}`,
         `Car: ${[p.brand, p.model, p.year ? "(" + p.year + ")" : ""].filter(Boolean).join(" ")}${fuel ? ", " + fuel : ""}`,
         `Needs: ${p.services.join(", ")}`,
         p.estimate ? `Website estimate: ${p.estimate}` : null,
-        p.notes ? `Notes: ${p.notes}` : null,
+        notesText ? `Notes: ${notesText}` : null,
         p.pickup === "yes" ? `Pickup & drop: Yes — ${p.address}, ${p.pin}${area && area.status === "covered" ? " (in your confirmed service area)" : " (please confirm availability)"}` : "Pickup & drop: No, I'll drop the car",
+        locLine || null,
         p.date || p.time ? `Preferred: ${[p.date ? prettyDate(p.date) : "", p.time].filter(Boolean).join(", ")}` : null,
         "Please confirm the slot."
       ].filter(Boolean).join("\n");
@@ -1036,8 +1162,13 @@
       steps.forEach((s, k) => { s.hidden = k !== i; });
       $$(".steps-bar span", root).forEach((s, k) => s.classList.toggle("on", k <= i));
       $("[data-b-back]", root).hidden = i === 0;
-      $("[data-b-next] span", root).textContent = i === steps.length - 1 ? (B.bookingEndpoint ? "Send request" : "Review & send") : "Next";
+      $("[data-b-next] span", root).textContent = i === steps.length - 1 ? (B.bookingEndpoint ? "Send booking request" : "Review & send") : "Next";
       $("[data-b-count]", root).textContent = `Step ${i + 1} of ${steps.length}`;
+      // Step 2: the big WhatsApp button becomes a small link, and a summary shows what is being booked.
+      const q = $(".b-quick", root); if (q && !f.hidden) q.hidden = i > 0;
+      const small = $("[data-b-wa-small]", root); if (small) small.hidden = i === 0;
+      $("[data-b-estimate]", root).classList.toggle("on-step2", i > 0);
+      if (i > 0) renderSummary();
       if (moveFocus) {
         focusStep(steps[i]);
         const top = root.getBoundingClientRect().top;
@@ -1045,6 +1176,14 @@
       }
     }
     $("[data-b-back]", root).addEventListener("click", () => show(Math.max(0, step - 1)));
+    function renderSummary() {
+      const box = $("[data-b-summary]", f); if (!box) return;
+      const v = picker.get();
+      const needs = [...$$('input[name="b-need"]:checked', f).map((i) => i.value), ...$$('input[name="b-svc"]:checked', f).map((i) => svcById[i.value].name)];
+      const est = estimateValid && pre.estimate ? pre.estimate : "";
+      box.innerHTML = `<div class="b-sum-main"><b class="b-sum-car">${esc([v.brandName, v.model].filter(Boolean).join(" ") || "Your car")}</b><span class="b-sum-needs">${needs.length ? needs.map((n) => `<span>${esc(n)}</span>`).join(", ") : '<span>Problem described in notes</span>'}</span>${est ? `<span class="b-sum-est"><small>Your estimate</small><strong>${esc(est)}</strong></span>` : ""}</div><button type="button" class="b-sum-edit" data-b-edit-step1>Edit</button>`;
+      $("[data-b-edit-step1]", box).addEventListener("click", () => show(0));
+    }
     // Tell the customer what actually happened. Resending unchanged details reuses the same
     // request ID, and the server ignores duplicates, so "press Send again" is safe.
     function bookingFailure(err, timedOut) {
@@ -1056,7 +1195,11 @@
       if (status === 409) return { title: "An earlier version of this request already reached us.", text: "Please message the garage on WhatsApp with any changes instead of resending.", button: "Message on WhatsApp" };
       return { title: timedOut ? "The request timed out." : "We couldn't confirm your request.", text: "It may or may not have reached the garage. You can safely press Send request again — the same request is never booked twice — or check with us on WhatsApp.", button: "Check on WhatsApp" };
     }
-    function hideQuick(hidden) { const q = $(".b-quick", root); if (q) q.hidden = hidden; $(".jobcard-head", root).hidden = hidden; $(".steps-bar", root).hidden = hidden; }
+    function hideQuick(hidden) {
+      const q = $(".b-quick", root); if (q) q.hidden = hidden || step > 0;
+      const small = $("[data-b-wa-small]", root); if (small) small.hidden = hidden || step === 0;
+      $(".jobcard-head", root).hidden = hidden; $(".steps-bar", root).hidden = hidden;
+    }
     f.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (sending || !validate(step)) return;
