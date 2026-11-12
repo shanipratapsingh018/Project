@@ -1,3 +1,19 @@
+# v2.6.0 — Clearer booking details step, optional current location
+
+- Step 2 of the booking form ("Your details & time") is redesigned:
+  - a summary card at the top shows the car, the chosen jobs and the carried-over estimate, with an **Edit** button back to step 1;
+  - fields are grouped into **Your details**, **Pickup & drop** and **When**, with a fixed **+91** in front of the mobile number;
+  - pickup and drop-off are two cards with a short line each; drop-off shows the garage address with a **Directions** link;
+  - day buttons show the date (e.g. "Fri 13"); on **Today**, time slots that have already passed are greyed out, and Today itself is disabled after the last slot;
+  - three trust points sit above a clear **Send booking request** button;
+  - the large WhatsApp button becomes a small "Prefer WhatsApp?" link on this step, and the duplicate estimate box is removed.
+- **Use my current location** (optional): one tap asks the phone for its location, fills the address and PIN (via OpenStreetMap Nominatim) and shows a small map with a pin the customer can drag to the exact gate. Typing the address still works on its own; location is never asked for unless the button is tapped. If permission is blocked, the customer is told to type the address.
+- When location is used, the booking notes and the WhatsApp message include a Google Maps link to the exact spot ("Pickup location (map): …"). "Don't use my location" removes the pin and the auto-filled values, keeping anything the customer typed.
+- Leaflet 1.9.4 is self-hosted under `assets/vendor/leaflet` (BSD-2 licence) and loaded only when the map is needed.
+- Privacy page: new "Location (optional)" section.
+- Hindi translations for all new text.
+- Tests: new checks for location fill, map, map link, blocked permission, clearing, drop-off, passed time slots and dated day buttons.
+
 # v2.5.1 — Car brand and model dropdowns, many more cars
 
 - The calculator and the booking form now ask for the car with two dropdowns: **Car brand**, then **Model**.
