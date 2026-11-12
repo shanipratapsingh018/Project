@@ -180,22 +180,23 @@ with sync_playwright() as p:
     # Booking form
     pg.goto(BASE + "booking.html"); pg.wait_for_load_state("networkidle")
     check("Carried over" in pg.inner_text("[data-b-estimate]"), "Booking form receives estimate from calculator")
+    check(pg.input_value("#b-car") == "Jeep Compass", "Booking prefilled car from estimate (other brand)")
+    check(pg.locator('input[name="b-svc"]:checked').count() >= 1 and pg.locator("[data-b-more]").get_attribute("open") is not None, "Booking shows the services carried over from the estimate")
+    pg.click("[data-b-next]")  # step 1 already complete from the estimate
+    check(pg.inner_text("[data-b-count]").lower() == "step 2 of 2", "Booking has two steps")
     pg.fill("#b-name", "Asha"); pg.fill("#b-mobile", "12345")
     pg.click("[data-b-next]")
     check("valid 10-digit" in pg.inner_text("[data-booking]"), "Booking rejects invalid mobile")
-    pg.fill("#b-mobile", "+91 98765 43210"); pg.click("[data-b-next]")
-    check(pg.input_value("#b-model-other") == "Jeep Compass", "Booking prefilled car from estimate (other brand)")
-    pg.fill("#b-reg", "MP09 AB 1234"); pg.click("[data-b-next]")
-    pg.click("[data-b-next]")  # services prefilled from estimate
-    pg.select_option("#b-pickup", "yes")
+    pg.fill("#b-mobile", "+91 98765 43210")
+    pg.check('input[name="b-pickup"][value="yes"]')
     pg.fill("#b-address", "12, Test Colony"); pg.fill("#b-pin", "45201")
     pg.click("[data-b-next]")
     check("6-digit PIN" in pg.inner_text("[data-booking]"), "Booking validates PIN")
     pg.fill("#b-pin", "452010"); pg.click("[data-b-next]")
-    pg.locator('[data-b-result] strong').filter(has_text='Request received.').wait_for()
-    check(len(booking_requests)==1 and booking_requests[0][1]['mobile']=='9876543210' and booking_requests[0][1]['registration']=='MP09 AB 1234' and booking_requests[0][1]['pin']=='452010', "Enabled website form posts customer, car and pickup details to the configured function")
+    pg.locator('[data-b-result] h2').filter(has_text='Request received').wait_for()
+    check(len(booking_requests)==1 and booking_requests[0][1]['mobile']=='9876543210' and booking_requests[0][1]['model']=='Jeep Compass' and booking_requests[0][1]['pin']=='452010' and len(booking_requests[0][1]['services'])>=1, "Enabled website form posts customer, car and pickup details to the configured function")
     check(bool(booking_requests[0][0].get('apikey')) and bool(booking_requests[0][0].get('x-idempotency-key')), "Online booking includes the public key and a duplicate-safe request ID")
-    check("Request received." in pg.inner_text("[data-b-result]") and "confirmed only after" in pg.inner_text("[data-b-result]"), "Online receipt still requires the garage to confirm the appointment")
+    check("Request received" in pg.text_content("[data-b-result]") and "confirmed only after" in pg.inner_text("[data-b-result]") and pg.locator("[data-b-result] .b-next li").count()==3, "Online receipt explains the next steps and still requires the garage to confirm")
     pg.screenshot(path=f"{SHOTS}/booking-mobile.png", full_page=False)
 
     # Reviews: genuine customer invitation, no borrowed testimonials
