@@ -21,6 +21,7 @@
       return `एक या ज़्यादा चुनें। एक जैसे काम एक ही बार गिने जाते हैं। कीमतें ${translate(cap(m[1]))}${m[2] ? " (" + translate(cap(m[2])) + ")" : ""} के लिए हैं; अनुमान में कार की उम्र और पार्ट्स की गुणवत्ता भी शामिल है।${m[3] ? " इलेक्ट्रिक कारों पर लागू न होने वाले काम बंद हैं।" : ""}`;
     }
     if (key === "Select one or more. Overlapping jobs are counted once. Prices shown are for a hatchback; your estimate adjusts for your car.") return "एक या ज़्यादा चुनें। एक जैसे काम एक ही बार गिने जाते हैं। कीमतें हैचबैक के लिए हैं; अनुमान आपकी कार के अनुसार बदलेगा।";
+    if ((m = /^(\d+) brands, current and older models\. Not listed\? Choose “My model isn't listed”\.$/.exec(key))) return `${m[1]} ब्रांड, नए और पुराने मॉडल। सूची में नहीं है? “मेरा मॉडल सूची में नहीं है” चुनें।`;
     if ((m = /^Step (\d) of 2$/i.exec(key))) return `चरण ${m[1]} / 2`;
     if ((m = /^Search all (\d+) services$/.exec(key))) return `सभी ${m[1]} सेवाएँ खोजें`;
     if ((m = /^from (₹[\d,]+)( \/ (.+))?$/.exec(key))) return `${m[1]} से${m[3] ? " / " + translate(m[3]) : ""}`;
@@ -28,7 +29,7 @@
     if ((m = /^(\d+) jobs? selected$/.exec(key))) return `${m[1]} काम चुने गए`;
     if ((m = /^· (\d+) selected$/.exec(key))) return `· ${m[1]} चुने गए`;
     if ((m = /^Not for (.+) cars$/.exec(key))) return `${translate(m[1][0].toUpperCase() + m[1].slice(1))} कारों के लिए नहीं`;
-    if ((m = /^Please add your (.+)\.$/.exec(key))) return "कृपया " + m[1].split(", ").map((x) => ({ car: "कार", fuel: "ईंधन", "car type": "कार का प्रकार" }[x] || x)).join(", ") + " जोड़ें।";
+    if ((m = /^Please add your (.+)\.$/.exec(key))) return "कृपया " + m[1].split(", ").map((x) => ({ car: "कार", "car brand": "कार ब्रांड", "car model": "कार मॉडल", fuel: "ईंधन", "car type": "कार का प्रकार" }[x] || x)).join(", ") + " जोड़ें।";
     if ((m = /^Request received, (.+)!$/.exec(key))) return `अनुरोध मिल गया, ${m[1]}!`;
     if ((m = /^Yes — (\d{6})$/.exec(key))) return `हाँ — ${m[1]}`;
     if ((m = /^Carried over from your estimate: (.+)$/.exec(key))) return `आपके अनुमान से: ${m[1]}`;
@@ -72,10 +73,10 @@
       parents.set(parent, langs);
     }
     for (const [element, langs] of parents) element.lang = language === "en" ? "en" : langs.has("hi") ? "hi" : "en";
-    for (const el of document.querySelectorAll("[placeholder], [aria-label], img[alt], [title]")) {
+    for (const el of document.querySelectorAll("[placeholder], [aria-label], img[alt], [title], optgroup[label]")) {
       if (el.closest(".lang-toggle, .brand, svg")) continue;
       const record = attributes.get(el) || {};
-      for (const attr of ["placeholder", "aria-label", "alt", "title"]) {
+      for (const attr of ["placeholder", "aria-label", "alt", "title", "label"]) {
         if (!el.hasAttribute(attr)) continue;
         const current = el.getAttribute(attr), old = record[attr];
         const source = old && current === old.last ? old.source : current;

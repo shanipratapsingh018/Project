@@ -19,7 +19,7 @@
   };
   const svcById = Object.fromEntries(C.services.map((s) => [s.id, s]));
   const brandById = Object.fromEntries(C.brands.map((b) => [b.id, b]));
-  const LUX = ["bmw", "mercedes", "audi"];
+  const LUX = ["bmw", "mercedes", "audi", "jaguar", "landrover", "lexus", "porsche", "volvo", "mini"];
   const RATE_V = (window.CMI_RATE_CARD && window.CMI_RATE_CARD.version) || "";
   function errorBox(el) {
     const parent = el.closest(".field, .qty-item") || el.parentElement;
@@ -120,14 +120,57 @@
   };
 
   /* ---------- Shared vehicle helpers ---------- */
+  // Two dropdowns: brand, then model (current and older models), with "My model isn't listed" → a text box.
+  const MODEL_OTHER = "__other";
   function fillBrands(sel) {
-    sel.innerHTML = '<option value="">Select manufacturer</option>' + C.brands.map((b) => `<option value="${b.id}">${esc(b.name)}</option>`).join("");
+    sel.innerHTML = '<option value="">Select brand</option>' + C.brands.map((b) => `<option value="${b.id}">${esc(b.name)}</option>`).join("");
   }
   function fillModels(sel, brandId) {
     const b = brandById[brandId];
-    sel.innerHTML = '<option value="">' + (b ? "Select model" : "Select manufacturer first") + "</option>" +
-      (b ? b.models.map((m) => `<option value="${esc(m[0])}" data-cat="${m[1]}">${esc(m[0])}</option>`).join("") : "");
+    const opts = (list) => list.map((m) => `<option value="${esc(m[0])}">${esc(m[0])}</option>`).join("");
+    const current = b ? b.models.filter((m) => !(m[2] || "").includes("o")) : [], older = b ? b.models.filter((m) => (m[2] || "").includes("o")) : [];
+    sel.innerHTML = '<option value="">' + (b ? "Select model" : "Select brand first") + "</option>" +
+      (current.length ? (older.length ? `<optgroup label="Current models">${opts(current)}</optgroup>` : opts(current)) : "") +
+      (older.length ? `<optgroup label="Older models">${opts(older)}</optgroup>` : "") +
+      (b ? `<option value="${MODEL_OTHER}">My model isn't listed</option>` : "");
     sel.disabled = !b;
+  }
+  function carPicker(brandSel, modelSel, otherInput, onChange) {
+    fillBrands(brandSel); fillModels(modelSel, "");
+    const unlisted = () => brandSel.value === "other" || modelSel.value === MODEL_OTHER;
+    function update(moved, silent) {
+      const other = brandSel.value === "other";
+      modelSel.hidden = other;
+      otherInput.hidden = !unlisted();
+      if (moved && !otherInput.hidden) otherInput.focus();
+      if (onChange && !silent) onChange();
+    }
+    brandSel.addEventListener("change", () => { fillModels(modelSel, brandSel.value); otherInput.value = ""; update(brandSel.value === "other"); });
+    modelSel.addEventListener("change", () => update(modelSel.value === MODEL_OTHER));
+    otherInput.addEventListener("input", () => { if (onChange) onChange(); });
+    return {
+      get() {
+        const b = brandById[brandSel.value];
+        const m = b && !unlisted() ? b.models.find((x) => x[0] === modelSel.value) : null;
+        return {
+          brandId: brandSel.value, brandName: b && b.id !== "other" ? b.name : "",
+          model: unlisted() ? otherInput.value.trim().slice(0, 80) : modelSel.value,
+          category: m ? m[1] : LUX.includes(brandSel.value) ? "luxury" : "", flags: m ? m[2] || "" : "", listed: !!m
+        };
+      },
+      set(brandId, model) {
+        const b = brandById[brandId]; if (!b) return;
+        brandSel.value = brandId; fillModels(modelSel, brandId);
+        if (brandId === "other") otherInput.value = model || "";
+        else if (model && b.models.some((m) => m[0] === model)) modelSel.value = model;
+        else if (model) { modelSel.value = MODEL_OTHER; otherInput.value = model; }
+        update(false, true);
+      },
+      reset() { brandSel.value = ""; fillModels(modelSel, ""); otherInput.value = ""; update(false, true); },
+      // The control that needs attention: brand, then model, then the typed model.
+      missing() { return !brandSel.value ? brandSel : unlisted() ? (otherInput.value.trim().length < 2 ? otherInput : null) : !modelSel.value ? modelSel : null; },
+      focus() { brandSel.focus({ preventScroll: true }); }
+    };
   }
   function fillYears(sel) {
     const now = new Date().getFullYear();
@@ -175,7 +218,6 @@
       if (q.status === "not-applicable") return "Not for " + fuelLabel(fuel).toLowerCase() + " cars";
       return q.status === "inspection" ? "Quote after inspection" : "Price on request";
     };
-    const carOptions = C.brands.filter((b) => b.models.length).flatMap((b) => b.models.map((m) => `<option value="${esc(b.name + " " + m[0])}"></option>`)).join("");
     const tiles = EST_TILES.filter(([id]) => svcById[id]);
 
     root.innerHTML = `
@@ -201,7 +243,11 @@
           <p class="err" data-err="2" hidden></p>
           <div class="est-car">
             <${subHeadingTag} class="est-sub">Your car</${subHeadingTag}>
-            <div class="field"><label for="e-car">Which car?</label><input id="e-car" list="e-car-list" autocomplete="off" autocapitalize="words" maxlength="80" placeholder="e.g. Maruti Swift"><datalist id="e-car-list">${carOptions}</datalist></div>
+            <div class="grid-2 est-carpick">
+              <div class="field"><label for="e-brand">Car brand</label><select id="e-brand"></select></div>
+              <div class="field"><label for="e-model">Model</label><select id="e-model" disabled></select><input id="e-model-other" hidden maxlength="80" autocapitalize="words" placeholder="Type your car model" aria-label="Car model"></div>
+            </div>
+            <p class="hint est-carhint">${C.brands.length - 1} brands, current and older models. Not listed? Choose “My model isn't listed”.</p>
             <p class="est-auto" data-cat-auto hidden>Car type: <b data-cat-label></b> (auto) · <button type="button" class="linkish" data-cat-change>change</button></p>
             <div class="field" data-cat-field hidden><span class="label" id="l-cat">Car type</span><div class="chips" role="radiogroup" aria-labelledby="l-cat">${chipsHtml("cat", C.categories)}</div></div>
             <div class="field"><span class="label" id="l-fuel">Fuel</span><div class="chips" role="radiogroup" aria-labelledby="l-fuel">${chipsHtml("fuel", C.fuels)}</div></div>
@@ -225,29 +271,28 @@
       </form>`;
 
     const form = $("form", root);
-    const car = $("#e-car", root);
-    let step = 1, vehicle = { brand: "", model: "", category: "" };
+    let step = 1;
     function setRadio(name, val) { const r = form.querySelector(`input[name="${name}"][value="${val}"]`); if (r) r.checked = true; }
     function radio(name) { const r = form.querySelector(`input[name="${name}"]:checked`); return r ? r.value : ""; }
     const nowYear = () => new Date().getFullYear();
     const yearForAge = () => radio("age") === "old" ? String(nowYear() - (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) - 1) : "";
 
-    // Typed car → brand, model and car type. Unknown cars are still accepted; then the car type is asked.
-    let catManual = false;
+    // Brand + model → car type and, for EV / hybrid models, the fuel. Unlisted cars ask for the car type.
+    let catManual = false, fuelAuto = false;
+    const picker = carPicker($("#e-brand", root), $("#e-model", root), $("#e-model-other", root), () => { catManual = false; readCar(); refreshPrices(); });
     function readCar() {
-      vehicle = resolveCar(car.value);
-      const brandId = (C.brands.find((b) => b.name === vehicle.brand) || {}).id || "";
-      let category = vehicle.category || (LUX.includes(brandId) ? "luxury" : "");
-      if (category && !catManual) setRadio("cat", category);
-      if (/\bEV\b|EV$/i.test(car.value.trim())) setRadio("fuel", "electric");
-      const auto = !!category && !catManual;
+      const v = picker.get();
+      if (v.category && !catManual) setRadio("cat", v.category);
+      if (!v.category && !catManual) $$('input[name="cat"]', root).forEach((r) => { r.checked = false; });
+      const fuel = v.flags.includes("e") ? "electric" : v.flags.includes("y") ? "hybrid" : "";
+      if (fuel) { setRadio("fuel", fuel); fuelAuto = true; }
+      else if (fuelAuto) { $$('input[name="fuel"]', root).forEach((r) => { r.checked = false; }); fuelAuto = false; }
+      const auto = !!v.category && !catManual;
       $("[data-cat-auto]", root).hidden = !auto;
-      $("[data-cat-field]", root).hidden = auto || !car.value.trim();
+      $("[data-cat-field]", root).hidden = auto || !v.model;
       if (auto) $("[data-cat-label]", root).textContent = catLabel(radio("cat"));
-      vehicle.brandId = brandId;
+      return v;
     }
-    car.addEventListener("input", () => { readCar(); refreshPrices(); });
-    car.addEventListener("change", () => { readCar(); refreshPrices(); });
     $("[data-cat-change]", root).addEventListener("click", () => { catManual = true; $("[data-cat-auto]", root).hidden = true; $("[data-cat-field]", root).hidden = false; const r = $('input[name="cat"]:checked', root) || $('input[name="cat"]', root); if (r) r.focus(); });
     $$('input[name="cat"]', root).forEach((r) => r.addEventListener("change", () => { catManual = true; refreshPrices(); }));
     $$('input[name="fuel"], input[name="age"]', root).forEach((r) => r.addEventListener("change", refreshPrices));
@@ -311,7 +356,8 @@
     if (preset.length) applyPreset(preset);
 
     function carLabel() {
-      const name = [vehicle.brand, vehicle.model].filter(Boolean).join(" ");
+      const v = picker.get();
+      const name = [v.brandName, v.model].filter(Boolean).join(" ");
       return name + (radio("age") === "old" ? " (over " + (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) + " years old)" : "");
     }
     function err(n, msg) { const e = $(`[data-err="${n}"]`, root); e.id = `estimate-step-${n}-error`; e.setAttribute("role", "alert"); e.textContent = msg || ""; e.hidden = !msg; }
@@ -320,10 +366,10 @@
       const svcMsg = !state.services.size ? "Pick at least one job (or search all services)." : state.services.size > F.maxServices ? `Choose up to ${F.maxServices} services per request.` : "";
       err(2, svcMsg); ok = !svcMsg;
       for (const el of $$("[data-qty-for]", root)) ok = fieldError(el, F.quantityError(el.value, svcById[el.dataset.qtyFor].qty.max)) && ok;
-      readCar();
-      const missing = [car.value.trim().length < 2 && "car", !radio("fuel") && "fuel", car.value.trim().length >= 2 && !radio("cat") && "car type"].filter(Boolean);
-      car.setAttribute("aria-describedby", "estimate-step-1-error");
-      car.value.trim().length < 2 ? car.setAttribute("aria-invalid", "true") : car.removeAttribute("aria-invalid");
+      const v = picker.get(), carGap = picker.missing();
+      const missing = [carGap && (carGap.id === "e-brand" ? "car brand" : "car model"), !radio("fuel") && "fuel", !carGap && !radio("cat") && "car type"].filter(Boolean);
+      ["e-brand", "e-model", "e-model-other"].forEach((id) => { const el = $("#" + id, root); el.setAttribute("aria-describedby", "estimate-step-1-error"); el === carGap ? el.setAttribute("aria-invalid", "true") : el.removeAttribute("aria-invalid"); });
+      if (v.model && !carGap && !v.category) $("[data-cat-field]", root).hidden = false;
       $$('input[name="fuel"], input[name="cat"]', root).forEach((el) => { el.setAttribute("aria-describedby", "estimate-step-1-error"); !radio(el.name) ? el.setAttribute("aria-invalid", "true") : el.removeAttribute("aria-invalid"); });
       if (missing.includes("car type")) $("[data-cat-field]", root).hidden = false;
       err(1, missing.length ? "Please add your " + missing.join(", ") + "." : "");
@@ -334,7 +380,7 @@
       }
       return ok;
     }
-    function ready() { return state.services.size > 0 && car.value.trim().length >= 2 && radio("fuel") && radio("cat"); }
+    function ready() { return state.services.size > 0 && !picker.missing() && radio("fuel") && radio("cat"); }
     function compute() {
       return PR.estimate(C, {
         category: radio("cat"), fuel: radio("fuel"), year: yearForAge(), partsGrade: state.partsGrade,
@@ -343,7 +389,7 @@
     }
     function bookingPayload(r) {
       return {
-        brand: vehicle.brandId || (car.value.trim() ? "other" : ""), model: vehicle.model,
+        brand: picker.get().brandId, model: picker.get().model,
         car: carLabel(), year: "", yearExact: false, fuel: radio("fuel"), category: radio("cat"),
         services: [...state.services], qty: Object.fromEntries(Object.entries(state.qty).map(([id, q]) => [id, Number(q)])), lights: [],
         symptoms: radio("age") === "old" ? "Car is over " + (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) + " years old" : "",
@@ -460,7 +506,7 @@
       });
       $("[data-restart]", box).addEventListener("click", () => {
         store.remove("cmi-booking");
-        form.reset(); state.services.clear(); state.qty = {}; state.partsGrade = "standard"; setRadio("grade", "standard"); catManual = false; vehicle = { brand: "", model: "", category: "" };
+        form.reset(); state.services.clear(); state.qty = {}; state.partsGrade = "standard"; setRadio("grade", "standard"); catManual = false; fuelAuto = false; picker.reset();
         $$(".svc-opt", root).forEach((o) => o.classList.remove("checked"));
         renderQty(); search.value = ""; search.dispatchEvent(new Event("input"));
         $("[data-cat-auto]", root).hidden = true; $("[data-cat-field]", root).hidden = true; $("[data-all-services]", root).open = false;
@@ -486,7 +532,7 @@
     $("[data-back]", root).addEventListener("click", () => go(1));
     refreshPrices();
     root.cmiPreset = (ids) => { applyPreset(ids); if (step !== 1) go(1, false); };
-    root.cmiFocusCar = () => { car.focus({ preventScroll: true }); };
+    root.cmiFocusCar = () => picker.focus();
     // Test hook (also handy for owner QA in the console)
     root.cmiDebug = { compute, go, setRadio };
   }
@@ -751,41 +797,6 @@
   }
 
   /* ---------- Booking form (2 steps) ---------- */
-  // Match a typed car ("maruti swift", "Swift", "Hyundai i20") to the vehicle list. Anything
-  // unmatched is still accepted as the model text, so no customer is blocked by the list.
-  const carKey = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
-  function resolveCar(text) {
-    const raw = String(text || "").trim().replace(/\s+/g, " ");
-    const words = raw.toLowerCase();
-    if (!raw) return { brand: "", model: "", category: "" };
-    // Exact model, a typed start of a model ("cre" → Creta), or a model inside extra words
-    // ("Nexon EV", "City 2015", "Swift Dzire" → Dzire): the longest (then last) model name found sets the car type.
-    const findModel = (b, rest) => {
-      const k = carKey(rest);
-      if (!k) return null;
-      const exact = b.models.find((m) => carKey(m[0]) === k) || b.models.find((m) => carKey(m[0]).startsWith(k) && k.length >= 3);
-      if (exact) return { m: exact, exact: true };
-      const pre = b.models.filter((m) => k.includes(carKey(m[0])))
-        .sort((x, y) => carKey(y[0]).length - carKey(x[0]).length || k.lastIndexOf(carKey(y[0])) - k.lastIndexOf(carKey(x[0])))[0];
-      return pre ? { m: pre, exact: false } : null;
-    };
-    for (const b of C.brands) {
-      if (!b.models.length) continue;
-      const names = [b.name, b.name.split(/[\s-]/)[0]].map((n) => n.toLowerCase());
-      const hit = names.find((n) => words === n || words.startsWith(n + " "));
-      if (hit) {
-        const rest = raw.slice(hit.length).trim();
-        const f = findModel(b, rest);
-        if (f) return { brand: b.name, model: f.exact ? f.m[0] : rest.slice(0, 80), category: f.m[1] };
-        return { brand: b.name, model: (rest || raw).slice(0, 80), category: "" };
-      }
-    }
-    for (const b of C.brands) {
-      const f = findModel(b, raw);
-      if (f && (f.exact ? carKey(f.m[0]) === carKey(raw) : true)) return { brand: b.name, model: f.exact ? f.m[0] : raw.slice(0, 80), category: f.m[1] };
-    }
-    return { brand: "", model: raw.slice(0, 80), category: "" };
-  }
   function isoPlusDays(iso, days) {
     const d = new Date(iso + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + days);
     return d.toISOString().slice(0, 10);
@@ -799,9 +810,9 @@
     const steps = $$("[data-bstep]", root);
     let step = 0, sending = false, requestSignature = "", requestId = "";
     const f = $("form", root);
-    const car = $("#b-car", f), notes = $("#b-notes", f), more = $("[data-b-more]", f);
-    // A page cached from before the 2-step form can load this script; ask for a refresh instead of breaking.
-    if (!car || !more) {
+    const notes = $("#b-notes", f), more = $("[data-b-more]", f);
+    // A page cached from an older version can load this script; ask for a refresh instead of breaking.
+    if (!$("#b-brand", f) || !more) {
       const body = $(".jobcard-body", root) || root;
       body.insertAdjacentHTML("afterbegin", `<p class="notice" data-b-stale>This booking page was updated. <a href="booking.html">Refresh the page</a> to book online, or <a href="${waUrl("")}" target="_blank" rel="noopener">book on WhatsApp</a>.</p>`);
       if (f) f.hidden = true;
@@ -846,8 +857,8 @@
     function selectedCount() { return $$('input[name="b-svc"]:checked, input[name="b-need"]:checked', f).length; }
 
     // Prefill from the estimator (or ?service=ID).
-    const preBrand = brandById[pre.brand];
-    if (pre.model || preBrand) car.value = [preBrand && pre.brand !== "other" ? preBrand.name : "", pre.model || ""].filter(Boolean).join(" ");
+    const picker = carPicker($("#b-brand", f), $("#b-model", f), $("#b-model-other", f), () => { invalidateEstimate(); ["b-brand", "b-model", "b-model-other"].forEach((id) => { const el = $("#" + id, f); if (el.getAttribute("aria-invalid") === "true") fieldError(el, ""); }); });
+    if (brandById[pre.brand]) picker.set(pre.brand, pre.model || "");
     (pre.services || []).forEach((id) => { const c = f.querySelector(`input[name="b-svc"][value="${id}"]`); if (c) c.checked = true; });
     if ((pre.services || []).length) more.open = true;
     if (pre.name) $("#b-name", f).value = pre.name;
@@ -887,7 +898,8 @@
 
     // A carried price is valid only while the car, jobs, quantities and pickup stay the same.
     function priceSelection() {
-      return JSON.stringify([carKey(car.value), radioVal("b-pickup"), $("#b-pin", f).value.trim(),
+      const v = picker.get();
+      return JSON.stringify([v.brandId, v.model.toLowerCase(), radioVal("b-pickup"), $("#b-pin", f).value.trim(),
         $$('input[name="b-svc"]:checked', f).map((cb) => [cb.value, quantities[cb.value] || 1])]);
     }
     const originalSelection = priceSelection();
@@ -928,7 +940,10 @@
     function validate(i) {
       let ok = true;
       if (i === 0) {
-        ok = fieldError(car, car.value.trim().length >= 2 ? "" : "Type your car, e.g. Maruti Swift.") && ok;
+        const gap = picker.missing();
+        ok = fieldError($("#b-brand", f), gap && gap.id === "b-brand" ? "Choose your car brand." : "") && ok;
+        ok = fieldError($("#b-model", f), gap && gap.id === "b-model" ? "Choose your model, or “My model isn't listed”." : "") && ok;
+        ok = fieldError($("#b-model-other", f), gap && gap.id === "b-model-other" ? "Type your car model." : "") && ok;
         const count = selectedCount();
         const msg = !count && notes.value.trim().length < 3 ? "Tap what your car needs — or choose “Not sure — please check”." : count > F.maxServices ? `Choose up to ${F.maxServices} services per request.` : "";
         svcErr.hidden = !msg; svcErr.textContent = msg;
@@ -950,7 +965,7 @@
       return ok;
     }
     function payload() {
-      const v = resolveCar(car.value);
+      const v = picker.get();
       const needs = $$('input[name="b-need"]:checked', f).map((i) => i.value);
       const picked = $$('input[name="b-svc"]:checked', f).map((i) => {
         const s = svcById[i.value];
@@ -963,8 +978,8 @@
       const pickup = radioVal("b-pickup") === "no" ? "no" : "yes";
       return {
         name: $("#b-name", f).value.trim(), mobile: cleanMobile($("#b-mobile", f).value), contactMethod: "WhatsApp",
-        brand: v.brand, model: v.model, registration: "",
-        year: estimateValid && pre.year ? String(pre.year) : "", fuel: estimateValid && pre.fuel ? pre.fuel : "",
+        brand: v.brandName, model: v.model, registration: "",
+        year: estimateValid && pre.year ? String(pre.year) : "", fuel: estimateValid && pre.fuel ? pre.fuel : v.flags.includes("e") ? "electric" : v.flags.includes("y") ? "hybrid" : "",
         services,
         serviceItems: $$('input[name="b-svc"]:checked', f).map((i) => ({ id: i.value, qty: svcById[i.value].qty ? Number(quantities[i.value] || 1) : 1 })),
         partsGrade, category,
@@ -1103,7 +1118,7 @@
       $("[data-b-edit]", out).addEventListener("click", () => { f.hidden = false; hideQuick(false); out.innerHTML = ""; });
     });
     // Coming from the calculator with the car and jobs already chosen: open straight at "your details".
-    show(pre.estimate && car.value.trim().length >= 2 && selectedCount() ? 1 : 0, false);
+    show(pre.estimate && !picker.missing() && selectedCount() ? 1 : 0, false);
   }
 
   /* ---------- Display language ---------- */
