@@ -1,4 +1,4 @@
-# Car Repair Wala — Your Car. Our Care. · v2.5.1
+# Car Repair Wala — Your Car. Our Care. · v2.6.0
 
 A ready-to-run static garage website branded **Car Repair Wala · Your Car. Our Care.**: 22 responsive pages, 85-service price list,
 vehicle-specific estimates, pickup-area checks, service gallery, customer feedback form, online booking and WhatsApp contact. Node.js 18+ is needed for local serving
