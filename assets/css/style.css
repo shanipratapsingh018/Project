@@ -1042,3 +1042,4 @@ html:has(.est-foot) { scroll-padding-bottom: 110px; }
 .est-foot .btn { white-space: normal; text-align: center; }
 .est-run { min-width: min(100%, 9em); }
 .est-body { display: grid; gap: 14px; }
+.est-carhint { margin: -6px 0 0; font-size: .85rem; color: var(--ink-2); }
