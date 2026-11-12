@@ -1,3 +1,15 @@
+# v2.4.3 — Simpler booking form
+
+- Two steps instead of four: (1) your car and what it needs, (2) your details and time.
+- Short page header so the form starts on the first screen of a phone.
+- "Book on WhatsApp instead" button at the top of the form.
+- Type the car in one box (suggestions for every listed model); tap problem tiles such as "AC not cooling" or "Not sure — please check". The full service list is still available under "Know the exact job?".
+- Pickup, day and time are tap buttons instead of dropdowns. Year, fuel, registration and the separate contact-method question are no longer asked; the estimate's year, fuel and parts preference are still sent when the booking comes from the calculator.
+- The bottom Call / WhatsApp / Book bar slides away while a field is being typed in, and focused fields scroll clear of it.
+- New confirmation screen: summary of the request, three "what happens next" steps, and Call / WhatsApp buttons.
+- Field errors clear as soon as they are fixed. A booking page cached from the old version asks for a refresh instead of breaking.
+- Optional `business.bookingReplyTime` in config.js (e.g. "within 30 minutes") adds a reply-time promise to the confirmation; it is off by default.
+
 # v2.4.2 — Footer improvements
 
 - Add Call now and WhatsApp us buttons under the phone number; the number itself is tappable and shown without wide monospace gaps.
