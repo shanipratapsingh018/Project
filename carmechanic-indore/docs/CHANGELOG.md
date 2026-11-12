@@ -1,3 +1,32 @@
+# v2.5.0 — Simpler cost calculator and 16 more services
+
+**Calculator**
+- Prices first: the calculator opens with six popular jobs as tiles showing their starting price (car service, AC, brake check, dent & paint, battery, oil change). The full list of all 83 calculator services is one tap away, with search.
+- One box for the car with model suggestions ("Maruti Swift"), instead of manufacturer and model dropdowns. Car type is filled in from the model; it is asked only for cars not in the list. Typing an EV model selects electric.
+- Six questions become two (car and fuel) plus an optional "Under / Over 10 years" age choice. The exact year is no longer asked; it only mattered for cars over 10 years old, which the age choice covers.
+- Two steps instead of four: car & jobs → price. "Problem & pickup" moved out of the calculator; the booking form already asks for those.
+- "Step 1 of 2" labels, and a header that says "Get a price in 30 seconds · Prices updated 27 Oct 2026".
+- A running price in a footer that stays in view while choosing.
+- The price screen leads with the total, then a parts-quality choice (economy / standard / genuine) that updates the price, what each job includes, and the approval promise. Buttons: Book at this price, WhatsApp, Share. The full breakdown, copy and start over are under "See full breakdown".
+- "Book at this price" opens the booking form straight at step 2 (your details), with the car, jobs and estimate carried over.
+- Prices are unchanged: a check of all 67 earlier services for five cars and three parts grades (2,010 comparisons) matched the old calculator exactly.
+
+**Home page (phones)**
+- "Check your price in 30 seconds" tiles replace the four hero buttons on the first screen; Call, WhatsApp and Book stay in the bottom bar. Tapping a tile opens the calculator with that job ticked.
+
+**Services** — 16 jobs added, all "Quote after inspection" until the garage sets prices:
+- Suspension: lower arm / link rod / tie-rod; axle / CV joint / drive-shaft boot.
+- Engine: decarbonisation; injector & throttle body cleaning; timing belt / chain; fan belt; water pump; oil leak (gasket / seal); silencer / exhaust.
+- Gearbox: manual gearbox oil change; automatic transmission oil service (AT / AMT / CVT).
+- Electrical: power window & central locking; small electrical jobs (horn, fuse, relay, key battery); accessory fitting.
+- Bodywork: scratch removal / touch-up. Cleaning: anti-rust coating & rodent protection.
+- Jobs that can't apply to electric cars are switched off for EVs, including inspection-only ones such as clutch overhaul and fuel system repair.
+- The rate card CSV (docs/rate-card/proposed_rate_card.csv) has the new rows; the Excel research workbook is unchanged.
+
+**Fixes**
+- The calculator footer no longer jumps when typing ends, which could make a tap on "See my price" miss.
+- With very large text settings the calculator wraps instead of widening the page.
+
 # v2.4.3 — Simpler booking form
 
 - Two steps instead of four: (1) your car and what it needs, (2) your details and time.
