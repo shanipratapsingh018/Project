@@ -145,15 +145,21 @@
     return /^[6-9]\d{9}$/.test(d) ? d : null;
   }
 
-  /* ---------- Estimator ---------- */
+  /* ---------- Estimator (2 steps: car & jobs → price) ---------- */
+  // Popular jobs shown as tiles; each one ticks the matching service in the full list.
+  const EST_TILES = [["GS-01", "Car service", "service"], ["AC-03", "AC service", "ac"], ["BR-01", "Brake check", "brake"], ["BD-01", "Dent & paint", "paint"], ["TB-05", "Battery", "battery"], ["GS-04", "Oil change", "oil"]];
+  const svgUse = (n) => `<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+  function rateDate() {
+    try { return new Date(RATE_V + "T00:00:00Z").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }); } catch (e) { return RATE_V; }
+  }
   function mountEstimator(root) {
     const headingTag = root.dataset.headingLevel === "2" ? "h2" : "h3";
     const subHeadingTag = headingTag === "h2" ? "h3" : "h4";
-    const state = { partsGrade: "standard", qty: {}, services: new Set(), pickupResult: null };
+    const state = { partsGrade: "standard", qty: {}, services: new Set() };
     const preset = (root.getAttribute("data-preset") || "").split(",").filter(Boolean);
     const groups = {};
-    C.services.filter((s) => s.inCalculator !== false).forEach((s) => { (groups[s.group] = groups[s.group] || []).push(s); });
-    // Price line under each service. Uses the car type and fuel chosen in step 1 (hatchback/petrol before that).
+    const calcServices = C.services.filter((s) => s.inCalculator !== false);
+    calcServices.forEach((s) => { (groups[s.group] = groups[s.group] || []).push(s); });
     const catLabel = (id) => ((C.categories.find((c) => c.id === id) || {}).label || "Hatchback");
     const fuelLabel = (id) => ((C.fuels.find((f) => f.id === id) || {}).label || "");
     const fromText = (s, category = "hatchback", fuel = "petrol") => {
@@ -163,76 +169,88 @@
       if (q.status === "inspection" || /inspection/i.test(q.text || "")) return "Quote after inspection";
       return "Price on request";
     };
+    const tileText = (id, category = "hatchback", fuel = "petrol") => {
+      const s = svcById[id], q = PR.quickRange(C, id, category, fuel);
+      if (q.status === "priced") return "from " + PR.formatINR(q.range[0]) + (s.qty ? " / " + s.unit.replace(/^per /, "") : "");
+      if (q.status === "not-applicable") return "Not for " + fuelLabel(fuel).toLowerCase() + " cars";
+      return q.status === "inspection" ? "Quote after inspection" : "Price on request";
+    };
+    const carOptions = C.brands.filter((b) => b.models.length).flatMap((b) => b.models.map((m) => `<option value="${esc(b.name + " " + m[0])}"></option>`)).join("");
+    const tiles = EST_TILES.filter(([id]) => svcById[id]);
 
     root.innerHTML = `
-      <div class="jobcard-head"><span>Job card · <b>Estimate</b></span><span>${C.pricing.isDemo ? '<span class="tag tag--demo">Demo prices</span>' : `Rate card <time datetime="${esc(RATE_V)}">${esc(RATE_V)}</time>`}</span></div>
-      <div class="steps-bar" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span></div>
+      <div class="jobcard-head"><span><b>Get a price in 30 seconds</b></span><span>${C.pricing.isDemo ? '<span class="tag tag--demo">Demo prices</span>' : `Prices updated <time datetime="${esc(RATE_V)}">${esc(rateDate())}</time>`}</span></div>
+      <div class="est-stepline"><span data-e-count>Step 1 of 2</span><span>Free · no sign-up</span></div>
+      <div class="steps-bar" aria-hidden="true"><span class="on"></span><span></span></div>
       <form class="jobcard-body" novalidate>
         <section data-step="1">
-          <div class="step-title"><span class="num">01–05</span><${headingTag} data-i18n="est.car">Your car</${headingTag}></div>
-          <div class="grid-2" style="margin-top:14px">
-            <div class="field"><label for="e-brand">Manufacturer</label><select id="e-brand" required></select></div>
-            <div class="field"><label for="e-model">Model</label><select id="e-model" required disabled></select><input id="e-model-other" aria-label="Car model" maxlength="80" placeholder="Type your car model" hidden></div>
-            <div class="field"><label for="e-year">Year</label><select id="e-year" required></select></div>
-            <div class="field"><label for="e-grade">Parts grade</label><select id="e-grade">${Object.entries(C.pricing.partsGrade).map(([k, v]) => `<option value="${k}" ${k === "standard" ? "selected" : ""}>${esc(v.label)}</option>`).join("")}</select></div>
+          <div class="step-title"><${headingTag} data-i18n="est.need">What does your car need?</${headingTag}></div>
+          <div class="est-tiles" role="group" aria-label="Popular jobs">${tiles.map(([id, label, icon]) => `<label class="est-tile"><input type="checkbox" data-tile="${id}"><span>${svgUse(icon)}<b>${esc(label)}</b><small data-tile-price="${id}">${esc(tileText(id))}</small></span></label>`).join("")}</div>
+          <details class="est-all" data-all-services>
+            <summary><span>Search all ${calcServices.length} services</span> <span class="small muted" data-all-count></span></summary>
+            <p class="hint muted small" style="margin:10px 0" data-svc-hint>Select one or more. Overlapping jobs are counted once. Prices shown are for a hatchback; your estimate adjusts for your car.</p>
+            <div class="field svc-search"><label class="sr-only" for="e-search">Search services</label><input id="e-search" type="search" placeholder="Search, e.g. brake, AC, battery, dent" autocomplete="off"></div>
+            <div class="svc-groups">${Object.entries(groups).map(([g, list]) => `
+              <div class="svc-group" data-group="${esc(g)}"><${subHeadingTag} class="svc-group-title">${esc(g)}</${subHeadingTag}><div class="svc-list">${list.map((s) => `
+                <label class="svc-opt" data-svc="${s.id}" data-search="${esc((s.name + " " + g + " " + (s.includes || []).join(" ")).toLowerCase())}"><input type="checkbox" value="${s.id}"><span><span class="t">${esc(s.name)}</span><span class="s">${esc(fromText(s))}</span></span></label>`).join("")}
+              </div></div>`).join("")}
+              <p class="muted small" data-search-empty hidden>No service matches. Choose "Other / custom repair" and describe the problem.</p>
+            </div>
+          </details>
+          <div class="qty-row" data-qty hidden></div>
+          <p class="err" data-err="2" hidden></p>
+          <div class="est-car">
+            <${subHeadingTag} class="est-sub">Your car</${subHeadingTag}>
+            <div class="field"><label for="e-car">Which car?</label><input id="e-car" list="e-car-list" autocomplete="off" autocapitalize="words" maxlength="80" placeholder="e.g. Maruti Swift"><datalist id="e-car-list">${carOptions}</datalist></div>
+            <p class="est-auto" data-cat-auto hidden>Car type: <b data-cat-label></b> (auto) · <button type="button" class="linkish" data-cat-change>change</button></p>
+            <div class="field" data-cat-field hidden><span class="label" id="l-cat">Car type</span><div class="chips" role="radiogroup" aria-labelledby="l-cat">${chipsHtml("cat", C.categories)}</div></div>
+            <div class="field"><span class="label" id="l-fuel">Fuel</span><div class="chips" role="radiogroup" aria-labelledby="l-fuel">${chipsHtml("fuel", C.fuels)}</div></div>
+            <div class="field"><span class="label" id="l-age">Car age <span class="hint">Optional</span></span><div class="chips" role="radiogroup" aria-labelledby="l-age">${chipsHtml("age", [{ id: "new", label: "Under " + (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) + " years" }, { id: "old", label: "Over " + (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) + " years" }])}</div></div>
           </div>
-          <div class="field" style="margin-top:14px"><span class="label" id="l-fuel">Fuel type</span><div class="chips" role="radiogroup" aria-labelledby="l-fuel">${chipsHtml("fuel", C.fuels)}</div></div>
-          <div class="field" style="margin-top:14px"><span class="label" id="l-cat">Vehicle category</span><div class="chips" role="radiogroup" aria-labelledby="l-cat">${chipsHtml("cat", C.categories)}</div><span class="hint">Auto-selected from your model — change it if needed.</span></div>
           <p class="err" data-err="1" hidden></p>
         </section>
         <section data-step="2" hidden>
-          <div class="step-title"><span class="num">06</span><${headingTag} data-i18n="est.services">Choose services</${headingTag}></div>
-          <p class="hint muted small" style="margin:6px 0 12px" data-svc-hint>Select one or more. Overlapping jobs are counted once. Prices shown are for a hatchback; your estimate adjusts for your car.</p>
-          <div class="field svc-search"><label class="sr-only" for="e-search">Search services</label><input id="e-search" type="search" placeholder="Search, e.g. brake, AC, battery, dent" autocomplete="off"></div>
-          <div class="svc-groups">${Object.entries(groups).map(([g, list]) => `
-            <div class="svc-group" data-group="${esc(g)}"><${subHeadingTag} class="svc-group-title">${esc(g)}</${subHeadingTag}><div class="svc-list">${list.map((s) => `
-              <label class="svc-opt" data-svc="${s.id}" data-search="${esc((s.name + " " + g + " " + (s.includes || []).join(" ")).toLowerCase())}"><input type="checkbox" value="${s.id}"><span><span class="t">${esc(s.name)}</span><span class="s">${esc(fromText(s))}</span></span></label>`).join("")}
-            </div></div>`).join("")}
-            <p class="muted small" data-search-empty hidden>No service matches. Choose "Other / custom repair" and describe the problem.</p>
+          <div class="step-title"><${headingTag}>Your price</${headingTag}></div>
+          <div class="estimate">
+            <div data-res-total aria-live="polite"></div>
+            <div class="field est-grade"><span class="label" id="l-grade">Parts quality</span><div class="chips" role="radiogroup" aria-labelledby="l-grade">${Object.entries(C.pricing.partsGrade).map(([id, g]) => `<label class="chip"><input type="radio" name="grade" value="${id}"${id === "standard" ? " checked" : ""}><span>${esc({ economy: "Economy", standard: "Standard", genuine: "Genuine (OEM)" }[id] || g.label)}</span></label>`).join("")}</div><span class="hint" data-grade-hint></span></div>
+            <div class="est-body" data-res-body></div>
           </div>
-          <div class="qty-row" data-qty hidden></div>
-          <p class="err" data-err="2" hidden></p>
         </section>
-        <section data-step="3" hidden>
-          <div class="step-title"><span class="num">07</span><${headingTag} data-i18n="est.details">Problem & pickup</${headingTag}></div>
-          <div class="field" style="margin-top:14px"><span class="label" id="l-lights">Warning lights on the dashboard (optional)</span><div class="chips" aria-labelledby="l-lights">${chipsHtml("lights", ["Check engine", "ABS", "Battery", "Oil pressure", "Temperature", "Airbag"].map((x) => ({ id: x, label: x })), "checkbox")}</div></div>
-          <div class="field" style="margin-top:14px"><label for="e-symptoms">Symptoms or notes (optional)</label><textarea id="e-symptoms" maxlength="500" placeholder="e.g. squeaking when braking, AC not cooling"></textarea></div>
-          <div class="grid-2" style="margin-top:14px">
-            <div class="field"><label for="e-pickup">Pickup & drop</label><select id="e-pickup"><option value="yes">Yes, pick up my car</option><option value="no">No, I'll drop it at the workshop</option></select></div>
-            <div class="field" data-pin-field><label for="e-pin">Locality or PIN code</label><input id="e-pin" autocomplete="postal-code" placeholder="e.g. Vijay Nagar or 452010"></div>
-            <div class="field"><label for="e-date">Preferred date (optional)</label><input id="e-date" type="date"><p class="err" data-date-err hidden></p></div>
-            <div class="field"><label for="e-time">Preferred time (optional)</label><select id="e-time"><option value="">Any time</option>${(B.timeSlots || []).map((t) => `<option>${esc(t)}</option>`).join("")}</select></div>
-            <div class="field"><label for="e-name">Your name (optional)</label><input id="e-name" autocomplete="name" maxlength="60"></div>
-          </div>
-          <div data-pin-result style="margin-top:12px"></div>
-        </section>
-        <section data-step="4" hidden aria-live="polite"></section>
-        <div class="summary-chip" data-summary hidden></div>
-        <div class="step-nav">
+        <div class="est-foot" data-foot>
           <button type="button" class="btn btn--outline btn--sm" data-back hidden>Back</button>
-          <button type="submit" class="btn" data-next style="margin-left:auto"><span data-i18n="est.next">Next</span> ${ICON.arrow}</button>
+          <div class="est-run" data-run><small data-run-k>Your estimate</small><b data-run-v>Pick a job and your car</b></div>
+          <button type="submit" class="btn" data-next><span data-i18n="est.see">See my price</span> ${ICON.arrow}</button>
         </div>
       </form>`;
 
     const form = $("form", root);
-    const brand = $("#e-brand", root), model = $("#e-model", root), modelOther = $("#e-model-other", root), year = $("#e-year", root);
-    fillBrands(brand); fillModels(model, ""); fillYears(year);
-    $("#e-date", root).min = today();
-    let step = 1;
-
-    brand.addEventListener("change", () => {
-      const other = brand.value === "other";
-      model.hidden = other; modelOther.hidden = !other;
-      fillModels(model, brand.value);
-      if (LUX.includes(brand.value)) setRadio("cat", "luxury");
-    });
-    model.addEventListener("change", () => {
-      const opt = model.selectedOptions[0];
-      if (opt && opt.dataset.cat) setRadio("cat", opt.dataset.cat);
-      if (/EV$/.test(model.value)) setRadio("fuel", "electric");
-    });
+    const car = $("#e-car", root);
+    let step = 1, vehicle = { brand: "", model: "", category: "" };
     function setRadio(name, val) { const r = form.querySelector(`input[name="${name}"][value="${val}"]`); if (r) r.checked = true; }
     function radio(name) { const r = form.querySelector(`input[name="${name}"]:checked`); return r ? r.value : ""; }
+    const nowYear = () => new Date().getFullYear();
+    const yearForAge = () => radio("age") === "old" ? String(nowYear() - (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) - 1) : "";
+
+    // Typed car → brand, model and car type. Unknown cars are still accepted; then the car type is asked.
+    let catManual = false;
+    function readCar() {
+      vehicle = resolveCar(car.value);
+      const brandId = (C.brands.find((b) => b.name === vehicle.brand) || {}).id || "";
+      let category = vehicle.category || (LUX.includes(brandId) ? "luxury" : "");
+      if (category && !catManual) setRadio("cat", category);
+      if (/\bEV\b|EV$/i.test(car.value.trim())) setRadio("fuel", "electric");
+      const auto = !!category && !catManual;
+      $("[data-cat-auto]", root).hidden = !auto;
+      $("[data-cat-field]", root).hidden = auto || !car.value.trim();
+      if (auto) $("[data-cat-label]", root).textContent = catLabel(radio("cat"));
+      vehicle.brandId = brandId;
+    }
+    car.addEventListener("input", () => { readCar(); refreshPrices(); });
+    car.addEventListener("change", () => { readCar(); refreshPrices(); });
+    $("[data-cat-change]", root).addEventListener("click", () => { catManual = true; $("[data-cat-auto]", root).hidden = true; $("[data-cat-field]", root).hidden = false; const r = $('input[name="cat"]:checked', root) || $('input[name="cat"]', root); if (r) r.focus(); });
+    $$('input[name="cat"]', root).forEach((r) => r.addEventListener("change", () => { catManual = true; refreshPrices(); }));
+    $$('input[name="fuel"], input[name="age"]', root).forEach((r) => r.addEventListener("change", refreshPrices));
 
     function renderQty() {
       const box = $("[data-qty]", root);
@@ -243,20 +261,35 @@
         const s = svcById[inp.dataset.qtyFor];
         state.qty[s.id] = inp.value;
         fieldError(inp, F.quantityError(inp.value, s.qty.max));
+        updateRun();
       }));
+    }
+    function syncTiles() {
+      $$("[data-tile]", root).forEach((t) => {
+        const cb = $(`.svc-opt input[value="${t.dataset.tile}"]`, root);
+        t.checked = state.services.has(t.dataset.tile); t.disabled = cb.disabled;
+        t.closest(".est-tile").classList.toggle("disabled", cb.disabled);
+      });
+      $("[data-all-count]", root).textContent = state.services.size ? "· " + state.services.size + " selected" : "";
     }
     $$(".svc-opt input", root).forEach((cb) => cb.addEventListener("change", () => {
       const s = svcById[cb.value];
       if (cb.checked && state.services.size >= F.maxServices && !state.services.has(cb.value) &&
           !(s.exclusive && [...state.services].some(id => svcById[id].exclusive === s.exclusive))) {
-        cb.checked = false; err(2, `Choose up to ${F.maxServices} services per request.`); return;
+        cb.checked = false; err(2, `Choose up to ${F.maxServices} services per request.`); syncTiles(); return;
       }
       if (cb.checked && s.exclusive) {   // e.g. only one periodic service level at a time
         $$(".svc-opt input", root).forEach((o) => { if (o !== cb && o.checked && svcById[o.value].exclusive === s.exclusive) { o.checked = false; o.closest(".svc-opt").classList.remove("checked"); state.services.delete(o.value); } });
       }
       cb.closest(".svc-opt").classList.toggle("checked", cb.checked);
       cb.checked ? state.services.add(cb.value) : state.services.delete(cb.value);
-      renderQty();
+      if (state.services.size) err(2, "");
+      renderQty(); syncTiles(); updateRun();
+    }));
+    $$("[data-tile]", root).forEach((t) => t.addEventListener("change", () => {
+      const cb = $(`.svc-opt input[value="${t.dataset.tile}"]`, root);
+      if (cb && cb.checked !== t.checked) { cb.checked = t.checked; cb.dispatchEvent(new Event("change")); }
+      syncTiles();
     }));
     const search = $("#e-search", root);
     const searchVocab = F.searchVocabulary($$(".svc-opt", root).map((o) => o.dataset.search));
@@ -270,161 +303,85 @@
       });
       $("[data-search-empty]", root).hidden = shown > 0;
     });
-    preset.forEach((id) => { const cb = $(`.svc-opt input[value="${id}"]`, root); if (cb) { cb.checked = true; cb.dispatchEvent(new Event("change")); } });
-
-    const pickupSel = $("#e-pickup", root), pin = $("#e-pin", root);
-    // State is recomputed silently; the message renders while typing (debounced), never on blur,
-    // so the layout doesn't jump under the user's finger as they tap "See estimate".
-    function refreshPin(render = true) {
-      $("[data-pin-field]", root).hidden = pickupSel.value === "no";
-      state.pickupResult = pickupSel.value === "no" || !pin.value.trim() ? null : checkArea(pin.value);
-      if (render) $("[data-pin-result]", root).innerHTML = state.pickupResult ? areaMessage(state.pickupResult, pin.value.trim()) : "";
+    function applyPreset(ids) {
+      $$(".svc-opt input", root).forEach((cb) => { const on = ids.includes(cb.value); if (cb.checked !== on) { cb.checked = on; cb.dispatchEvent(new Event("change")); } });
+      // A preset job that isn't one of the tiles is visible in the full list.
+      if (ids.some((id) => !tiles.some(([t]) => t === id))) $("[data-all-services]", root).open = true;
     }
-    let pinTimer;
-    pickupSel.addEventListener("change", () => refreshPin());
-    pin.addEventListener("input", () => { clearTimeout(pinTimer); refreshPin(false); pinTimer = setTimeout(refreshPin, /^\s*\d{6}\s*$/.test(pin.value) ? 0 : 700); });
-    $("#e-date", root).min = today();
+    if (preset.length) applyPreset(preset);
 
     function carLabel() {
-      const b = brandById[brand.value];
-      const m = brand.value === "other" ? modelOther.value.trim() : model.value;
-      return [b && b.id !== "other" ? b.name : "", m, year.value ? "(" + (Number(year.value) < C.yearRange.from ? "before " + C.yearRange.from : year.value) + ")" : ""].filter(Boolean).join(" ");
+      const name = [vehicle.brand, vehicle.model].filter(Boolean).join(" ");
+      return name + (radio("age") === "old" ? " (over " + (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) + " years old)" : "");
     }
     function err(n, msg) { const e = $(`[data-err="${n}"]`, root); e.id = `estimate-step-${n}-error`; e.setAttribute("role", "alert"); e.textContent = msg || ""; e.hidden = !msg; }
-    function validate(n) {
-      if (n === 1) {
-        const m = brand.value === "other" ? modelOther.value.trim() : model.value;
-        const missing = [!brand.value && "manufacturer", !m && "model", !year.value && "year", !radio("fuel") && "fuel type", !radio("cat") && "category"].filter(Boolean);
-        [brand, model, modelOther, year].forEach((el) => el.removeAttribute("aria-invalid"));
-        if (!brand.value) brand.setAttribute("aria-invalid", "true");
-        if (!m) (brand.value === "other" ? modelOther : model).setAttribute("aria-invalid", "true");
-        if (!year.value) year.setAttribute("aria-invalid", "true");
-        for (const el of [brand, model, modelOther, year, ...$$('input[name="fuel"], input[name="cat"]', root)]) {
-          el.setAttribute("aria-describedby", "estimate-step-1-error");
-          if (el.name === "fuel" || el.name === "cat") !radio(el.name) ? el.setAttribute("aria-invalid", "true") : el.removeAttribute("aria-invalid");
-        }
-        err(1, missing.length ? "Please choose your " + missing.join(", ") + "." : "");
-        return !missing.length;
+    function validate() {
+      let ok = true;
+      const svcMsg = !state.services.size ? "Pick at least one job (or search all services)." : state.services.size > F.maxServices ? `Choose up to ${F.maxServices} services per request.` : "";
+      err(2, svcMsg); ok = !svcMsg;
+      for (const el of $$("[data-qty-for]", root)) ok = fieldError(el, F.quantityError(el.value, svcById[el.dataset.qtyFor].qty.max)) && ok;
+      readCar();
+      const missing = [car.value.trim().length < 2 && "car", !radio("fuel") && "fuel", car.value.trim().length >= 2 && !radio("cat") && "car type"].filter(Boolean);
+      car.setAttribute("aria-describedby", "estimate-step-1-error");
+      car.value.trim().length < 2 ? car.setAttribute("aria-invalid", "true") : car.removeAttribute("aria-invalid");
+      $$('input[name="fuel"], input[name="cat"]', root).forEach((el) => { el.setAttribute("aria-describedby", "estimate-step-1-error"); !radio(el.name) ? el.setAttribute("aria-invalid", "true") : el.removeAttribute("aria-invalid"); });
+      if (missing.includes("car type")) $("[data-cat-field]", root).hidden = false;
+      err(1, missing.length ? "Please add your " + missing.join(", ") + "." : "");
+      ok = !missing.length && ok;
+      if (!ok) {
+        const target = svcMsg ? $('[data-err="2"]', root) : $('[aria-invalid="true"]', root);
+        if (target) { if (!target.matches("input")) target.tabIndex = -1; target.focus(); }
       }
-      if (n === 2) {
-        const message = !state.services.size ? "Select at least one service." : state.services.size > F.maxServices ? `Choose up to ${F.maxServices} services per request.` : "";
-        err(2, message); let ok = !message;
-        for (const el of $$("[data-qty-for]", root)) ok = fieldError(el, F.quantityError(el.value, svcById[el.dataset.qtyFor].qty.max)) && ok;
-        if (message) { const box = $('[data-err="2"]', root); box.tabIndex = -1; box.focus(); }
-        return ok;
-      }
-      if (n === 3) {
-        const date = $("#e-date", root), msg = dateIssue(date);
-        fieldError(date, msg);
-        return !msg;
-      }
-      return true;
+      return ok;
     }
+    function ready() { return state.services.size > 0 && car.value.trim().length >= 2 && radio("fuel") && radio("cat"); }
     function compute() {
-      refreshPin(false);
-      const pr = pickupSel.value === "no" ? "none" : AREA.pickupState(state.pickupResult);
       return PR.estimate(C, {
-        category: radio("cat"), fuel: radio("fuel"), year: year.value, partsGrade: $("#e-grade", root).value,
-        services: [...state.services].map((id) => ({ id, qty: state.qty[id] || 1 })),
-        pickup: pr
+        category: radio("cat"), fuel: radio("fuel"), year: yearForAge(), partsGrade: state.partsGrade,
+        services: [...state.services].map((id) => ({ id, qty: state.qty[id] || 1 }))
       });
     }
     function bookingPayload(r) {
       return {
-        name: $("#e-name", root).value.trim(), brand: brand.value, model: brand.value === "other" ? modelOther.value.trim() : model.value,
-        car: carLabel(), year: year.value, yearExact: true, fuel: radio("fuel"), category: radio("cat"),
-        services: [...state.services], qty: Object.fromEntries(Object.entries(state.qty).map(([id, q]) => [id, Number(q)])), lights: $$('input[name="lights"]:checked', root).map((i) => i.value),
-        symptoms: $("#e-symptoms", root).value.trim(), pickup: pickupSel.value, area: pin.value.trim(),
-        date: $("#e-date", root).value, time: $("#e-time", root).value,
-        estimate: r.pricedJobs ? PR.formatRange(r.total) + (r.partsQuoted ? " + parts quoted by model" : "") : unpriced(r).short, partsGrade: $("#e-grade", root).value
+        brand: vehicle.brandId || (car.value.trim() ? "other" : ""), model: vehicle.model,
+        car: carLabel(), year: "", yearExact: false, fuel: radio("fuel"), category: radio("cat"),
+        services: [...state.services], qty: Object.fromEntries(Object.entries(state.qty).map(([id, q]) => [id, Number(q)])), lights: [],
+        symptoms: radio("age") === "old" ? "Car is over " + (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) + " years old" : "",
+        estimate: r.pricedJobs ? PR.formatRange(r.total) + (r.partsQuoted ? " + parts quoted by model" : "") : unpriced(r).short, partsGrade: state.partsGrade
       };
     }
-    // Headline when nothing could be priced: say why, instead of always "Inspection required".
+    // Headline when nothing could be priced: say why.
     function unpriced(r) {
-      if (r.inspection.length) return { title: "Inspection required", short: "Quote after inspection", text: "Request a quote — we'll price it after inspecting the car" };
+      if (r.inspection.length) return { title: "Quote after inspection", short: "Quote after inspection", text: "We'll price it after inspecting the car" };
       if (r.quotes.length) return { title: "Price on request", short: "Price on request", text: "We'll send you a quote on WhatsApp" };
       return { title: "No priced jobs", short: "No applicable jobs", text: "These jobs don't apply to your car. Go back and choose other services" };
     }
     function waMessage(p, r) {
       const svcNames = p.services.map((id) => svcById[id].name + (svcById[id].qty ? " × " + (p.qty[id] || 1) + " " + svcById[id].unit.replace(/^per /, "") + "(s)" : ""));
-      const fuel = (C.fuels.find((f) => f.id === p.fuel) || {}).label || "";
       return [
         `Hello ${B.name}, I'd like to book a service.`,
-        p.name ? `Name: ${p.name}` : null,
         `Car: ${p.car}`,
-        `Fuel: ${fuel}`,
+        `Fuel: ${fuelLabel(p.fuel)}`,
         `Services: ${svcNames.join(", ")}`,
         `Estimated range: ${p.estimate}${C.pricing.isDemo ? " (website demo estimate)" : ""}`,
+        `Parts: ${(C.pricing.partsGrade[p.partsGrade] || {}).label || p.partsGrade}`,
         r.inspection.length ? `Needs inspection: ${r.inspection.join(", ")}` : null,
         r.quotes.length ? `Price on request: ${r.quotes.join(", ")}` : null,
-        p.lights.length ? `Warning lights: ${p.lights.join(", ")}` : null,
-        p.symptoms ? `Symptoms: ${p.symptoms}` : null,
-        `Pickup & drop: ${p.pickup === "yes" ? "Yes" : "No, I'll drop it"}`,
-        p.area ? `Area / PIN: ${p.area}` : null,
-        p.date || p.time ? `Preferred: ${[p.date, p.time].filter(Boolean).join(", ")}` : null,
+        "Area / PIN: ",
         "Please confirm availability and the final quote."
-      ].filter(Boolean).join("\n");
+      ].filter((x) => x != null).join("\n");
     }
-    function renderResult() {
+    // Running price on step 1: updates as jobs and car details change.
+    function updateRun() {
+      const k = $("[data-run-k]", root), v = $("[data-run-v]", root);
+      if (!state.services.size) { k.textContent = "Your estimate"; v.textContent = "Pick a job and your car"; return; }
+      if (!ready()) { k.textContent = state.services.size + (state.services.size === 1 ? " job" : " jobs") + " selected"; v.textContent = "Add your car to see the price"; return; }
       const r = compute();
-      const p = bookingPayload(r);
-      store.set("cmi-booking", p);
-      const rows = r.lines.map((l) => {
-        if (l.status === "priced") return `<tr><td>${esc(l.name)}${l.qty > 1 ? ` × ${l.qty} ${esc((l.unit || "").replace(/^per /, ""))}s` : ""}<br><span class="small muted">Labour ${PR.formatRange(l.labour)} · ${l.parts ? "Parts " + PR.formatRange(l.parts) : esc(l.partsNote || "Parts quoted by model")}</span></td><td>${PR.formatRange(l.total)}${l.partsQuoted ? "<br><span class=\"small muted\">+ parts</span>" : ""}</td></tr>`;
-        if (l.status === "covered") return `<tr><td>${esc(l.name)} <span class="tag tag--ok">Included</span><br><span class="small muted">Part of ${esc(l.coveredBy)}</span></td><td>—</td></tr>`;
-        if (l.status === "inspection") return `<tr><td>${esc(l.name)} <span class="tag tag--warn">Inspection</span><br><span class="small muted">Inspection required — request a quote</span></td><td>Quote</td></tr>`;
-        if (l.status === "quote") return `<tr><td>${esc(l.name)} <span class="tag tag--warn">On request</span><br><span class="small muted">${esc(l.reason)} — we'll quote on WhatsApp</span></td><td>Quote</td></tr>`;
-        return `<tr><td>${esc(l.name)} <span class="tag tag--muted">N/A</span><br><span class="small muted">${esc(l.reason || "Not applicable")}</span></td><td>—</td></tr>`;
-      }).join("");
-      const priced = r.pricedJobs > 0;
-      $('[data-step="4"]', root).innerHTML = `
-        <div class="step-title"><span class="num">08</span><${headingTag}>Your estimate</${headingTag}></div>
-        <div class="estimate">
-          <div class="est-total">
-            <span class="k">${esc(p.car)} · ${esc((C.fuels.find((f) => f.id === p.fuel) || {}).label)} · ${esc((C.categories.find((c) => c.id === p.category) || {}).label)}</span>
-            <span class="v">${priced ? PR.formatRange(r.total) : esc(unpriced(r).title)}</span>
-            <span class="t">${priced ? "Estimated total" + (r.partsQuoted ? " + parts quoted by model" : "") + (r.tax ? " incl. " + esc(r.taxLabel) : "") + (r.inspection.length || r.quotes.length ? " · other jobs quoted separately" : "") : esc(unpriced(r).text)}${r.hours ? " · Typical time: " + PR.formatHours(r.hours) : ""}</span>
-          </div>
-          <div class="table-scroll"><table class="est-table">
-            <thead><tr><th>Job</th><th>Range</th></tr></thead>
-            <tbody>${rows}
-              ${priced ? `<tr><td>Estimated labour</td><td>${PR.formatRange(r.labour)}</td></tr>
-              <tr><td>Estimated parts & consumables</td><td>${PR.formatRange(r.parts)}${r.partsQuoted ? "<br><span class=\"small muted\">+ parts quoted by model</span>" : ""}</td></tr>
-              <tr><td>${r.tax ? esc(r.taxLabel) : "Taxes"}</td><td>${r.tax ? PR.formatRange(r.tax) : "As per final bill"}</td></tr>` : ""}
-              <tr><td>${esc(r.pickup.label)}${r.pickup.note ? `<br><span class="small muted">${esc(r.pickup.note)}</span>` : ""}</td><td>${r.pickup.amount ? (r.pickup.amount[1] === 0 ? "₹0" : PR.formatRange(r.pickup.amount)) : "TBC"}</td></tr>
-              ${priced ? `<tr class="sum"><td>Estimated total${r.partsQuoted ? " (excl. parts quoted by model)" : ""}</td><td>${PR.formatRange(r.total)}</td></tr>` : ""}
-            </tbody></table></div>
-          ${r.includes.length || r.excludes.length ? `<div class="inc-exc">
-            <div><${subHeadingTag} class="estimate-list-title">Included</${subHeadingTag}><ul>${r.includes.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div>
-            <div><${subHeadingTag} class="estimate-list-title">Not included</${subHeadingTag}><ul>${r.excludes.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div></div>` : ""}
-          ${r.notes.map((n) => `<p class="small muted">• ${esc(n)}</p>`).join("")}
-          <p class="disclaimer"><strong>This is an indicative estimate, not a final price.</strong> The final quotation is given after inspection. No additional work is done without your approval, and you get an itemised bill.${C.pricing.isDemo ? " <strong>Prices shown are demo values until the workshop publishes its rate card.</strong>" : ""}</p>
-          <div class="est-actions">
-            <a class="btn" data-book-form href="booking.html">${ICON.calendar} Book This Service</a>
-            <a class="btn btn--wa" data-book-wa target="_blank" rel="noopener" href="${waUrl(waMessage(p, r))}">${ICON.wa} Book on WhatsApp</a>
-          </div>
-          <div class="est-tools">
-            <button type="button" class="btn btn--outline btn--sm" data-copy-est>Copy estimate</button>
-            <button type="button" class="btn btn--outline btn--sm" data-restart>Start over</button>
-          </div>
-          <p class="small muted" data-copy-status aria-live="polite">Your details carry over to the booking form, or WhatsApp opens with them filled in. A booking is confirmed only after the garage replies.</p>
-        </div>`;
-      const box = $('[data-step="4"]', root);
-      const text = [waMessage(p, r).replace(/^Hello[^\n]*\n/, "").replace(/\nPlease confirm.*$/, ""), "Indicative estimate — final quote after inspection."].join("\n");
-      $("[data-copy-est]", box).addEventListener("click", () => {
-        const done = (ok) => { $("[data-copy-status]", box).textContent = ok ? "Estimate copied." : "Couldn't copy automatically — select the text in the table instead."; };
-        try { navigator.clipboard.writeText(text).then(() => done(true), () => done(false)); } catch (e) { done(false); }
-      });
-      $("[data-restart]", box).addEventListener("click", () => {
-        store.remove("cmi-booking");
-        form.reset(); state.services.clear(); state.pickupResult = null;
-        $$(".svc-opt", root).forEach((o) => o.classList.remove("checked"));
-        state.qty = {}; renderQty(); search.value = ""; search.dispatchEvent(new Event("input"));
-        fillModels(model, ""); model.hidden = false; modelOther.hidden = true; refreshPin(); go(1);
-      });
+      k.textContent = "Estimate · " + state.services.size + (state.services.size === 1 ? " job" : " jobs");
+      v.textContent = r.pricedJobs ? PR.formatRange(r.total) + (r.partsQuoted ? " + parts" : "") : unpriced(r).short;
     }
-    // Re-price the service list for the chosen car and switch off jobs that don't apply (e.g. oil change on an EV).
-    function refreshServiceList() {
+    // Re-price the tiles and the service list for the chosen car; switch off jobs that don't apply (e.g. oil change on an EV).
+    function refreshPrices() {
       const category = radio("cat") || "hatchback", fuel = radio("fuel") || "petrol";
       let removed = false;
       $$(".svc-opt", root).forEach((o) => {
@@ -435,33 +392,101 @@
         cb.disabled = na;
         if (na && cb.checked) { cb.checked = false; o.classList.remove("checked"); state.services.delete(s.id); removed = true; }
       });
+      $$("[data-tile-price]", root).forEach((el) => { el.textContent = tileText(el.dataset.tilePrice, category, fuel); });
       if (removed) renderQty();
       const hint = $("[data-svc-hint]", root);
-      if (hint) hint.textContent = "Select one or more. Overlapping jobs are counted once. Prices shown are for a " + catLabel(category).toLowerCase() + (fuel !== "petrol" ? " (" + fuelLabel(fuel).toLowerCase() + ")" : "") + "; your final estimate also reflects the car's age and parts grade." + (fuel === "electric" ? " Jobs that don't apply to electric cars are switched off." : "");
+      if (hint) hint.textContent = "Select one or more. Overlapping jobs are counted once. Prices shown are for a " + catLabel(category).toLowerCase() + (fuel !== "petrol" ? " (" + fuelLabel(fuel).toLowerCase() + ")" : "") + "; your estimate also reflects the car's age and parts quality." + (fuel === "electric" ? " Jobs that don't apply to electric cars are switched off." : "");
+      if ($("[data-cat-label]", root)) $("[data-cat-label]", root).textContent = catLabel(radio("cat"));
+      syncTiles(); updateRun();
     }
-    function go(n) {
-      if (n === 2) refreshServiceList();
+    function renderResult() {
+      const r = compute();
+      const p = bookingPayload(r);
+      store.set("cmi-booking", p);
+      const rows = r.lines.map((l) => {
+        if (l.status === "priced") return `<tr><td>${esc(l.name)}${l.qty > 1 ? ` × ${l.qty} ${esc((l.unit || "").replace(/^per /, ""))}s` : ""}<br><span class="small muted">Labour ${PR.formatRange(l.labour)} · ${l.parts ? "Parts " + PR.formatRange(l.parts) : esc(l.partsNote || "Parts quoted by model")}</span></td><td>${PR.formatRange(l.total)}${l.partsQuoted ? "<br><span class=\"small muted\">+ parts</span>" : ""}</td></tr>`;
+        if (l.status === "covered") return `<tr><td>${esc(l.name)} <span class="tag tag--ok">Included</span><br><span class="small muted">Part of ${esc(l.coveredBy)}</span></td><td>—</td></tr>`;
+        if (l.status === "inspection") return `<tr><td>${esc(l.name)} <span class="tag tag--warn">Inspection</span><br><span class="small muted">Quote after inspection</span></td><td>Quote</td></tr>`;
+        if (l.status === "quote") return `<tr><td>${esc(l.name)} <span class="tag tag--warn">On request</span><br><span class="small muted">${esc(l.reason)} — we'll quote on WhatsApp</span></td><td>Quote</td></tr>`;
+        return `<tr><td>${esc(l.name)} <span class="tag tag--muted">N/A</span><br><span class="small muted">${esc(l.reason || "Not applicable")}</span></td><td>—</td></tr>`;
+      }).join("");
+      const priced = r.pricedJobs > 0;
+      // One line per chosen job: its name and the first "includes" note.
+      const incList = r.lines.filter((l) => l.status !== "not-applicable").map((l) => [l.name, ((svcById[l.id] || {}).includes || [])[0] || ""]);
+      const summaryLine = [carLabel(), fuelLabel(p.fuel), catLabel(p.category), state.services.size + (state.services.size === 1 ? " job" : " jobs")].filter(Boolean).join(" · ");
+      const resBody = $("[data-res-body]", root);
+      const wasOpen = !!$(".est-breakdown[open]", resBody);
+      $("[data-res-total]", root).innerHTML = `
+          <div class="est-total">
+            <span class="k">${esc(summaryLine)}</span>
+            <span class="v">${priced ? PR.formatRange(r.total) : esc(unpriced(r).title)}</span>
+            <span class="t">${priced ? "Estimated total" + (r.partsQuoted ? " + parts quoted by model" : "") + (r.tax ? " incl. " + esc(r.taxLabel) : "") + (r.inspection.length || r.quotes.length ? " · other jobs quoted separately" : "") : esc(unpriced(r).text)}${r.hours ? " · Typical time: " + PR.formatHours(r.hours) : ""}</span>
+          </div>`;
+      $("[data-grade-hint]", root).textContent = ((C.pricing.partsGrade[state.partsGrade] || {}).label || "") + " — the price above updates when you change this.";
+      resBody.innerHTML = `          ${incList.length ? `<div class="est-inc"><${subHeadingTag} class="estimate-list-title">What's included</${subHeadingTag}><ul>${incList.map(([n, i]) => `<li><b>${esc(n)}</b>${i ? " — " + esc(i) : ""}</li>`).join("")}</ul></div>` : ""}
+          <div class="est-promise"><strong>Final price after inspection.</strong> No extra work without your OK. Free pickup &amp; drop in our confirmed Indore PIN codes.</div>
+          <div class="est-actions est-actions--3">
+            <a class="btn" data-book-form href="booking.html">${ICON.calendar} Book at this price</a>
+            <a class="btn btn--wa" data-book-wa target="_blank" rel="noopener" href="${waUrl(waMessage(p, r))}">${ICON.wa} WhatsApp</a>
+            <button type="button" class="btn btn--outline" data-share-est>Share</button>
+          </div>
+          <p class="small muted" data-copy-status aria-live="polite">Booking keeps your car and jobs, so you only add your name and number.</p>
+          <details class="est-breakdown"><summary>See full breakdown</summary>
+            <div class="table-scroll"><table class="est-table">
+              <thead><tr><th>Job</th><th>Range</th></tr></thead>
+              <tbody>${rows}
+                ${priced ? `<tr><td>Estimated labour</td><td>${PR.formatRange(r.labour)}</td></tr>
+                <tr><td>Estimated parts & consumables</td><td>${PR.formatRange(r.parts)}${r.partsQuoted ? "<br><span class=\"small muted\">+ parts quoted by model</span>" : ""}</td></tr>
+                <tr><td>${r.tax ? esc(r.taxLabel) : "Taxes"}</td><td>${r.tax ? PR.formatRange(r.tax) : "As per final bill"}</td></tr>` : ""}
+                ${priced ? `<tr class="sum"><td>Estimated total${r.partsQuoted ? " (excl. parts quoted by model)" : ""}</td><td>${PR.formatRange(r.total)}</td></tr>` : ""}
+              </tbody></table></div>
+            ${r.excludes.length ? `<div class="inc-exc"><div><${subHeadingTag} class="estimate-list-title">Not included</${subHeadingTag}><ul>${r.excludes.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div></div>` : ""}
+            ${r.notes.map((n) => `<p class="small muted">• ${esc(n)}</p>`).join("")}
+            <p class="disclaimer"><strong>This is an indicative estimate, not a final price.</strong> The final quotation is given after inspection. No additional work is done without your approval, and you get an itemised bill.${C.pricing.isDemo ? " <strong>Prices shown are demo values until the workshop publishes its rate card.</strong>" : ""}</p>
+            <div class="est-tools">
+              <button type="button" class="btn btn--outline btn--sm" data-copy-est>Copy estimate</button>
+              <button type="button" class="btn btn--outline btn--sm" data-restart>Start over</button>
+            </div>
+          </details>`;
+      if (wasOpen) $(".est-breakdown", resBody).open = true;
+      const box = resBody;
+      const text = [waMessage(p, r).replace(/^Hello[^\n]*\n/, "").replace(/\nArea \/ PIN:.*$/s, ""), "Indicative estimate — final quote after inspection.", location.origin + location.pathname.replace(/[^/]*$/, "") + "estimate.html"].join("\n");
+      const status = (msg) => { $("[data-copy-status]", box).textContent = msg; };
+      const copy = (okMsg) => { try { navigator.clipboard.writeText(text).then(() => status(okMsg), () => status("Couldn't copy automatically — select the text in the breakdown instead.")); } catch (e) { status("Couldn't copy automatically — select the text in the breakdown instead."); } };
+      $("[data-copy-est]", box).addEventListener("click", () => copy("Estimate copied."));
+      $("[data-share-est]", box).addEventListener("click", () => {
+        if (navigator.share) navigator.share({ title: "Car service estimate — " + B.name, text }).catch(() => {});
+        else copy("Estimate copied — paste it anywhere to share.");
+      });
+      $("[data-restart]", box).addEventListener("click", () => {
+        store.remove("cmi-booking");
+        form.reset(); state.services.clear(); state.qty = {}; state.partsGrade = "standard"; setRadio("grade", "standard"); catManual = false; vehicle = { brand: "", model: "", category: "" };
+        $$(".svc-opt", root).forEach((o) => o.classList.remove("checked"));
+        renderQty(); search.value = ""; search.dispatchEvent(new Event("input"));
+        $("[data-cat-auto]", root).hidden = true; $("[data-cat-field]", root).hidden = true; $("[data-all-services]", root).open = false;
+        refreshPrices(); go(1);
+      });
+    }
+    function go(n, moveFocus = true) {
       step = n;
       $$("section[data-step]", root).forEach((s) => { s.hidden = Number(s.dataset.step) !== n; });
       $$(".steps-bar span", root).forEach((s, i) => s.classList.toggle("on", i < n));
+      $("[data-e-count]", root).textContent = `Step ${n} of 2`;
       $("[data-back]", root).hidden = n === 1;
-      $("[data-next]", root).hidden = n === 4;
-      const nx = $("[data-next] span", root);
-      nx.textContent = n === 3 ? "See estimate" : "Next";
-      const sum = $("[data-summary]", root);
-      sum.hidden = n === 1 || n === 4;
-      sum.textContent = carLabel() + (state.services.size && n > 2 ? " · " + state.services.size + " service(s)" : "");
-      if (n === 4) renderResult();
+      $("[data-next]", root).hidden = n === 2;
+      $("[data-run]", root).hidden = n === 2;
+      $("[data-foot]", root).classList.toggle("est-foot--result", n === 2);
+      if (n === 2) renderResult();
+      if (!moveFocus) return;
       focusStep($(`section[data-step="${n}"]`, root));
-      if (n > 1) { const top = root.getBoundingClientRect().top; if (top < 0) root.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      const top = root.getBoundingClientRect().top; if (top < 0) root.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    form.addEventListener("submit", (e) => { e.preventDefault(); if (validate(step)) go(Math.min(4, step + 1)); else { const inv = $('[aria-invalid="true"]', root); if (inv) inv.focus(); } });
-    $("[data-back]", root).addEventListener("click", () => go(Math.max(1, step - 1)));
-    refreshPin();
-    root.cmiPreset = (ids) => {
-      $$(".svc-opt input", root).forEach((cb) => { const on = ids.includes(cb.value); if (cb.checked !== on) { cb.checked = on; cb.dispatchEvent(new Event("change")); } });
-      if (step > 2) go(validate(1) ? 2 : 1);
-    };
+    $$('input[name="grade"]', root).forEach((g) => g.addEventListener("change", () => { state.partsGrade = g.value; renderResult(); }));
+    form.addEventListener("submit", (e) => { e.preventDefault(); if (step === 1 && validate()) go(2); });
+    $("[data-back]", root).addEventListener("click", () => go(1));
+    refreshPrices();
+    root.cmiPreset = (ids) => { applyPreset(ids); if (step !== 1) go(1, false); };
+    root.cmiFocusCar = () => { car.focus({ preventScroll: true }); };
     // Test hook (also handy for owner QA in the console)
     root.cmiDebug = { compute, go, setRadio };
   }
@@ -733,10 +758,16 @@
     const raw = String(text || "").trim().replace(/\s+/g, " ");
     const words = raw.toLowerCase();
     if (!raw) return { brand: "", model: "", category: "" };
+    // Exact model, a typed start of a model ("cre" → Creta), or a model inside extra words
+    // ("Nexon EV", "City 2015", "Swift Dzire" → Dzire): the longest (then last) model name found sets the car type.
     const findModel = (b, rest) => {
       const k = carKey(rest);
       if (!k) return null;
-      return b.models.find((m) => carKey(m[0]) === k) || b.models.find((m) => carKey(m[0]).startsWith(k) && k.length >= 3) || null;
+      const exact = b.models.find((m) => carKey(m[0]) === k) || b.models.find((m) => carKey(m[0]).startsWith(k) && k.length >= 3);
+      if (exact) return { m: exact, exact: true };
+      const pre = b.models.filter((m) => k.includes(carKey(m[0])))
+        .sort((x, y) => carKey(y[0]).length - carKey(x[0]).length || k.lastIndexOf(carKey(y[0])) - k.lastIndexOf(carKey(x[0])))[0];
+      return pre ? { m: pre, exact: false } : null;
     };
     for (const b of C.brands) {
       if (!b.models.length) continue;
@@ -744,13 +775,14 @@
       const hit = names.find((n) => words === n || words.startsWith(n + " "));
       if (hit) {
         const rest = raw.slice(hit.length).trim();
-        const m = findModel(b, rest);
-        return m ? { brand: b.name, model: m[0], category: m[1] } : { brand: b.name, model: rest || raw, category: "" };
+        const f = findModel(b, rest);
+        if (f) return { brand: b.name, model: f.exact ? f.m[0] : rest.slice(0, 80), category: f.m[1] };
+        return { brand: b.name, model: (rest || raw).slice(0, 80), category: "" };
       }
     }
     for (const b of C.brands) {
-      const m = b.models.find((x) => carKey(x[0]) === carKey(raw));
-      if (m) return { brand: b.name, model: m[0], category: m[1] };
+      const f = findModel(b, raw);
+      if (f && (f.exact ? carKey(f.m[0]) === carKey(raw) : true)) return { brand: b.name, model: f.exact ? f.m[0] : raw.slice(0, 80), category: f.m[1] };
     }
     return { brand: "", model: raw.slice(0, 80), category: "" };
   }
@@ -1070,7 +1102,8 @@
       });
       $("[data-b-edit]", out).addEventListener("click", () => { f.hidden = false; hideQuick(false); out.innerHTML = ""; });
     });
-    show(0, false);
+    // Coming from the calculator with the car and jobs already chosen: open straight at "your details".
+    show(pre.estimate && car.value.trim().length >= 2 && selectedCount() ? 1 : 0, false);
   }
 
   /* ---------- Display language ---------- */
@@ -1088,6 +1121,15 @@
   /* ---------- Boot ---------- */
   function boot() {
     $$("[data-estimator]").forEach(mountEstimator);
+    // Home hero price tiles (phones): open the calculator with that job ticked, ready for the car.
+    $$("[data-hero-svc]").forEach((a) => a.addEventListener("click", (e) => {
+      const est = $("#estimate[data-estimator]");
+      if (!est || !est.cmiPreset) return;
+      e.preventDefault();
+      est.cmiPreset([a.dataset.heroSvc]);
+      est.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => est.cmiFocusCar && est.cmiFocusCar(), 450);
+    }));
     $$("[data-booking]").forEach(mountBooking);
     renderPackages(); renderRateTables(); renderReviews(); renderAreas(); renderGallery();
     $$("form[data-review-form]").forEach(mountReviewForm);
