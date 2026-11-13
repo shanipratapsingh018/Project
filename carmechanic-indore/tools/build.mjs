@@ -24,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.7.0";
+const VERSION = "2.7.1";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
