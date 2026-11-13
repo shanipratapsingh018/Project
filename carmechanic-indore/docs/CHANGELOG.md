@@ -1,3 +1,9 @@
+# v2.7.1 — Booking keeps the calculator price; Enter key stays on the calculator
+
+- **Fixed: the calculator price never reached the garage.** Entering a pickup PIN (or using "Use my current location") or choosing drop-off cancelled the carried estimate, and one of those is required, so every booking from the calculator arrived without the price. Only changing the car or the jobs cancels the estimate now; pickup, drop-off and the PIN don't change the price.
+- **Fixed: Enter / the phone's Go key jumped to booking.** In the calculator's service search, panel count or "type your model" box, Enter now just closes the keyboard; booking happens only from the "Book at this price" button.
+- Tests: the real calculator → booking flow now checks that the price reaches the garage for both pickup and drop-off, and that Enter stays on the calculator.
+
 # v2.7.0 — One-screen calculator, Back returns to your price
 
 - The cost calculator is now one screen. The dark bar at the bottom shows the running price and a **Book at this price** button; small **See breakdown · WhatsApp · Share** links appear under it once there is a price.
