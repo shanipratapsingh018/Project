@@ -1110,3 +1110,18 @@ html:has(.est-foot) { scroll-padding-bottom: 110px; }
 legend.sr-only { position: absolute; }
 .b-sec .hint { font-size: .85rem; color: var(--ink-2); margin: 0; }
 .b-sec .b-hint { margin-top: -6px; }
+
+/* v2.7.0 — one-screen calculator: price, "Book at this price" and small links in the dark bar; breakdown opens above it. */
+.est-stepline { padding-bottom: 4px; }
+.est-links { flex-basis: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 20px; margin: 2px 0 0; font-size: .9rem; font-weight: 600; }
+.est-links[hidden] { display: none; }
+.est-links .linkish, .est-links a { color: #fff; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; padding: 4px 0; font: inherit; cursor: pointer; min-height: 32px; }
+.est-links .est-links-wa { color: #4ade80; }
+.est-links .linkish:hover, .est-links a:hover { color: var(--signal); }
+.est-status { flex-basis: 100%; margin: 0; font-size: .85rem; color: #cfd5dc; text-align: center; }
+.est-status:empty { display: none; }
+.est-detail { display: grid; gap: 14px; margin-top: 14px; padding-top: 16px; border-top: 1px dashed var(--line); scroll-margin-top: 80px; }
+.est-detail[hidden] { display: none; }
+.est-detail:focus { outline: none; }
+.est-grade .label .hint { font-weight: 400; }
+.est-foot [data-next] { flex: 0 1 auto; min-width: 0; max-width: 100%; }
