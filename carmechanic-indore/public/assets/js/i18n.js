@@ -16,9 +16,9 @@
     if ((m = /^Please choose your (.+)\.$/.exec(key))) return "कृपया निर्माता, मॉडल, वर्ष, ईंधन और वाहन श्रेणी चुनें।";
     if ((m = /^We'll contact you on (.+) to confirm the slot and quotation\. Your booking is confirmed only after we call or message you\.$/.exec(key))) return `समय और कोटेशन की पुष्टि के लिए हम ${m[1]} पर संपर्क करेंगे। हमारी कॉल या संदेश के बाद ही बुकिंग पक्की होगी।`;
     if ((m = /^(.+) — the price above updates when you change this\.$/.exec(key))) return `${translate(m[1])} — इसे बदलने पर ऊपर की कीमत बदल जाएगी।`;
-    if ((m = /^Select one or more\. Overlapping jobs are counted once\. Prices shown are for a (.+?)(?: \((.+)\))?; your estimate also reflects the car's age and parts quality\.( Jobs that don't apply to electric cars are switched off\.)?$/.exec(key))) {
+    if ((m = /^Select one or more\. Overlapping jobs are counted once\. Prices shown are for a (.+?)(?: \((.+)\))?; your estimate also reflects parts quality\.( Jobs that don't apply to electric cars are switched off\.)?$/.exec(key))) {
       const cap = (x) => x.split(" / ").map((w) => w.length <= 3 ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1)).join(" / ");
-      return `एक या ज़्यादा चुनें। एक जैसे काम एक ही बार गिने जाते हैं। कीमतें ${translate(cap(m[1]))}${m[2] ? " (" + translate(cap(m[2])) + ")" : ""} के लिए हैं; अनुमान में कार की उम्र और पार्ट्स की गुणवत्ता भी शामिल है।${m[3] ? " इलेक्ट्रिक कारों पर लागू न होने वाले काम बंद हैं।" : ""}`;
+      return `एक या ज़्यादा चुनें। एक जैसे काम एक ही बार गिने जाते हैं। कीमतें ${translate(cap(m[1]))}${m[2] ? " (" + translate(cap(m[2])) + ")" : ""} के लिए हैं; अनुमान में पार्ट्स की गुणवत्ता भी शामिल है।${m[3] ? " इलेक्ट्रिक कारों पर लागू न होने वाले काम बंद हैं।" : ""}`;
     }
     if (key === "Select one or more. Overlapping jobs are counted once. Prices shown are for a hatchback; your estimate adjusts for your car.") return "एक या ज़्यादा चुनें। एक जैसे काम एक ही बार गिने जाते हैं। कीमतें हैचबैक के लिए हैं; अनुमान आपकी कार के अनुसार बदलेगा।";
     if ((m = /^(\d+) brands, current and older models\. Not listed\? Choose “My model isn't listed”\.$/.exec(key))) return `${m[1]} ब्रांड, नए और पुराने मॉडल। सूची में नहीं है? “मेरा मॉडल सूची में नहीं है” चुनें।`;
