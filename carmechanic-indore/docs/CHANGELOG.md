@@ -1,3 +1,14 @@
+# Admin 2.3.0 — Easier owner workspace on phones, with a Hindi switch
+
+- **Phone layout like an app:** a bottom bar with Home, Bookings (shows how many are new), Job cards, Bills and More (Customers, Payments, Settings, language, website, sign out). The current page is always visible.
+- **Home shows today:** new bookings, cars in the workshop, money collected today and unpaid bills (each opens the matching list), this month's total, quick-add buttons and the latest new bookings.
+- **Lists as cards on phones:** each booking, customer, job card and bill shows its key facts with Call, WhatsApp and Open buttons; no more sideways scrolling. Filter buttons (New, Confirmed, In workshop…) replace the dropdown, and search updates as you type. On a computer the tables stay, and a row opens with one click.
+- **Booking details:** big Call, WhatsApp and Map buttons; the estimate the customer saw; day and time; pickup address with "Open exact spot in Google Maps"; customer notes with their line breaks; a progress bar (New → Confirmed → In workshop → Ready → Delivered) with a one-tap button for the next step, plus Create job card, Edit details and Cancel booking. Job cards get Call and WhatsApp buttons too.
+- **Plainer words:** "Bills" instead of "Invoices", "Add booking" instead of "Add enquiry", whole-rupee amounts on cards, readable status names; the outdated "booking backend" note is gone.
+- **Hindi switch (हिंदी / English)** on the sign-in page, the top bar and the menu. Labels, buttons, messages, dates and time slots switch to Hindi; customer details, amounts and printed bills stay as they are. Only the language choice is remembered on the device.
+- Admin car list now includes Mahindra KUV100 and BMW M340i (matching the website).
+- Tests: admin browser test updated for the new navigation, cards, one-tap status and Hindi (124 checks), and its website-booking part now uses the current 2-step form.
+
 # v2.7.1 — Booking keeps the calculator price; Enter key stays on the calculator
 
 - **Fixed: the calculator price never reached the garage.** Entering a pickup PIN (or using "Use my current location") or choosing drop-off cancelled the carried estimate, and one of those is required, so every booking from the calculator arrived without the price. Only changing the car or the jobs cancels the estimate now; pickup, drop-off and the PIN don't change the price.
