@@ -70,8 +70,8 @@ try:
         msg=unquote(msg)
         check('× 3 panel' in msg,'WhatsApp booking includes the selected number of panels')
         check('Car: Maruti Suzuki Swift' in msg and 'Preferred: ' in msg,'WhatsApp booking names the car and preferred day')
-        # Pickup changed and then reverted: safely request a fresh quote rather than reusing one.
-        check('Website estimate:' not in msg,'Changed pickup choices invalidate a carried estimate')
+        # Pickup address, PIN and drop-off don't change the price, so the carried estimate stays.
+        check('Website estimate: ₹6,750 – ₹9,000' in msg,'Entering a pickup PIN or switching to drop-off keeps the carried estimate')
         pg.close()
 
         pg=page(handoff);pg.click('[data-b-back]')
@@ -96,6 +96,25 @@ try:
         check(hidden,'The bottom action bar slides away while a field is being typed in')
         pg.locator('input[name="b-pickup"][value="yes"]').evaluate('e=>e.closest("label").click()');pg.evaluate('document.activeElement.blur()');pg.wait_for_timeout(350)
         check(pg.evaluate('()=>!document.body.classList.contains("is-typing") && document.querySelector(".mbar").getBoundingClientRect().bottom<=innerHeight+1'),'The bottom action bar returns after typing');pg.close()
+
+        # Real calculator -> booking flow: the price reaches the garage for pickup and for drop-off.
+        for how in ['pickup','drop']:
+            pg=ctx.new_page()
+            pg.route('**/assets/js/backend-config.js*',lambda route:route.fulfill(content_type='text/javascript',body='window.GW_BACKEND={url:"",publishableKey:"",bookingEnabled:false};'))
+            pg.goto(base+'estimate.html');pg.wait_for_load_state('networkidle')
+            pg.select_option('#e-brand','maruti');pg.select_option('#e-model','Swift');pg.check('[data-tile="GS-01"]',force=True)
+            price=pg.text_content('[data-run-v]')
+            pg.click('[data-all-services] > summary');pg.fill('#e-search','brake');pg.press('#e-search','Enter');pg.wait_for_timeout(400)
+            if how=='pickup': check(pg.url.endswith('estimate.html') and pg.locator('.svc-opt:not([hidden])').count()>0,'Enter / Go in the service search stays on the calculator')
+            pg.fill('#e-search','');pg.click('[data-next]');pg.wait_for_load_state('networkidle')
+            pg.fill('#b-name','Test Customer');pg.fill('#b-mobile','9876543210')
+            if how=='pickup': pg.fill('#b-address','12 Test Road, Vijay Nagar');pg.fill('#b-pin','452010')
+            else: pg.check('input[name="b-pickup"][value="no"]')
+            next(pg);msg=unquote(pg.locator('[data-b-wa]').get_attribute('href'))
+            check('Website estimate: '+price in msg,f'Calculator price {price} reaches the garage on a {how} booking');pg.close()
+        pg=ctx.new_page();pg.goto(base+'estimate.html');pg.wait_for_load_state('networkidle')
+        pg.select_option('#e-brand','maruti');pg.select_option('#e-model','Swift');pg.check('[data-tile="BD-01"]',force=True);pg.fill('#q-BD-01','2');pg.press('#q-BD-01','Enter');pg.wait_for_timeout(400)
+        check(pg.url.endswith('estimate.html') and pg.locator('[data-run-v]').text_content().startswith('₹'),'Enter / Go in the panel count stays on the calculator');pg.close()
 
         # Optional location: fills address + PIN from GPS, adds a map link; typing still works; blocked permission is handled.
         import base64

@@ -122,6 +122,8 @@ with sync_playwright() as p:
     check("Parts: Genuine OEM" in m2, "Parts quality chosen on the result screen reaches WhatsApp")
     pg.click(f"{est} [data-next]"); pg.wait_for_load_state("networkidle")
     check(pg.url.endswith("booking.html") and pg.text_content("[data-b-count]") == "Step 2 of 2" and pg.text_content("[data-b-back]") == "← My price", "'Book at this price' opens booking at your details, with '← My price' as Back")
+    pg.fill("#b-name", "Asha Verma"); pg.fill("#b-mobile", "9876543210"); pg.fill("#b-address", "12 MG Road, Vijay Nagar"); pg.fill("#b-pin", "452010")
+    check(t2.split(" +")[0] in pg.text_content("[data-b-summary]"), "Typing the pickup PIN keeps the price on the summary card")
     pg.click("[data-b-back]"); pg.wait_for_load_state("networkidle"); pg.wait_for_timeout(300)
     check("index.html" in pg.url and pg.input_value("#e-model") == "Creta" and pg.is_checked(f'{est} input[name="fuel"][value="diesel"]') and pg.is_checked(f'{est} input[name="grade"][value="genuine"]') and pg.is_checked(f'{est} .svc-opt input[value="SU-02"]') and pg.text_content(f"{est} [data-run-v]").startswith(t2.split(" +")[0]), "'← My price' returns to the calculator with car, fuel, parts and jobs kept")
     pg.click(f"{est} [data-est-detail]"); pg.click(f"{est} [data-restart]")
