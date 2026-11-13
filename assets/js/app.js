@@ -188,7 +188,7 @@
     return /^[6-9]\d{9}$/.test(d) ? d : null;
   }
 
-  /* ---------- Estimator (2 steps: car & jobs → price) ---------- */
+  /* ---------- Estimator (one screen: jobs + car → running price → book) ---------- */
   // Popular jobs shown as tiles; each one ticks the matching service in the full list.
   const EST_TILES = [["GS-01", "Car service", "service"], ["AC-03", "AC service", "ac"], ["BR-01", "Brake check", "brake"], ["BD-01", "Dent & paint", "paint"], ["TB-05", "Battery", "battery"], ["GS-04", "Oil change", "oil"]];
   const svgUse = (n) => `<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${n}"/></svg>`;
@@ -222,8 +222,7 @@
 
     root.innerHTML = `
       <div class="jobcard-head"><span><b>Get a price in 30 seconds</b></span><span>${C.pricing.isDemo ? '<span class="tag tag--demo">Demo prices</span>' : `Prices updated <time datetime="${esc(RATE_V)}">${esc(rateDate())}</time>`}</span></div>
-      <div class="est-stepline"><span data-e-count>Step 1 of 2</span><span>Free · no sign-up</span></div>
-      <div class="steps-bar" aria-hidden="true"><span class="on"></span><span></span></div>
+      <div class="est-stepline"><span>Free · no sign-up</span></div>
       <form class="jobcard-body" novalidate>
         <section data-step="1">
           <div class="step-title"><${headingTag} data-i18n="est.need">What does your car need?</${headingTag}></div>
@@ -251,34 +250,28 @@
             <p class="est-auto" data-cat-auto hidden>Car type: <b data-cat-label></b> (auto) · <button type="button" class="linkish" data-cat-change>change</button></p>
             <div class="field" data-cat-field hidden><span class="label" id="l-cat">Car type</span><div class="chips" role="radiogroup" aria-labelledby="l-cat">${chipsHtml("cat", C.categories)}</div></div>
             <div class="field"><span class="label" id="l-fuel">Fuel</span><div class="chips" role="radiogroup" aria-labelledby="l-fuel">${chipsHtml("fuel", C.fuels)}</div></div>
-            <div class="field"><span class="label" id="l-age">Car age <span class="hint">Optional</span></span><div class="chips" role="radiogroup" aria-labelledby="l-age">${chipsHtml("age", [{ id: "new", label: "Under " + (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) + " years" }, { id: "old", label: "Over " + (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) + " years" }])}</div></div>
+            <div class="field est-grade"><span class="label" id="l-grade">Parts quality <span class="hint">Standard suits most cars</span></span><div class="chips" role="radiogroup" aria-labelledby="l-grade">${Object.entries(C.pricing.partsGrade).map(([id, g]) => `<label class="chip"><input type="radio" name="grade" value="${id}"${id === "standard" ? " checked" : ""}><span>${esc({ economy: "Economy", standard: "Standard", genuine: "Genuine (OEM)" }[id] || g.label)}</span></label>`).join("")}</div></div>
           </div>
           <p class="err" data-err="1" hidden></p>
         </section>
-        <section data-step="2" hidden>
-          <div class="step-title"><${headingTag}>Your price</${headingTag}></div>
-          <div class="estimate">
-            <div data-res-total aria-live="polite"></div>
-            <div class="field est-grade"><span class="label" id="l-grade">Parts quality</span><div class="chips" role="radiogroup" aria-labelledby="l-grade">${Object.entries(C.pricing.partsGrade).map(([id, g]) => `<label class="chip"><input type="radio" name="grade" value="${id}"${id === "standard" ? " checked" : ""}><span>${esc({ economy: "Economy", standard: "Standard", genuine: "Genuine (OEM)" }[id] || g.label)}</span></label>`).join("")}</div><span class="hint" data-grade-hint></span></div>
-            <div class="est-body" data-res-body></div>
-          </div>
-        </section>
+        <div class="est-detail" data-res-body id="${esc(root.id || "est")}-detail" tabindex="-1" hidden></div>
         <div class="est-foot" data-foot>
-          <button type="button" class="btn btn--outline btn--sm" data-back hidden>Back</button>
           <div class="est-run" data-run><small data-run-k>Your estimate</small><b data-run-v>Pick a job and your car</b></div>
-          <button type="submit" class="btn" data-next><span data-i18n="est.see">See my price</span> ${ICON.arrow}</button>
+          <button type="submit" class="btn" data-next><span data-next-label>Book at this price</span> ${ICON.arrow}</button>
+          <p class="est-links" data-est-links hidden><button type="button" class="linkish" data-est-detail aria-expanded="false" aria-controls="${esc(root.id || "est")}-detail">See breakdown</button><a class="est-links-wa" data-book-wa target="_blank" rel="noopener" href="#">WhatsApp</a><button type="button" class="linkish" data-share-est>Share</button></p>
+          <p class="est-status" data-copy-status aria-live="polite"></p>
         </div>
       </form>`;
 
     const form = $("form", root);
-    let step = 1;
     function setRadio(name, val) { const r = form.querySelector(`input[name="${name}"][value="${val}"]`); if (r) r.checked = true; }
     function radio(name) { const r = form.querySelector(`input[name="${name}"]:checked`); return r ? r.value : ""; }
-    const nowYear = () => new Date().getFullYear();
-    const yearForAge = () => radio("age") === "old" ? String(nowYear() - (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) - 1) : "";
+    // No "car age" question: the estimate doesn't add an older-car surcharge (the "Older models" list also holds
+    // recently discontinued cars). Extra labour on a very old car is part of the inspection quote.
+    const yearForAge = () => "";
 
     // Brand + model → car type and, for EV / hybrid models, the fuel. Unlisted cars ask for the car type.
-    let catManual = false, fuelAuto = false;
+    let catManual = false, fuelAuto = false, manualFuel = "petrol";
     const picker = carPicker($("#e-brand", root), $("#e-model", root), $("#e-model-other", root), () => { catManual = false; readCar(); refreshPrices(); });
     function readCar() {
       const v = picker.get();
@@ -286,7 +279,7 @@
       if (!v.category && !catManual) $$('input[name="cat"]', root).forEach((r) => { r.checked = false; });
       const fuel = v.flags.includes("e") ? "electric" : v.flags.includes("y") ? "hybrid" : "";
       if (fuel) { setRadio("fuel", fuel); fuelAuto = true; }
-      else if (fuelAuto) { $$('input[name="fuel"]', root).forEach((r) => { r.checked = false; }); fuelAuto = false; }
+      else if (fuelAuto) { setRadio("fuel", manualFuel); fuelAuto = false; }
       const auto = !!v.category && !catManual;
       $("[data-cat-auto]", root).hidden = !auto;
       $("[data-cat-field]", root).hidden = auto || !v.model;
@@ -295,7 +288,8 @@
     }
     $("[data-cat-change]", root).addEventListener("click", () => { catManual = true; $("[data-cat-auto]", root).hidden = true; $("[data-cat-field]", root).hidden = false; const r = $('input[name="cat"]:checked', root) || $('input[name="cat"]', root); if (r) r.focus(); });
     $$('input[name="cat"]', root).forEach((r) => r.addEventListener("change", () => { catManual = true; refreshPrices(); }));
-    $$('input[name="fuel"], input[name="age"]', root).forEach((r) => r.addEventListener("change", refreshPrices));
+    setRadio("fuel", "petrol");   // most cars here run on petrol; diesel / CNG drivers change it in one tap
+    $$('input[name="fuel"]', root).forEach((r) => r.addEventListener("change", () => { manualFuel = r.value; fuelAuto = false; refreshPrices(); }));
 
     function renderQty() {
       const box = $("[data-qty]", root);
@@ -357,8 +351,7 @@
 
     function carLabel() {
       const v = picker.get();
-      const name = [v.brandName, v.model].filter(Boolean).join(" ");
-      return name + (radio("age") === "old" ? " (over " + (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) + " years old)" : "");
+      return [v.brandName, v.model].filter(Boolean).join(" ");
     }
     function err(n, msg) { const e = $(`[data-err="${n}"]`, root); e.id = `estimate-step-${n}-error`; e.setAttribute("role", "alert"); e.textContent = msg || ""; e.hidden = !msg; }
     function validate() {
@@ -392,7 +385,7 @@
         brand: picker.get().brandId, model: picker.get().model,
         car: carLabel(), year: "", yearExact: false, fuel: radio("fuel"), category: radio("cat"),
         services: [...state.services], qty: Object.fromEntries(Object.entries(state.qty).map(([id, q]) => [id, Number(q)])), lights: [],
-        symptoms: radio("age") === "old" ? "Car is over " + (C.pricing.ageRule ? C.pricing.ageRule.olderThanYears : 10) + " years old" : "",
+        symptoms: "",
         estimate: r.pricedJobs ? PR.formatRange(r.total) + (r.partsQuoted ? " + parts quoted by model" : "") : unpriced(r).short, partsGrade: state.partsGrade
       };
     }
@@ -419,12 +412,19 @@
     }
     // Running price on step 1: updates as jobs and car details change.
     function updateRun() {
-      const k = $("[data-run-k]", root), v = $("[data-run-v]", root);
+      const k = $("[data-run-k]", root), v = $("[data-run-v]", root), links = $("[data-est-links]", root), label = $("[data-next-label]", root);
+      const isReady = state.services.size > 0 && ready();
+      links.hidden = !isReady;
+      if (!isReady) { $("[data-copy-status]", root).textContent = ""; showDetail(false); }
+      label.textContent = "Book at this price";
       if (!state.services.size) { k.textContent = "Your estimate"; v.textContent = "Pick a job and your car"; return; }
-      if (!ready()) { k.textContent = state.services.size + (state.services.size === 1 ? " job" : " jobs") + " selected"; v.textContent = "Add your car to see the price"; return; }
+      if (!isReady) { k.textContent = state.services.size + (state.services.size === 1 ? " job" : " jobs") + " selected"; v.textContent = "Add your car to see the price"; return; }
       const r = compute();
       k.textContent = "Estimate · " + state.services.size + (state.services.size === 1 ? " job" : " jobs");
       v.textContent = r.pricedJobs ? PR.formatRange(r.total) + (r.partsQuoted ? " + parts" : "") : unpriced(r).short;
+      if (!r.pricedJobs) label.textContent = "Book now";
+      $("[data-book-wa]", root).href = waUrl(waMessage(bookingPayload(r), r));
+      if (!$("[data-res-body]", root).hidden) renderResult();
     }
     // Re-price the tiles and the service list for the chosen car; switch off jobs that don't apply (e.g. oil change on an EV).
     function refreshPrices() {
@@ -441,14 +441,14 @@
       $$("[data-tile-price]", root).forEach((el) => { el.textContent = tileText(el.dataset.tilePrice, category, fuel); });
       if (removed) renderQty();
       const hint = $("[data-svc-hint]", root);
-      if (hint) hint.textContent = "Select one or more. Overlapping jobs are counted once. Prices shown are for a " + catLabel(category).toLowerCase() + (fuel !== "petrol" ? " (" + fuelLabel(fuel).toLowerCase() + ")" : "") + "; your estimate also reflects the car's age and parts quality." + (fuel === "electric" ? " Jobs that don't apply to electric cars are switched off." : "");
+      if (hint) hint.textContent = "Select one or more. Overlapping jobs are counted once. Prices shown are for a " + catLabel(category).toLowerCase() + (fuel !== "petrol" ? " (" + fuelLabel(fuel).toLowerCase() + ")" : "") + "; your estimate also reflects parts quality." + (fuel === "electric" ? " Jobs that don't apply to electric cars are switched off." : "");
       if ($("[data-cat-label]", root)) $("[data-cat-label]", root).textContent = catLabel(radio("cat"));
       syncTiles(); updateRun();
     }
+    // "See breakdown": full price details under the calculator (the old result screen, slimmed down).
     function renderResult() {
       const r = compute();
       const p = bookingPayload(r);
-      store.set("cmi-booking", p);
       const rows = r.lines.map((l) => {
         if (l.status === "priced") return `<tr><td>${esc(l.name)}${l.qty > 1 ? ` × ${l.qty} ${esc((l.unit || "").replace(/^per /, ""))}s` : ""}<br><span class="small muted">Labour ${PR.formatRange(l.labour)} · ${l.parts ? "Parts " + PR.formatRange(l.parts) : esc(l.partsNote || "Parts quoted by model")}</span></td><td>${PR.formatRange(l.total)}${l.partsQuoted ? "<br><span class=\"small muted\">+ parts</span>" : ""}</td></tr>`;
         if (l.status === "covered") return `<tr><td>${esc(l.name)} <span class="tag tag--ok">Included</span><br><span class="small muted">Part of ${esc(l.coveredBy)}</span></td><td>—</td></tr>`;
@@ -457,84 +457,99 @@
         return `<tr><td>${esc(l.name)} <span class="tag tag--muted">N/A</span><br><span class="small muted">${esc(l.reason || "Not applicable")}</span></td><td>—</td></tr>`;
       }).join("");
       const priced = r.pricedJobs > 0;
-      // One line per chosen job: its name and the first "includes" note.
       const incList = r.lines.filter((l) => l.status !== "not-applicable").map((l) => [l.name, ((svcById[l.id] || {}).includes || [])[0] || ""]);
-      const summaryLine = [carLabel(), fuelLabel(p.fuel), catLabel(p.category), state.services.size + (state.services.size === 1 ? " job" : " jobs")].filter(Boolean).join(" · ");
-      const resBody = $("[data-res-body]", root);
-      const wasOpen = !!$(".est-breakdown[open]", resBody);
-      $("[data-res-total]", root).innerHTML = `
+      const summaryLine = [carLabel(), fuelLabel(p.fuel), catLabel(p.category), (C.pricing.partsGrade[state.partsGrade] || {}).label, state.services.size + (state.services.size === 1 ? " job" : " jobs")].filter(Boolean).join(" · ");
+      $("[data-res-body]", root).innerHTML = `
           <div class="est-total">
             <span class="k">${esc(summaryLine)}</span>
             <span class="v">${priced ? PR.formatRange(r.total) : esc(unpriced(r).title)}</span>
             <span class="t">${priced ? "Estimated total" + (r.partsQuoted ? " + parts quoted by model" : "") + (r.tax ? " incl. " + esc(r.taxLabel) : "") + (r.inspection.length || r.quotes.length ? " · other jobs quoted separately" : "") : esc(unpriced(r).text)}${r.hours ? " · Typical time: " + PR.formatHours(r.hours) : ""}</span>
-          </div>`;
-      $("[data-grade-hint]", root).textContent = ((C.pricing.partsGrade[state.partsGrade] || {}).label || "") + " — the price above updates when you change this.";
-      resBody.innerHTML = `          ${incList.length ? `<div class="est-inc"><${subHeadingTag} class="estimate-list-title">What's included</${subHeadingTag}><ul>${incList.map(([n, i]) => `<li><b>${esc(n)}</b>${i ? " — " + esc(i) : ""}</li>`).join("")}</ul></div>` : ""}
-          <div class="est-promise"><strong>Final price after inspection.</strong> No extra work without your OK. Free pickup &amp; drop in our confirmed Indore PIN codes.</div>
-          <div class="est-actions est-actions--3">
-            <a class="btn" data-book-form href="booking.html">${ICON.calendar} Book at this price</a>
-            <a class="btn btn--wa" data-book-wa target="_blank" rel="noopener" href="${waUrl(waMessage(p, r))}">${ICON.wa} WhatsApp</a>
-            <button type="button" class="btn btn--outline" data-share-est>Share</button>
           </div>
-          <p class="small muted" data-copy-status aria-live="polite">Booking keeps your car and jobs, so you only add your name and number.</p>
-          <details class="est-breakdown"><summary>See full breakdown</summary>
-            <div class="table-scroll"><table class="est-table">
-              <thead><tr><th>Job</th><th>Range</th></tr></thead>
-              <tbody>${rows}
-                ${priced ? `<tr><td>Estimated labour</td><td>${PR.formatRange(r.labour)}</td></tr>
-                <tr><td>Estimated parts & consumables</td><td>${PR.formatRange(r.parts)}${r.partsQuoted ? "<br><span class=\"small muted\">+ parts quoted by model</span>" : ""}</td></tr>
-                <tr><td>${r.tax ? esc(r.taxLabel) : "Taxes"}</td><td>${r.tax ? PR.formatRange(r.tax) : "As per final bill"}</td></tr>` : ""}
-                ${priced ? `<tr class="sum"><td>Estimated total${r.partsQuoted ? " (excl. parts quoted by model)" : ""}</td><td>${PR.formatRange(r.total)}</td></tr>` : ""}
-              </tbody></table></div>
-            ${r.excludes.length ? `<div class="inc-exc"><div><${subHeadingTag} class="estimate-list-title">Not included</${subHeadingTag}><ul>${r.excludes.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div></div>` : ""}
-            ${r.notes.map((n) => `<p class="small muted">• ${esc(n)}</p>`).join("")}
-            <p class="disclaimer"><strong>This is an indicative estimate, not a final price.</strong> The final quotation is given after inspection. No additional work is done without your approval, and you get an itemised bill.${C.pricing.isDemo ? " <strong>Prices shown are demo values until the workshop publishes its rate card.</strong>" : ""}</p>
-            <div class="est-tools">
-              <button type="button" class="btn btn--outline btn--sm" data-copy-est>Copy estimate</button>
-              <button type="button" class="btn btn--outline btn--sm" data-restart>Start over</button>
-            </div>
-          </details>`;
-      if (wasOpen) $(".est-breakdown", resBody).open = true;
-      const box = resBody;
-      const text = [waMessage(p, r).replace(/^Hello[^\n]*\n/, "").replace(/\nArea \/ PIN:.*$/s, ""), "Indicative estimate — final quote after inspection.", location.origin + location.pathname.replace(/[^/]*$/, "") + "estimate.html"].join("\n");
-      const status = (msg) => { $("[data-copy-status]", box).textContent = msg; };
-      const copy = (okMsg) => { try { navigator.clipboard.writeText(text).then(() => status(okMsg), () => status("Couldn't copy automatically — select the text in the breakdown instead.")); } catch (e) { status("Couldn't copy automatically — select the text in the breakdown instead."); } };
-      $("[data-copy-est]", box).addEventListener("click", () => copy("Estimate copied."));
-      $("[data-share-est]", box).addEventListener("click", () => {
-        if (navigator.share) navigator.share({ title: "Car service estimate — " + B.name, text }).catch(() => {});
-        else copy("Estimate copied — paste it anywhere to share.");
-      });
-      $("[data-restart]", box).addEventListener("click", () => {
-        store.remove("cmi-booking");
-        form.reset(); state.services.clear(); state.qty = {}; state.partsGrade = "standard"; setRadio("grade", "standard"); catManual = false; fuelAuto = false; picker.reset();
-        $$(".svc-opt", root).forEach((o) => o.classList.remove("checked"));
-        renderQty(); search.value = ""; search.dispatchEvent(new Event("input"));
-        $("[data-cat-auto]", root).hidden = true; $("[data-cat-field]", root).hidden = true; $("[data-all-services]", root).open = false;
-        refreshPrices(); go(1);
-      });
+          ${incList.length ? `<div class="est-inc"><${subHeadingTag} class="estimate-list-title">What's included</${subHeadingTag}><ul>${incList.map(([n, i]) => `<li><b>${esc(n)}</b>${i ? " — " + esc(i) : ""}</li>`).join("")}</ul></div>` : ""}
+          <div class="table-scroll"><table class="est-table">
+            <thead><tr><th>Job</th><th>Range</th></tr></thead>
+            <tbody>${rows}
+              ${priced ? `<tr><td>Estimated labour</td><td>${PR.formatRange(r.labour)}</td></tr>
+              <tr><td>Estimated parts & consumables</td><td>${PR.formatRange(r.parts)}${r.partsQuoted ? "<br><span class=\"small muted\">+ parts quoted by model</span>" : ""}</td></tr>
+              <tr><td>${r.tax ? esc(r.taxLabel) : "Taxes"}</td><td>${r.tax ? PR.formatRange(r.tax) : "As per final bill"}</td></tr>` : ""}
+              ${priced ? `<tr class="sum"><td>Estimated total${r.partsQuoted ? " (excl. parts quoted by model)" : ""}</td><td>${PR.formatRange(r.total)}</td></tr>` : ""}
+            </tbody></table></div>
+          ${r.excludes.length ? `<div class="inc-exc"><div><${subHeadingTag} class="estimate-list-title">Not included</${subHeadingTag}><ul>${r.excludes.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></div></div>` : ""}
+          ${r.notes.map((n) => `<p class="small muted">• ${esc(n)}</p>`).join("")}
+          <p class="disclaimer"><strong>This is an indicative estimate, not a final price.</strong> The final quotation is given after inspection. No additional work is done without your approval, and you get an itemised bill.${C.pricing.isDemo ? " <strong>Prices shown are demo values until the workshop publishes its rate card.</strong>" : ""}</p>
+          <div class="est-tools">
+            <button type="button" class="btn btn--outline btn--sm" data-copy-est>Copy estimate</button>
+            <button type="button" class="btn btn--outline btn--sm" data-restart>Start over</button>
+          </div>`;
+      $("[data-copy-est]", root).addEventListener("click", () => copy("Estimate copied."));
+      $("[data-restart]", root).addEventListener("click", startOver);
     }
-    function go(n, moveFocus = true) {
-      step = n;
-      $$("section[data-step]", root).forEach((s) => { s.hidden = Number(s.dataset.step) !== n; });
-      $$(".steps-bar span", root).forEach((s, i) => s.classList.toggle("on", i < n));
-      $("[data-e-count]", root).textContent = `Step ${n} of 2`;
-      $("[data-back]", root).hidden = n === 1;
-      $("[data-next]", root).hidden = n === 2;
-      $("[data-run]", root).hidden = n === 2;
-      $("[data-foot]", root).classList.toggle("est-foot--result", n === 2);
-      if (n === 2) renderResult();
-      if (!moveFocus) return;
-      focusStep($(`section[data-step="${n}"]`, root));
+    function shareText() {
+      const r = compute(), p = bookingPayload(r);
+      return [waMessage(p, r).replace(/^Hello[^\n]*\n/, "").replace(/\nArea \/ PIN:.*$/s, ""), "Indicative estimate — final quote after inspection.", location.origin + location.pathname.replace(/[^/]*$/, "") + "estimate.html"].join("\n");
+    }
+    const status = (msg) => { $("[data-copy-status]", root).textContent = msg; };
+    function copy(okMsg) {
+      const text = shareText();
+      try { navigator.clipboard.writeText(text).then(() => status(okMsg), () => status("Couldn't copy automatically — open the breakdown and select the text.")); } catch (e) { status("Couldn't copy automatically — open the breakdown and select the text."); }
+    }
+    function showDetail(open) {
+      const panel = $("[data-res-body]", root), btn = $("[data-est-detail]", root);
+      panel.hidden = !open; btn.setAttribute("aria-expanded", String(open)); btn.textContent = open ? "Hide breakdown" : "See breakdown";
+      if (open) renderResult(); else panel.innerHTML = "";
+    }
+    $("[data-est-detail]", root).addEventListener("click", () => {
+      const open = $("[data-res-body]", root).hidden;
+      showDetail(open);
+      if (open) { const panel = $("[data-res-body]", root); panel.focus({ preventScroll: true }); panel.scrollIntoView({ behavior: "smooth", block: "start" }); }
+    });
+    $("[data-share-est]", root).addEventListener("click", () => {
+      if (navigator.share) navigator.share({ title: "Car service estimate — " + B.name, text: shareText() }).catch(() => {});
+      else copy("Estimate copied — paste it anywhere to share.");
+    });
+    function startOver() {
+      store.remove("cmi-booking"); store.remove("cmi-est");
+      form.reset(); state.services.clear(); state.qty = {}; state.partsGrade = "standard"; setRadio("grade", "standard"); catManual = false; fuelAuto = false; manualFuel = "petrol"; setRadio("fuel", "petrol"); picker.reset();
+      $$(".svc-opt", root).forEach((o) => o.classList.remove("checked"));
+      renderQty(); search.value = ""; search.dispatchEvent(new Event("input"));
+      $("[data-cat-auto]", root).hidden = true; $("[data-cat-field]", root).hidden = true; $("[data-all-services]", root).open = false;
+      showDetail(false); refreshPrices();
+      focusStep($('section[data-step="1"]', root));
       const top = root.getBoundingClientRect().top; if (top < 0) root.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    $$('input[name="grade"]', root).forEach((g) => g.addEventListener("change", () => { state.partsGrade = g.value; renderResult(); }));
-    form.addEventListener("submit", (e) => { e.preventDefault(); if (step === 1 && validate()) go(2); });
-    $("[data-back]", root).addEventListener("click", () => go(1));
+    // Remember the calculator so "← My price" on the booking page comes back to the same choices.
+    function saveState() {
+      const v = picker.get();
+      store.set("cmi-est", { brand: v.brandId, model: v.model, cat: radio("cat"), catManual, fuel: radio("fuel"), grade: state.partsGrade, services: [...state.services], qty: { ...state.qty } });
+    }
+    function restoreState(saved) {
+      if (!saved || typeof saved !== "object" || !Array.isArray(saved.services)) return;
+      if (typeof saved.brand === "string" && brandById[saved.brand]) picker.set(saved.brand, typeof saved.model === "string" ? saved.model : "");
+      readCar();
+      if (saved.catManual && typeof saved.cat === "string" && C.categories.some((c) => c.id === saved.cat)) { catManual = true; setRadio("cat", saved.cat); $("[data-cat-auto]", root).hidden = true; $("[data-cat-field]", root).hidden = false; }
+      if (typeof saved.fuel === "string" && C.fuels.some((x) => x.id === saved.fuel)) { setRadio("fuel", saved.fuel); manualFuel = saved.fuel; fuelAuto = false; }
+      if (typeof saved.grade === "string" && Object.hasOwn(C.pricing.partsGrade, saved.grade)) { state.partsGrade = saved.grade; setRadio("grade", saved.grade); }
+      refreshPrices();
+      applyPreset(saved.services.filter((id) => typeof id === "string" && Object.hasOwn(svcById, id)));
+      Object.entries(saved.qty || {}).forEach(([id, q]) => { const inp = $(`[data-qty-for="${CSS.escape(id)}"]`, root); if (inp && state.services.has(id)) { inp.value = q; state.qty[id] = String(q); } });
+      updateRun();
+    }
+    $$('input[name="grade"]', root).forEach((g) => g.addEventListener("change", () => { state.partsGrade = g.value; updateRun(); }));
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!validate()) return;
+      const r = compute();
+      store.set("cmi-booking", bookingPayload(r));
+      saveState();
+      store.set("cmi-est-back", (location.pathname.split("/").pop() || "index.html") + (root.id ? "#" + root.id : ""));
+      location.href = "booking.html";
+    });
     refreshPrices();
-    root.cmiPreset = (ids) => { applyPreset(ids); if (step !== 1) go(1, false); };
+    if (!preset.length) restoreState(store.get("cmi-est"));
+    root.cmiPreset = (ids) => { applyPreset(ids); };
     root.cmiFocusCar = () => picker.focus();
     // Test hook (also handy for owner QA in the console)
-    root.cmiDebug = { compute, go, setRadio };
+    root.cmiDebug = { compute, setRadio };
   }
 
   /* ---------- Package & rate tables (prices from the engine) ---------- */
@@ -808,7 +823,7 @@
     const pre = F.draft(C, store.get("cmi-booking"));
     try { const qs = new URLSearchParams(location.search).get("service"); if (qs && Object.hasOwn(svcById, qs) && !(pre.services || []).includes(qs)) { pre.services = [qs]; delete pre.estimate; } } catch (e) {}
     const steps = $$("[data-bstep]", root);
-    let step = 0, sending = false, requestSignature = "", requestId = "";
+    let step = 0, sending = false, requestSignature = "", requestId = "", backToPrice = "";
     const f = $("form", root);
     const notes = $("#b-notes", f), more = $("[data-b-more]", f);
     // A page cached from an older version can load this script; ask for a refresh instead of breaking.
@@ -1162,6 +1177,7 @@
       steps.forEach((s, k) => { s.hidden = k !== i; });
       $$(".steps-bar span", root).forEach((s, k) => s.classList.toggle("on", k <= i));
       $("[data-b-back]", root).hidden = i === 0;
+      $("[data-b-back]", root).textContent = backToPrice && i === 1 ? "← My price" : "Back";
       $("[data-b-next] span", root).textContent = i === steps.length - 1 ? (B.bookingEndpoint ? "Send booking request" : "Review & send") : "Next";
       $("[data-b-count]", root).textContent = `Step ${i + 1} of ${steps.length}`;
       // Step 2: the big WhatsApp button becomes a small link, and a summary shows what is being booked.
@@ -1175,14 +1191,16 @@
         if (top < 0) root.scrollIntoView({ block: "start" });
       }
     }
-    $("[data-b-back]", root).addEventListener("click", () => show(Math.max(0, step - 1)));
+    // From the calculator, "Back" returns to the calculator (choices kept) instead of opening booking's own first step.
+    const goBack = () => { if (backToPrice) location.href = backToPrice; else show(Math.max(0, step - 1)); };
+    $("[data-b-back]", root).addEventListener("click", () => { if (step === 1) goBack(); else show(Math.max(0, step - 1)); });
     function renderSummary() {
       const box = $("[data-b-summary]", f); if (!box) return;
       const v = picker.get();
       const needs = [...$$('input[name="b-need"]:checked', f).map((i) => i.value), ...$$('input[name="b-svc"]:checked', f).map((i) => svcById[i.value].name)];
       const est = estimateValid && pre.estimate ? pre.estimate : "";
       box.innerHTML = `<div class="b-sum-main"><b class="b-sum-car">${esc([v.brandName, v.model].filter(Boolean).join(" ") || "Your car")}</b><span class="b-sum-needs">${needs.length ? needs.map((n) => `<span>${esc(n)}</span>`).join(", ") : '<span>Problem described in notes</span>'}</span>${est ? `<span class="b-sum-est"><small>Your estimate</small><strong>${esc(est)}</strong></span>` : ""}</div><button type="button" class="b-sum-edit" data-b-edit-step1>Edit</button>`;
-      $("[data-b-edit-step1]", box).addEventListener("click", () => show(0));
+      $("[data-b-edit-step1]", box).addEventListener("click", goBack);
     }
     // Tell the customer what actually happened. Resending unchanged details reuses the same
     // request ID, and the server ignores duplicates, so "press Send again" is safe.
@@ -1232,7 +1250,7 @@
           if (!res.ok) { const httpErr = new Error("HTTP " + res.status); httpErr.status = res.status; throw httpErr; }
           const acknowledgement = await res.json();
           if (!F.receipt(acknowledgement, B.bookingIdempotency ? requestId : "")) throw new Error("Receipt not confirmed");
-          f.hidden = true; store.remove("cmi-booking"); hideQuick(true); $("[data-b-estimate]", root).hidden = true;
+          f.hidden = true; store.remove("cmi-booking"); store.remove("cmi-est"); store.remove("cmi-est-back"); hideQuick(true); $("[data-b-estimate]", root).hidden = true;
           out.innerHTML = successHtml(p);
         } catch (err) {
           const fail = bookingFailure(err, controller.signal.aborted);
@@ -1261,7 +1279,12 @@
       $("[data-b-edit]", out).addEventListener("click", () => { f.hidden = false; hideQuick(false); out.innerHTML = ""; });
     });
     // Coming from the calculator with the car and jobs already chosen: open straight at "your details".
-    show(pre.estimate && !picker.missing() && selectedCount() ? 1 : 0, false);
+    const fromCalc = !!(pre.estimate && !picker.missing() && selectedCount());
+    if (fromCalc) {
+      const back = store.get("cmi-est-back");
+      if (typeof back === "string" && /^[a-z0-9-]+\.html(#[a-z0-9-]+)?$/.test(back)) backToPrice = back;
+    }
+    show(fromCalc ? 1 : 0, false);
   }
 
   /* ---------- Display language ---------- */
