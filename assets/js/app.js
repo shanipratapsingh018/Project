@@ -535,6 +535,12 @@
       updateRun();
     }
     $$('input[name="grade"]', root).forEach((g) => g.addEventListener("change", () => { state.partsGrade = g.value; updateRun(); }));
+    // Enter / the phone's Go key in the search, panel-count or model box only closes the keyboard; booking needs the button.
+    form.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" || e.isComposing || !e.target.matches('input[type="search"], input[type="number"], input[type="text"], input:not([type])')) return;
+      e.preventDefault();
+      e.target.blur();
+    });
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       if (!validate()) return;
@@ -917,7 +923,8 @@
     // A carried price is valid only while the car, jobs, quantities and pickup stay the same.
     function priceSelection() {
       const v = picker.get();
-      return JSON.stringify([v.brandId, v.model.toLowerCase(), radioVal("b-pickup"), $("#b-pin", f).value.trim(),
+      // Only the car and the jobs change the price. Pickup, drop-off and the PIN don't, so they keep the estimate.
+      return JSON.stringify([v.brandId, v.model.toLowerCase(),
         $$('input[name="b-svc"]:checked', f).map((cb) => [cb.value, quantities[cb.value] || 1])]);
     }
     const originalSelection = priceSelection();
