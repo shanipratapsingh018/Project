@@ -24,7 +24,7 @@ const entries = [
     "mahindra",
     "Mahindra",
     "Mahindra and Mahindra|M&M",
-    "Alturas G4|Armada|BE 6|Bolero|Bolero Camper|Bolero Maxx Pik-Up|Bolero Neo|Bolero Neo Plus|Bolero Pik-Up|CJ3B|CJ500D|CL340|CL500|Commander|e2o|e2o Plus|eVerito|Genio|Imperio|Logan|Major|Marazzo|Marshal|Maxximo|NuvoSport|Quanto|Reva|Scorpio|Scorpio Classic|Scorpio-N|Thar|Thar Roxx|TUV300|TUV300 Plus|Verito|Verito Vibe|XEV 9e|XUV 3XO|XUV300|XUV400 EV|XUV500|XUV700|Xylo",
+    "Alturas G4|Armada|BE 6|Bolero|Bolero Camper|Bolero Maxx Pik-Up|Bolero Neo|Bolero Neo Plus|Bolero Pik-Up|CJ3B|CJ500D|CL340|CL500|Commander|e2o|e2o Plus|eVerito|Genio|Imperio|KUV100|Logan|Major|Marazzo|Marshal|Maxximo|NuvoSport|Quanto|Reva|Scorpio|Scorpio Classic|Scorpio-N|Thar|Thar Roxx|TUV300|TUV300 Plus|Verito|Verito Vibe|XEV 9e|XUV 3XO|XUV300|XUV400 EV|XUV500|XUV700|Xylo",
   ],
   [
     "honda",
@@ -109,7 +109,7 @@ const entries = [
     "bmw",
     "BMW",
     "Bayerische Motoren Werke",
-    "1 Series|2 Series|2 Series Gran Coupe|3 Series|3 Series Gran Turismo|4 Series|5 Series|5 Series Gran Turismo|6 Series|6 Series Gran Turismo|7 Series|8 Series|i3|i4|i5|i7|i8|iX|iX1|iX3|M2|M3|M4|M5|M6|M8|X1|X2|X3|X3 M|X4|X4 M|X5|X5 M|X6|X6 M|X7|XM|Z3|Z4",
+    "1 Series|2 Series|2 Series Gran Coupe|3 Series|3 Series Gran Turismo|4 Series|5 Series|5 Series Gran Turismo|6 Series|6 Series Gran Turismo|7 Series|8 Series|i3|i4|i5|i7|i8|iX|iX1|iX3|M2|M3|M340i|M4|M5|M6|M8|X1|X2|X3|X3 M|X4|X4 M|X5|X5 M|X6|X6 M|X7|XM|Z3|Z4",
   ],
   [
     "mercedes",
