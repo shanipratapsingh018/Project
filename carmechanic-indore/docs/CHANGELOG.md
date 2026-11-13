@@ -1,3 +1,14 @@
+# v2.7.0 — One-screen calculator, Back returns to your price
+
+- The cost calculator is now one screen. The dark bar at the bottom shows the running price and a **Book at this price** button; small **See breakdown · WhatsApp · Share** links appear under it once there is a price.
+- The old step 2 ("Your price") is gone. Its details (what's included, job-by-job table, not included, notes, disclaimer, Copy estimate, Start over) open with **See breakdown** just above the bar.
+- **Parts quality** (Economy / Standard / Genuine) moved up under Fuel, with Standard selected.
+- **Petrol** is selected by default. EV and hybrid models still switch the fuel automatically, and switching back to a non-EV model restores the previous fuel.
+- **Car age removed.** The calculator no longer adds the 10% older-car labour allowance. (The "Older models" list also holds recently discontinued cars, so applying it automatically would overcharge.) Extra labour on a very old car is part of the inspection quote.
+- **Back from booking:** when booking was opened from the calculator, the Back button reads **← My price** and returns to the calculator with the car, fuel, parts quality, jobs and quantities still filled in. The **Edit** button on the booking summary card does the same. Booking opened directly keeps its own two steps.
+- Hindi translations for the new text. Footer button fits at 320px with large text.
+- Tests updated for the one-screen flow, including the Back-to-price round trip; prices unchanged (2,010 comparisons, 0 mismatches).
+
 # v2.6.0 — Clearer booking details step, optional current location
 
 - Step 2 of the booking form ("Your details & time") is redesigned:
