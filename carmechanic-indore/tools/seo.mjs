@@ -1,15 +1,15 @@
 // Shared, factual SEO metadata. No invented reviews, coordinates or fixed-price offers.
 const COPY = {
-  'index.html': ['Car Repair Wala: Best Car Service Center & Repair in Indore', 'Car Repair Wala offers multi-brand car service and repairs at 17, AB Road, Choithram Mandi, Indore. View estimates and request a booking.', 'Home'],
+  'index.html': ['Car Service & Repair Garage in Indore | Car Repair Wala', 'Multi-brand car garage on AB Road, Choithram Mandi, Indore. Car service, AC, denting and repairs with free pickup and drop. Open daily 7 AM–11:30 PM.', 'Home'],
   'services.html': ['Car Service & Repair Prices Indore | Car Repair Wala', 'Compare 69 car service and repair options in Indore. View indicative prices by vehicle category and request a quote from Car Repair Wala.', 'Services & Prices'],
-  'car-service-indore.html': ['Car Service in Indore | Car Repair Wala', 'Book basic, standard or comprehensive car service at Car Repair Wala, Choithram Mandi, Indore. Compare estimates before approving work.', 'Car servicing'],
-  'car-ac-repair-indore.html': ['Car AC Repair in Indore | Car Repair Wala', 'Car AC inspection, leak testing, gas top-up and cooling repairs at Car Repair Wala in Indore. View estimates and request a workshop inspection.', 'Car AC repair'],
-  'brake-clutch-repair-indore.html': ['Brake & Clutch Repair Indore | Car Repair Wala', 'Brake pad, brake shoe and clutch repairs at Car Repair Wala in Indore. Compare indicative costs and approve the final quote after inspection.', 'Brake & clutch'],
+  'car-service-indore.html': ['Periodic Car Service in Indore, All Brands | Car Repair Wala', 'Basic, standard and comprehensive car service in Indore for Maruti, Hyundai, Tata, Mahindra and more. Hatchback basic service from ₹2,200. Free pickup.', 'Car servicing'],
+  'car-ac-repair-indore.html': ['Car AC Service, Repair & Gas Filling Indore | Car Repair Wala', 'Car AC gas filling, AC service and cooling repairs in Indore. Leak test before gas refill, gas filling from ₹900 for hatchbacks. Free pickup and drop.', 'Car AC repair'],
+  'brake-clutch-repair-indore.html': ['Car Brake & Clutch Plate Repair in Indore | Car Repair Wala', 'Car brake repair, brake pad change and clutch plate replacement in Indore. Front brake pads from ₹1,400 for hatchbacks. See the worn part first.', 'Brake & clutch'],
   'engine-diagnostics-indore.html': ['Engine Diagnostics in Indore | Car Repair Wala', 'Check-engine light, OBD scanning and engine fault diagnosis at Car Repair Wala in Indore. Get the cause explained before approving repairs.', 'Engine diagnostics'],
-  'car-battery-electrical-indore.html': ['Car Battery & Electrical Repair Indore | Car Repair Wala', 'Battery testing, replacement and car electrical fault diagnosis at Car Repair Wala, Indore. Contact the workshop for model-specific quotes.', 'Battery & electrical'],
+  'car-battery-electrical-indore.html': ['Car Battery Replacement in Indore | Car Repair Wala', 'Car battery replacement in Indore with a battery test first. New battery with fitting from ₹3,400 for hatchbacks, plus wiring and lighting repairs.', 'Battery & electrical'],
   'suspension-steering-repair-indore.html': ['Suspension & Steering Repair Indore | Car Repair Wala', 'Suspension checks, shock absorbers, steering repairs and wheel alignment at Car Repair Wala in Indore. Final costs are confirmed after inspection.', 'Suspension & steering'],
-  'denting-painting-indore.html': ['Car Denting & Painting Indore | Car Repair Wala', 'Explore panel dent removal, bumper work and car painting at Car Repair Wala in Indore. Check indicative estimates and request a damage inspection.', 'Denting & painting'],
-  'car-detailing-indore.html': ['Car Detailing in Indore | Car Repair Wala', 'Car wash, interior cleaning, polishing and detailing enquiries at Car Repair Wala in Indore. Compare available services and request a quote.', 'Car detailing'],
+  'denting-painting-indore.html': ['Car Denting Painting & Scratch Removal Indore | Car Repair Wala', 'Car dent repair, scratch removal and colour-matched panel painting in Indore. Dent and paint from ₹2,000 per panel for hatchbacks. Approve the quote first.', 'Denting & painting'],
+  'car-detailing-indore.html': ['Car Detailing & Interior Cleaning in Indore | Car Repair Wala', 'Car interior deep cleaning, rubbing and polishing in Indore. Seat and roof shampoo, odour treatment and machine polish. Pre-purchase car inspection too.', 'Car detailing'],
   'accident-repair-indore.html': ['Accident Car Repair Indore | Car Repair Wala', 'Request an accident-damage inspection at Car Repair Wala in Indore. Body, paint and glass repairs are quoted after checking the vehicle.', 'Accident repair'],
   'estimate.html': ['Car Service Cost Calculator Indore | Car Repair Wala', 'Estimate car service and repair costs in Indore by vehicle, fuel, services and parts grade. Review the range before booking with Car Repair Wala.', 'Cost calculator'],
   'booking.html': ['Book Car Service in Indore | Car Repair Wala', 'Send a car service request to Car Repair Wala in Indore. Choose your vehicle, services, parts preference, pickup details and preferred time.', 'Booking'],
@@ -18,6 +18,11 @@ const COPY = {
   'pickup-drop.html': ['Car Pickup & Drop Areas Indore | Car Repair Wala', 'Check your PIN for Car Repair Wala pickup and drop in Indore. Listed areas are subject to availability and booking confirmation.', 'Pickup & drop'],
   'gallery.html': ['Car Service Gallery Indore | Car Repair Wala', 'Explore the Car Repair Wala service gallery for car servicing, mechanical repairs, detailing and bodywork options in Indore.', 'Service Gallery'],
   'reviews.html': ['Customer Feedback Indore | Car Repair Wala', 'Share your Car Repair Wala service experience in Indore. Website feedback is published only with customer permission and garage approval.', 'Reviews'],
+  'car-wash-indore.html': ['Car Wash & Foam Wash in Indore | Car Repair Wala', 'Car foam wash in Indore from ₹300 for hatchbacks, with interior vacuum, deep cleaning and polishing add-ons. AB Road, Choithram Mandi. Open 7 AM–11:30 PM.', 'Car wash'],
+  'car-service-vijay-nagar-indore.html': ['Car Service in Vijay Nagar, Indore | Car Repair Wala', 'Car service and repair for Vijay Nagar, Nipania and DDU Nagar with free pickup and drop to our AB Road workshop. See prices online, approve before work.', 'Car service in Vijay Nagar'],
+  'maruti-car-service-indore.html': ['Maruti Suzuki Car Service in Indore | Car Repair Wala', 'Maruti Suzuki car service in Indore at an independent garage. Swift, Baleno, Dzire, Ertiga, Brezza and more. Basic service from ₹2,200. Free pickup.', 'Maruti car service'],
+  'car-service-rajendra-nagar-indore.html': ['Car Service in Rajendra Nagar, Indore | Car Repair Wala', 'Car service and repair about 5 km from Rajendra Nagar at 17, AB Road, Choithram Mandi, Indore. Free pickup and drop for PIN 452012. Open till 11:30 PM.', 'Car service in Rajendra Nagar'],
+  'hyundai-car-service-indore.html': ['Hyundai Car Service in Indore | Car Repair Wala', 'Hyundai car service in Indore at an independent garage. Creta, Venue, i20, Grand i10 Nios, Verna and Exter. Petrol, diesel and automatic. Free pickup.', 'Hyundai car service'],
   '404.html': ['Page Not Found | Car Repair Wala', 'This page could not be found. Visit the Car Repair Wala home page for services, estimates and contact information.', 'Page not found']
 };
 const WEEK = {Mo:'Monday',Tu:'Tuesday',We:'Wednesday',Th:'Thursday',Fr:'Friday',Sa:'Saturday',Su:'Sunday'};
@@ -34,10 +39,10 @@ export function createSeo({file,title,description,business:B,siteUrl,services=[]
   const logo={ '@context':'https://schema.org', '@type':'ImageObject', '@id':home+'#logo',url:absolute('assets/img/car-repair-wala-logo.png'),contentUrl:absolute('assets/img/car-repair-wala-logo.png'),width:1254,height:1254,caption:B.name+' logo'};
   const business={
     '@context':'https://schema.org','@type':'AutoRepair','@id':businessId,
-    name:B.name,alternateName:[B.name+' '+B.city,'CarRepairWala'],url:home,telephone:B.phoneE164,
+    name:B.name,alternateName:[B.name+' '+B.city,'CarRepairWala',...(B.nameHi?[B.nameHi]:[])],url:home,telephone:B.phoneE164,priceRange:'₹₹',currenciesAccepted:'INR',
     description:`Multi-brand car servicing, maintenance, diagnostics and repairs in ${B.city} with inspection-led estimates and customer approval.`,
     address:{'@type':'PostalAddress',...(B.address?{streetAddress:[B.address.street,B.address.locality].filter(Boolean).join(', '),postalCode:B.address.pincode}:{}),addressLocality:B.city,addressRegion:B.state,addressCountry:B.country},
-    areaServed:{'@type':'City',name:B.city},logo:{'@id':logo['@id']},image:{'@id':logo['@id']},
+    areaServed:[{'@type':'City',name:B.city},...(B.areasServed||[]).map(name=>({'@type':'Place',name:name+', '+B.city}))],logo:{'@id':logo['@id']},image:[absolute('assets/img/photos/car-repair-wala-workshop-1600.webp'),{'@id':logo['@id']}],
     hasOfferCatalog:{'@type':'OfferCatalog',name:'Car servicing and repairs',itemListElement:services.map(p=>({'@type':'Offer',itemOffered:{'@type':'Service','@id':absolute(p.file)+'#service',name:p.h1,url:absolute(p.file),provider:{'@id':businessId}}}))}
   };
   if (B.hours) {

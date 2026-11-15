@@ -24,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.7.1";
+const VERSION = "2.8.0";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -137,7 +137,7 @@ function faqLd(faqs) {
 }
 function layout({ file, title, desc, body, ld = [], navKey = null }) {
   body = body.replace('<p class="crumbs">', BACK_HOME + '<p class="crumbs">');
-  const seo = createSeo({file,title,description:desc,business:B,siteUrl,services:SERVICE_PAGES,ld,serviceCount:C.services.length});
+  const seo = createSeo({file,title,description:desc,business:B,siteUrl,services:[...SERVICE_PAGES, ...LANDING_PAGES],ld,serviceCount:C.services.length});
   title = seo.title; desc = seo.description;
   const lds = seo.schemas.map((x) => `<script type="application/ld+json">${jsonLd(x)}</script>`).join("\n");
   return `<!doctype html>
@@ -209,7 +209,7 @@ ${body}
       ${B.hours ? `<p class="footer-hours">${footerHours()} <span class="open-status" data-open-status hidden></span></p>` : `<p class="small">Working hours: please call or WhatsApp to confirm.</p>`}
       <p class="footer-lang"><span>Language</span> <button class="lang-toggle" type="button">हिंदी</button></p>
     </div>
-    <div><h2 class="footer-title">Services</h2><ul>${SERVICE_PAGES.map((p) => `<li><a href="${p.file}">${esc(p.nav)}</a></li>`).join("")}</ul></div>
+    <div><h2 class="footer-title">Services</h2><ul>${[...SERVICE_PAGES, ...LANDING_PAGES].map((p) => `<li><a href="${p.file}">${esc(p.nav)}</a></li>`).join("")}</ul></div>
     <div><h2 class="footer-title">Customers</h2><ul><li><a href="index.html">Home</a></li><li><a href="estimate.html">Cost calculator</a></li><li><a href="booking.html">Book a service</a></li><li><a href="gallery.html">Service Gallery</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact</a></li></ul></div>
     <div><h2 class="footer-title">Help &amp; policies</h2><ul><li><a href="index.html#faq">FAQs</a></li><li><a href="pickup-drop.html">Pickup &amp; drop areas</a></li><li><a href="terms.html">Terms & conditions</a></li><li><a href="privacy.html">Privacy policy</a></li><li><a href="policies.html">Cancellation, pickup & billing</a></li><li><a href="admin/index.html">Owner login</a></li></ul></div>
     <p class="fine">© <span data-year>${new Date().getFullYear()}</span> ${esc(B.name)}. Independent multi-brand garage; not affiliated with any car manufacturer. Brand names are used only to identify vehicles we service.</p>
@@ -253,22 +253,22 @@ const ctaBand = (title = "Ready to get your car checked?") => `<section class="c
 /* --------------------------- Service pages --------------------------- */
 const SERVICE_PAGES = [
   { file: "car-service-indore.html", stock: "oil-service", photos: ["engine-oil-change", "air-filter-replacement", "engine-cleaning-service"], nav: "Car servicing", ids: ["GS-02", "GS-01", "GS-03", "GS-04", "GS-05", "GS-06", "GS-07", "GS-08", "GS-09", "GS-10", "GS-11"], icon: "service",
-    title: "Car Service in Indore — Periodic Servicing for All Brands", h1: "Car servicing in Indore",
+    title: "Car Service in Indore — Periodic Servicing for All Brands", h1: "Periodic car service in Indore",
     desc: "Periodic car service in Indore for Maruti, Hyundai, Tata, Mahindra, Kia and more. Basic, standard and comprehensive packages with transparent estimates.",
     lead: "Scheduled servicing keeps your car reliable and protects resale value. Pick a basic, standard or comprehensive service, see an estimated price range for your car, and approve the final quote after inspection.",
     body: ["Your manufacturer's service schedule is usually every 10,000 km or 12 months, whichever comes first. City driving in Indore traffic, dusty roads and long AC use can mean your car needs attention sooner.", "Every service starts with a check of fluids, brakes, battery and tyres. If we find anything beyond the package, we tell you the cost before doing it."],
     symptoms: ["Service due on the dashboard or in your service booklet", "Engine sounding rougher than usual", "Lower mileage than normal", "Dark or low engine oil on the dipstick"],
     faqs: [{ q: "Which service level should I choose?", a: "Basic suits a car serviced recently that needs an oil change. Standard is our default periodic service. Comprehensive adds cabin filter, alignment and balancing and suits cars due a major service." }, { q: "Will servicing at an independent garage affect my warranty?", a: "Warranty terms depend on your manufacturer. Check your warranty booklet; we can use genuine parts and record the work on an itemised bill if you need it." }, { q: "How long does a car service take?", a: "Most periodic services take 4 to 6 hours. We confirm the expected time when we book your slot." }] },
   { file: "car-ac-repair-indore.html", stock: "ac-vent", photos: ["ac-cleaning-service", "cabin-filter-replacement"], nav: "Car AC repair", ids: ["AC-03", "AC-01", "AC-02", "AC-04", "AC-05", "AC-06", "AC-07"], icon: "ac",
-    title: "Car AC Repair & Service in Indore", h1: "Car AC repair in Indore",
-    desc: "Car AC service and repair in Indore: leak test, gas top-up, condenser cleaning and cooling diagnosis for all car brands.",
+    title: "Car AC Repair & Service in Indore", h1: "Car AC service, repair and gas filling in Indore",
+    desc: "Car AC service, repair and gas filling in Indore: leak test, gas refill, condenser cleaning and cooling diagnosis for all car brands.",
     lead: "Indore summers are hard on car AC systems. We test for leaks, check pressures, top up refrigerant and clean the condenser so your cabin cools properly again.",
     body: ["A weak AC is often low refrigerant from a small leak, a clogged cabin filter or a dirty condenser. These are usually quick fixes.", "If the compressor, condenser or evaporator needs replacing, we inspect first and send you a quotation before any work."],
     symptoms: ["AC blows warm or takes long to cool", "Musty smell from vents", "Clicking or rattling when the AC is on", "Water dripping inside the cabin"],
     faqs: [{ q: "How often should the car AC be serviced?", a: "Once a year, ideally before summer, is a good habit. Cars driven daily with the AC on may need it sooner." }, { q: "Does a gas top-up fix a leak?", a: "No. A top-up restores cooling for a while, but a leak needs to be found and repaired. We leak-test before topping up." }, { q: "Is compressor replacement included?", a: "No. Compressor and major part replacements are quoted separately after inspection." }] },
   { file: "brake-clutch-repair-indore.html", stock: "brake-system", photos: ["brake-service", "clutch-replacement"], nav: "Brake & clutch", ids: ["BR-02", "BR-01", "BR-03", "BR-04", "BR-05", "BR-06", "CL-01", "CL-02", "CL-03", "CL-04"], icon: "brake",
-    title: "Brake & Clutch Repair in Indore", h1: "Brake and clutch repair",
-    desc: "Brake pad, brake shoe, brake fluid and clutch replacement in Indore with estimated price ranges and approval before work.",
+    title: "Brake & Clutch Repair in Indore", h1: "Car brake repair and clutch plate replacement",
+    desc: "Car brake pad, brake shoe, brake fluid and clutch plate replacement in Indore with estimated price ranges and approval before work.",
     lead: "Brakes and clutch wear faster in stop-start city traffic. We inspect, show you the worn parts, and replace them with the parts grade you choose.",
     body: ["Brake pads typically need checking every service. Squealing, grinding or a soft pedal mean they should be checked right away.", "A slipping clutch, hard pedal or burning smell points to clutch wear. Clutch work involves removing the gearbox, so we confirm the full quote first."],
     symptoms: ["Squeal or grinding when braking", "Brake pedal feels soft or goes low", "Car pulls to one side under braking", "Clutch slips, judders or the pedal is hard"],
@@ -281,7 +281,7 @@ const SERVICE_PAGES = [
     symptoms: ["Check engine light on or flashing", "Engine misfires, hesitates or stalls", "Temperature gauge rising", "Unusual smoke or fuel smell"],
     faqs: [{ q: "Is it safe to drive with the check engine light on?", a: "If the light is flashing or the temperature is rising, stop and call us. A steady light is less urgent, but get it scanned soon." }, { q: "Does diagnosis include the repair?", a: "No. Diagnosis tells you what's wrong. We then send a quote for the repair, and you decide." }, { q: "Do you diagnose all brands?", a: "We use OBD scanners that read most brands sold in India. Some luxury models may need dealer-level software; we'll tell you upfront." }] },
   { file: "car-battery-electrical-indore.html", stock: "engine-check", photos: ["battery-replacement", "taillight-repair"], nav: "Battery & electrical", ids: ["TB-05", "TB-03", "TB-04", "EL-01", "EL-02", "EL-03", "EL-04"], icon: "battery",
-    title: "Car Battery Replacement & Electrical Repair — Indore", h1: "Battery and electrical services",
+    title: "Car Battery Replacement & Electrical Repair — Indore", h1: "Car battery replacement and electrical repair",
     desc: "Car battery testing and replacement, wiring, fuse, lights and electrical fault repairs in Indore.",
     lead: "A weak battery or an electrical fault can leave you stranded. We test the battery and charging system, trace wiring faults and fix lights, switches and power windows.",
     body: ["Most car batteries last 3 to 5 years. Slow cranking on winter mornings is often the first sign.", "For electric cars, battery service here means the 12V auxiliary battery. High-voltage traction battery work is not included."],
@@ -295,16 +295,16 @@ const SERVICE_PAGES = [
     symptoms: ["Knocking over bumps", "Car pulls to one side", "Steering wheel vibrates or is off-centre", "Uneven tyre wear"],
     faqs: [{ q: "Why is the suspension range so wide?", a: "It depends on whether a single link, bushes or full shock absorbers need replacing. We show you the worn parts before quoting." }, { q: "Are new tyres included?", a: "No. New tyres are quoted separately by size and brand." }, { q: "How often should I get wheel alignment?", a: "Every 5,000 to 10,000 km, after hitting a deep pothole, or after suspension or steering work." }] },
   { file: "denting-painting-indore.html", stock: "panel-sanding", photos: ["dent-repair", "bumper-scratch-repair", "alloy-wheel-repair"], nav: "Denting & painting", ids: ["BD-01", "BD-02", "BD-03", "BD-04", "BD-05", "BD-06", "BD-07", "BD-08"], icon: "paint",
-    title: "Car Denting & Painting in Indore", h1: "Denting and painting",
-    desc: "Car dent removal and panel painting in Indore, priced per panel, plus accident repair and windshield replacement quotes.",
+    title: "Car Denting & Painting in Indore", h1: "Car denting, painting and scratch removal",
+    desc: "Car dent repair, scratch removal and panel painting in Indore, priced per panel, plus accident repair and windshield replacement quotes.",
     lead: "From parking scrapes to accident damage, we remove dents and colour-match paint panel by panel. Accident repairs are quoted after a damage assessment.",
     body: ["Denting and painting is estimated per panel, such as a door, bumper or fender. Use the estimator to set the number of panels.", "For bigger damage we inspect first and give you a written estimate. If you claim insurance, approval depends on your insurer."],
     symptoms: ["Dents or scratches on panels", "Faded or peeling paint", "Bumper damage after a minor collision", "Cracked windshield"],
     faqs: [{ q: "How long does denting and painting take?", a: "Usually 1 to 2 working days per panel group, depending on drying time and damage. We confirm when you book." }, { q: "Can you help with an insurance claim?", a: "Ask us on WhatsApp before booking. We can share an inspection-based repair estimate; claim approval and payout are decided by your insurer." }, { q: "Is paint colour-matched?", a: "Yes, paint is matched to your car's colour code. Older faded paint may need blending into neighbouring panels." }] },
   { file: "car-detailing-indore.html", stock: "polishing", stockMore: ["foam-wash", "dashboard-cleaning"], photos: ["headlight-restoration", "engine-cleaning-service"], nav: "Car detailing", ids: ["CD-03", "CD-01", "CD-02", "CD-04", "CD-05", "OT-04"], icon: "sparkle",
-    title: "Car Wash, Interior Cleaning & Detailing — Indore", h1: "Car detailing and cleaning",
-    desc: "Car foam wash, interior deep cleaning and detailing in Indore, plus pre-purchase used car inspection.",
-    lead: "A clean cabin makes every drive better. Choose a foam wash, interior deep clean or full detailing. Buying a used car? Book a pre-purchase inspection.",
+    title: "Car Detailing & Interior Cleaning — Indore", h1: "Car detailing and interior cleaning",
+    desc: "Car interior deep cleaning, rubbing and polishing in Indore, plus pre-purchase used car inspection.",
+    lead: "A clean cabin makes every drive better. Choose an interior deep clean, rubbing and polishing or full detailing. Need only a quick foam wash? See our car wash page. Buying a used car? Book a pre-purchase inspection.",
     body: ["Detailing covers seats, roof lining, dashboard and carpets. Ceramic coating and paint protection film are not included.", "Our pre-purchase inspection checks the engine, body, underbody and electronics, with a road test and a written report."],
     symptoms: ["Stains or odour inside the cabin", "Dull exterior finish", "Preparing a car for sale", "Buying a used car"],
     faqs: [{ q: "How long does interior detailing take?", a: "Between 1 and 5 hours depending on the package and how much cleaning the car needs." }, { q: "Do you do ceramic coating?", a: "Not as part of these packages. Ask on WhatsApp if you need it." }, { q: "What does the pre-purchase inspection cover?", a: "Engine, transmission, body and paint, underbody, electricals, OBD scan and a road test, with a written report." }] }
@@ -355,14 +355,16 @@ const RELATED_SERVICES = {
   'car-battery-electrical-indore.html':['engine-diagnostics-indore.html','car-ac-repair-indore.html'],
   'suspension-steering-repair-indore.html':['brake-clutch-repair-indore.html','car-service-indore.html'],
   'denting-painting-indore.html':['accident-repair-indore.html','car-detailing-indore.html'],
-  'car-detailing-indore.html':['denting-painting-indore.html','car-service-indore.html'],
+  'car-detailing-indore.html':['car-wash-indore.html','denting-painting-indore.html','car-service-indore.html'],
   'accident-repair-indore.html':['denting-painting-indore.html','suspension-steering-repair-indore.html']
 };
+const lc = (t) => t.toLowerCase().replace(/\bac\b/g, "AC");
+const findPage = (file) => SERVICE_PAGES.find((page) => page.file === file) || LANDING_PAGES.find((page) => page.file === file);
 function servicePage(p) {
   const includes = [...new Set(p.ids.slice(0, 1).flatMap((id) => svc[id].includes || []))];
   const photos = (p.photos || []).map(galItem).filter(Boolean);
   const heading = p.h1.includes(B.city) ? p.h1 : p.h1 + " in " + B.city;
-  const related = (RELATED_SERVICES[p.file] || []).map(file=>SERVICE_PAGES.find(page=>page.file===file)).filter(Boolean);
+  const related = (RELATED_SERVICES[p.file] || []).map(findPage).filter(Boolean);
   const ld = [
     { "@context": "https://schema.org", "@type": "Service", name: heading, serviceType: p.nav, provider: { "@type": "AutoRepair", name: B.name, telephone: B.phoneE164 }, areaServed: { "@type": "City", name: B.city }, description: p.desc },
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: url("index.html") }, { "@type": "ListItem", position: 2, name: "Services", item: url("services.html") }, { "@type": "ListItem", position: 3, name: p.nav, item: url(p.file) }] },
@@ -386,7 +388,7 @@ function servicePage(p) {
     ${photos.length ? `<figure class="page-photo">${baStatic(photos[0], true)}<figcaption>${esc(photos[0].category)}. <a href="gallery.html#ba-${photos[0].id}">See the gallery</a>.</figcaption></figure>` : ""}
     <h2>Typical problems &amp; symptoms</h2>
     <ul>${p.symptoms.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
-    <h2>What's included in ${esc(svc[p.ids[0]].name.toLowerCase())}</h2>
+    <h2>What's included in ${esc(lc(svc[p.ids[0]].name))}</h2>
     <ul>${includes.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
     <h2>Price list</h2>
     <div data-rate-table="${p.ids.join(",")}">${PT.rateTable(C, PR, p.ids)}${PT.footnote(C)}</div>
@@ -401,17 +403,179 @@ function servicePage(p) {
     </ol>
     ${related.length ? `<h2>Related services in ${esc(B.city)}</h2><ul data-related-services>${related.map(page=>`<li><a href="${page.file}">${esc(page.nav)} in ${esc(B.city)}</a></li>`).join('')}</ul>` : ''}
   </div>
-  <aside style="display:grid;gap:18px;align-content:start" aria-label="Book ${esc(p.nav.toLowerCase())}">
-    ${quickBook(p.ids[0], "Book " + p.nav.toLowerCase())}
+  <aside style="display:grid;gap:18px;align-content:start" aria-label="Book ${esc(lc(p.nav))}">
+    ${quickBook(p.ids[0], "Book " + lc(p.nav))}
   </aside>
 </div></section>
 <section class="band" id="estimate"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">Cost calculator</span><h2>Price your ${esc(p.nav.toLowerCase())}</h2><p>${svc[p.ids[0]].inspectionRequired ? "This job needs an inspection before we can price it — the calculator shows what can be estimated and lets you request a quote." : "Set your car and parts grade to see labour, parts and time."}</p></div>
+  <div class="section-head"><span class="eyebrow">Cost calculator</span><h2>Price your ${esc(lc(p.nav))}</h2><p>${svc[p.ids[0]].inspectionRequired ? "This job needs an inspection before we can price it — the calculator shows what can be estimated and lets you request a quote." : "Set your car and parts grade to see labour, parts and time."}</p></div>
   <div class="jobcard" data-estimator data-preset="${p.ids[0]}" style="max-width:760px"><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
 </div></section>
 ${faqBlock(p.faqs)}
-${ctaBand("Book your " + p.nav.toLowerCase() + " in Indore")}`;
+${ctaBand("Book your " + lc(p.nav) + " in Indore")}`;
   return layout({ file: p.file, title: p.title, desc: p.desc, body, ld, navKey: "services.html" });
+}
+
+/* --------------------------- Landing pages: car wash, area and brand --------------------------- */
+// Model pages for the owner: copy one, then rewrite every part marked in docs/SEO plan (lead, sections, FAQs).
+// Prices are read from rate-card.js at build time, so they stay in step with the price tables.
+const qr = (id, cat) => PR.quickRange(C, id, cat, "petrol").text;
+const MARUTI = C.brands.find((b) => b.id === "maruti");
+const marutiNow = MARUTI.models.filter((m) => !(m[2] || "").includes("o")).map((m) => m[0]);
+const marutiOld = MARUTI.models.filter((m) => (m[2] || "").includes("o")).map((m) => m[0]);
+const marutiSuv = MARUTI.models.filter((m) => !(m[2] || "").includes("o") && m[1] === "suv").map((m) => m[0]);
+const pinPlaces = (pin, max = 4) => [...new Set(AREAS.localities.filter(([, p]) => p === pin).map(([n]) => n))].filter((n) => n !== "Nipaniya" && n !== "Kanadia").slice(0, max);
+const pinItem = (pin, max) => AREAS.coveredPins.includes(pin) ? `<li><b>${pin}</b> ${esc(pinPlaces(pin, max).join(", "))}</li>` : "";
+const priceBlock = (ids) => `<div data-rate-table="${ids.join(",")}">${PT.rateTable(C, PR, ids)}${PT.footnote(C)}</div>`;
+const slotText = (B.timeSlots || []).map((t) => t.toLowerCase().replace(/\s*\((.*)\)/, " $1")).join(", ");
+
+const brandModels = (id) => {
+  const ms = C.brands.find((b) => b.id === id).models;
+  const now = ms.filter((m) => !(m[2] || "").includes("o"));
+  return { now: now.map((m) => m[0]), old: ms.filter((m) => (m[2] || "").includes("o")).map((m) => m[0]),
+    byCat: Object.fromEntries(["hatchback", "sedan", "suv"].map((c) => [c, now.filter((m) => m[1] === c).map((m) => m[0])])) };
+};
+const LANDING_PAGES = [
+  { file: "car-wash-indore.html", nav: "Car wash", short: "car wash", icon: "sparkle", stock: "foam-wash", ids: ["CD-01", "CD-02", "CD-03", "CD-04"], serviceType: "Car wash",
+    h1: "Car wash and foam wash in Indore", eyebrow: "Indore · All cars",
+    desc: "Car foam wash in Indore with interior vacuum, deep cleaning and polishing options. Open every day from 7 AM to 11:30 PM at AB Road, Choithram Mandi.",
+    lead: `A proper foam wash lifts Indore's dust off the paint instead of rubbing it in. Bring your car to our AB Road workshop any day between 7 AM and 11:30 PM, or add a wash to your next service.`,
+    sections: [
+      { h: "Car wash prices", html: `<p>An exterior foam wash costs ${qr("CD-01", "hatchback")} for a hatchback, ${qr("CD-01", "sedan")} for a sedan and ${qr("CD-01", "suv")} for an SUV. Bigger cars cost more because there is more car to clean. Interior cleaning and polishing are priced separately, so you pay only for what your car needs.</p>${priceBlock(["CD-01", "CD-02", "CD-03", "CD-04"])}` },
+      { h: "What happens in a foam wash", html: `<ol><li><b>Rinse.</b> Loose dust and mud are rinsed off first, so they are not dragged across the paint.</li><li><b>Foam.</b> Snow-foam shampoo covers the car and softens the dirt that is left.</li><li><b>Wash.</b> Body panels, wheels and door edges are washed by hand.</li><li><b>Rinse and dry.</b> The car is rinsed again and dried with microfibre cloths to avoid water spots.</li><li><b>Tyre shine.</b> Tyres get a dressing so they look clean and dark.</li></ol><p>An exterior foam wash takes about 30 minutes to an hour.</p>` },
+      { h: "Which wash does your car need?", html: `<ul><li><b>Exterior foam wash</b> for regular cleaning, every one or two weeks for a car parked outdoors.</li><li><b>Interior cleaning</b> when the cabin is dusty: vacuuming, mats and a dashboard wipe and dressing. About 1 to 1.5 hours.</li><li><b>Deep interior cleaning</b> for stains, spills or a musty smell after the monsoon: seat, roof and carpet shampoo with odour treatment. About 3 to 5 hours.</li><li><b>Rubbing and polishing</b> for dull paint and light swirl marks: a machine polish in one or two stages. About 3 to 6 hours. Dents and deep scratches need <a href="denting-painting-indore.html">denting and painting</a> instead.</li></ul>` },
+      { h: "Car care tips for Indore roads", html: `<ul><li>Never wipe a dusty car with a dry cloth. Dust is abrasive and leaves fine scratches, so rinse it off first.</li><li>Clean bird droppings and tree sap off quickly. Left in the sun, they can mark the clear coat.</li><li>After rain or a waterlogged road, rinse the wheel arches and lower doors before the mud dries there.</li><li>Park in shade when you can. Strong sun fades paint and dashboard plastics over time.</li></ul>` },
+      { h: "Wash with a service, or on its own", html: `<p>Our basic and standard <a href="car-service-indore.html">car services</a> already include an exterior wash, and the standard service adds an interior vacuum. If your service is due, you don't need a separate wash.</p><p>Wash-only visits are welcome during opening hours. Call or WhatsApp before you come and we'll tell you the waiting time. Free <a href="pickup-drop.html">pickup and drop</a> covers our ${AREAS.coveredPins.length} confirmed Indore PIN codes, subject to booking confirmation; for a wash-only booking, please confirm pickup when you book.</p>` }
+    ],
+    faqs: [
+      { q: "How much does a car wash cost at Car Repair Wala?", a: `An exterior foam wash is ${qr("CD-01", "hatchback")} for a hatchback, ${qr("CD-01", "sedan")} for a sedan and ${qr("CD-01", "suv")} for an SUV. Interior cleaning starts at ${qr("CD-02", "hatchback").split(" – ")[0]} for a hatchback.` },
+      { q: "How long does a foam wash take?", a: "About 30 minutes to an hour. Deep interior cleaning takes 3 to 5 hours, so leave the car with us or book pickup." },
+      { q: "Do I need an appointment for a car wash?", a: "No appointment is needed, but call or WhatsApp before you come so we can tell you the waiting time." },
+      { q: "Is foam wash safe for my car's paint?", a: "Yes. The foam loosens dirt before anyone touches the paint, which is gentler than wiping a dusty car." }
+    ],
+    related: [["car-detailing-indore.html", "Car detailing and interior cleaning in Indore"], ["denting-painting-indore.html", "Car denting, painting and scratch removal"], ["car-service-indore.html", "Periodic car service in Indore"]],
+    cta: "Book a car wash in Indore" },
+
+  { file: "car-service-vijay-nagar-indore.html", nav: "Car service in Vijay Nagar", short: "car service", icon: "truck", stock: "oil-service", ids: ["GS-02", "GS-01", "GS-03", "AC-03", "BR-02", "BD-01"], serviceType: "Car servicing and repair",
+    h1: "Car service in Vijay Nagar, Indore", eyebrow: "Vijay Nagar · PIN 452010", area: "Vijay Nagar",
+    desc: "Car service and repair for Vijay Nagar, Nipania and DDU Nagar with free pickup and drop to our AB Road workshop in Indore.",
+    lead: "Live or work in Vijay Nagar, Nipania or near Sanwer Link Road? We collect your car, service it at our AB Road workshop and bring it back. Pickup and drop is free for PIN 452010, subject to booking confirmation.",
+    sections: [
+      { h: "How pickup from Vijay Nagar works", html: `<ol><li>Book on WhatsApp, by phone or with the <a href="booking.html">booking form</a>. Tell us your car, the problem and your address with PIN 452010.</li><li>Choose a time slot: ${esc(slotText)}.</li><li>We collect the car at the confirmed time.</li><li>We inspect it and send the quotation on WhatsApp. Work starts only after you approve it.</li><li>We drop the car back with an itemised bill that lists every part and labour charge.</li></ol>` },
+      { h: "How far is the workshop from Vijay Nagar?", html: `<p>Our workshop is at ${esc(addressText())}, about 10.4 km from Vijay Nagar Square by AB Road. Google Maps showed about 25 minutes by car on a Sunday late morning; weekday office hours on AB Road take longer. With pickup, that drive is ours, not yours.</p><p>Prefer to drive in? We are open every day from 7 AM to 11:30 PM. ${mapLink(true)}</p>` },
+      { h: "Areas we cover around Vijay Nagar", html: `<p>Pickup and drop is free in these PIN codes near Vijay Nagar, subject to booking confirmation:</p><ul>${pinItem("452010")}${pinItem("452016", 4)}${pinItem("452011")}${pinItem("452003")}</ul><p>Not sure about your street? <a href="pickup-drop.html">Check your PIN code</a> or ask us on WhatsApp.</p>` },
+      { h: "Common jobs and prices", html: `<p>A standard service for a hatchback is ${qr("GS-02", "hatchback")}; for an SUV it is ${qr("GS-02", "suv")}. These ranges are for petrol cars with standard parts. Your final quote comes after inspection.</p>${priceBlock(["GS-02", "GS-01", "GS-03", "AC-03", "BR-02", "BD-01"])}<p><a href="services.html">See all services and prices</a>.</p>` },
+      { h: "Why Vijay Nagar customers book with us", html: `<ul><li>Price ranges are on the website before you book.</li><li>No extra work without your OK on WhatsApp.</li><li>You choose economy, standard or genuine parts, and the parts used are written on the bill.</li><li>We are open until 11:30 PM every day, so an evening or night slot can fit around office hours.</li></ul>` }
+    ],
+    faqs: [
+      { q: "Is pickup free from Vijay Nagar?", a: "Yes. PIN 452010 (Vijay Nagar, Nipania, DDU Nagar and Sanwer Link Road) is on our confirmed list, so pickup and drop is free, subject to booking confirmation." },
+      { q: "Can you collect the car from my office in Vijay Nagar?", a: "Yes. Give the office address when you book and we will confirm the pickup time with you." },
+      { q: "How long will my car be away?", a: "A standard service takes about 3 to 4 hours of work, plus travel. We tell you the expected return time when we confirm the booking." },
+      { q: "Do you cover areas near Vijay Nagar outside PIN 452010?", a: "Khajrana, Bicholi Mardana and Kanadia Road (452016) and Nanda Nagar and RSS Nagar (452011) are also on our free pickup list. For other areas, check your PIN on the pickup page or ask us." }
+    ],
+    related: [["pickup-drop.html", "Pickup and drop areas in Indore"], ["car-service-indore.html", "Periodic car service in Indore"], ["car-ac-repair-indore.html", "Car AC service and gas filling in Indore"]],
+    cta: "Book a pickup from Vijay Nagar" },
+
+  { file: "maruti-car-service-indore.html", nav: "Maruti car service", short: "Maruti service", icon: "service", stock: "engine-inspection", ids: ["GS-02", "GS-01", "GS-03", "AC-03", "BR-02", "CL-02", "TB-05"], serviceType: "Car servicing", brand: "Maruti Suzuki",
+    h1: "Maruti Suzuki car service in Indore", eyebrow: "Maruti Suzuki · Independent garage",
+    desc: "Maruti Suzuki car service and repair in Indore at an independent multi-brand garage: Swift, Baleno, Dzire, Wagon R, Ertiga, Brezza and more.",
+    lead: "Service your Swift, Baleno, Dzire, Wagon R, Ertiga or Brezza at an independent multi-brand garage in Indore. See the price range for your model, choose your parts grade, and approve the quote before work starts.",
+    notice: "Car Repair Wala is an independent garage. We are not an authorised Maruti Suzuki dealer or service centre. Maruti Suzuki is a trademark of its owner and is used here only to describe the cars we service.",
+    sections: [
+      { h: "Maruti models we service", html: `<p>${esc(marutiNow.join(", "))}.</p><p>We also service older Maruti models, including ${esc(marutiOld.filter((m) => ["Alto 800", "Zen", "Ritz", "Swift Dzire", "SX4", "Gypsy", "Omni", "Esteem"].includes(m)).join(", "))}.</p>` },
+      { h: "Maruti service prices", html: `<p>Most Maruti cars are hatchbacks, so they fall in our lowest price band. A basic service for a Swift or Wagon R is ${qr("GS-01", "hatchback")} and a standard service is ${qr("GS-02", "hatchback")}. The Dzire and Ciaz are priced as sedans, and the ${esc(marutiSuv.slice(0, 5).join(", "))} are priced as SUV/MUV.</p>${priceBlock(["GS-02", "GS-01", "GS-03", "AC-03", "BR-02", "CL-02", "TB-05"])}<p>For your exact model, fuel and parts grade, use the <a href="#estimate">cost calculator</a> below.</p>` },
+      { h: "How often should a Maruti be serviced?", html: `<p>Maruti Suzuki generally recommends a periodic service every 10,000 km or 12 months, whichever comes first, after the early free services. Your owner's manual has the exact schedule for your model and fuel type.</p><p>Stop-start traffic, dusty roads and long AC use can mean your car needs attention sooner.</p>` },
+      { h: "What we often check on Maruti cars", html: `<ul><li><b>AMT (AGS) models:</b> jerky gear changes or a warning light can point to the clutch or the gear-shift actuator. We scan the system before replacing anything.</li><li><b>CNG models</b> such as the S-CNG Wagon R, Celerio, Dzire and Ertiga: spark plugs and air filters usually need attention more often than on petrol-only cars.</li><li><b>Clutch wear in city driving:</b> a high biting point or slipping in higher gears are early signs. See <a href="brake-clutch-repair-indore.html">brake and clutch repair</a>.</li><li><b>Brakes and suspension on MPVs:</b> an Ertiga or XL6 that often carries a full family puts more load on brake pads and suspension.</li></ul>` },
+      { h: "Warranty and parts", html: `<p>If your Maruti is still under warranty, check your warranty booklet before servicing outside the dealer network. Tell us which parts grade you prefer when you book; every part used is listed on your itemised bill.</p>` }
+    ],
+    faqs: [
+      { q: "Are you an authorised Maruti Suzuki service centre?", a: "No. We are an independent multi-brand garage. For free services under the manufacturer's scheme or for warranty repairs, visit an authorised Maruti Suzuki workshop." },
+      { q: "How much does a Maruti car service cost?", a: `A basic service for a Maruti hatchback such as a Swift or Wagon R is ${qr("GS-01", "hatchback")} with standard parts, and a standard service is ${qr("GS-02", "hatchback")}. The calculator gives the range for your exact model.` },
+      { q: "Do you service Maruti CNG cars?", a: "Yes. Select CNG as the fuel in the calculator to see the estimate for your car." },
+      { q: "Can you collect my Maruti from home?", a: `Yes. Pickup and drop is free in our ${AREAS.coveredPins.length} confirmed Indore PIN codes, subject to booking confirmation.` }
+    ],
+    related: [["car-service-indore.html", "Periodic car service in Indore"], ["brake-clutch-repair-indore.html", "Car brake and clutch plate repair"], ["car-ac-repair-indore.html", "Car AC service and gas filling in Indore"]],
+    cta: "Book your Maruti service" },
+
+  { file: "car-service-rajendra-nagar-indore.html", nav: "Car service in Rajendra Nagar", short: "car service", icon: "truck", stock: "under-car", ids: ["AC-02", "CD-01", "TB-05", "BR-02", "GS-04", "GS-01"], serviceType: "Car servicing and repair",
+    h1: "Car service in Rajendra Nagar, Indore", eyebrow: "Rajendra Nagar · PIN 452012", area: "Rajendra Nagar",
+    desc: "Car service and repair about 5 km from Rajendra Nagar, Indore, at 17, AB Road, Choithram Mandi. Free pickup and drop for PIN 452012. Open daily till 11:30 PM.",
+    lead: "Rajendra Nagar is one of the closest areas to our workshop, about 5 km away. Drop your car off yourself, or we collect it, service it at 17, AB Road, Choithram Mandi and bring it back. Pickup and drop is free for PIN 452012, subject to booking confirmation.",
+    sections: [
+      { h: "How close is the workshop?", html: `<p>Google Maps showed <b>4.9 km and about 11 minutes</b> by car via NH 47 on a Sunday around noon, or 4.3 km via Annapurna Road. Weekday traffic adds time, but it stays a short trip.</p><p>That makes it easy to drop the car on your way to work and collect it in the evening. We are open every day from 7 AM to 11:30 PM. ${mapLink(true)}</p>` },
+      { h: "Quick jobs that suit a short trip", html: `<p>These jobs usually take an hour or two, so the car can often go back the same day. We confirm the timing when you book.</p><ul><li><b>AC gas filling:</b> ${qr("AC-02", "hatchback")} for a hatchback, about 1 to 2 hours, with a leak check first.</li><li><b>Foam wash:</b> ${qr("CD-01", "hatchback")}, about 30 to 60 minutes.</li><li><b>Battery replacement:</b> ${qr("TB-05", "hatchback")} including fitting, about 30 to 60 minutes.</li><li><b>Front brake pads:</b> ${qr("BR-02", "hatchback")}, about 1 to 2 hours.</li><li><b>Engine oil and filter change:</b> ${qr("GS-04", "hatchback")}, about 1 to 1.5 hours.</li></ul>${priceBlock(["AC-02", "CD-01", "TB-05", "BR-02", "GS-04", "GS-01"])}` },
+      { h: "Areas we cover near Rajendra Nagar", html: `<p>Free pickup and drop also covers these nearby PIN codes, subject to booking confirmation:</p><ul>${pinItem("452012")}${pinItem("452009")}${pinItem("452005")}${pinItem("452020", 3)}${pinItem("452006")}</ul><p><a href="pickup-drop.html">Check your PIN code</a> if your street is not listed.</p>` },
+      { h: "Booking from Rajendra Nagar", html: `<p>Send your car, the problem and your address with PIN 452012 on WhatsApp, by phone or with the <a href="booking.html">booking form</a>, and pick a morning, afternoon, evening or night slot. We send the quotation on WhatsApp after inspecting the car and start only after you say yes. The car comes back with a bill that lists each part and labour charge.</p>` },
+      { h: "Why Rajendra Nagar drivers choose us", html: `<ul><li>A workshop about 10 to 15 minutes away that stays open until 11:30 PM.</li><li>Price ranges on the website, so you know the likely cost before you come.</li><li>Choice of economy, standard or genuine parts, written on the bill.</li><li>No extra work without your approval.</li></ul>` }
+    ],
+    faqs: [
+      { q: "How far is Car Repair Wala from Rajendra Nagar?", a: "About 4.3 to 4.9 km depending on the route, or around 11 to 13 minutes by car at quiet times, as checked on Google Maps." },
+      { q: "Is pickup free in Rajendra Nagar?", a: "Yes. PIN 452012 is on our confirmed list, so pickup and drop is free, subject to booking confirmation." },
+      { q: "Which jobs can be done in a couple of hours?", a: "A foam wash, battery replacement, oil change, brake pad change and AC gas filling are usually quick. We confirm the timing when you book." },
+      { q: "Do you also cover Sudama Nagar and Bijasan Road?", a: "Yes. Sudama Nagar and Lokmanya Nagar (452009) and Bijasan Road (452005) are on our free pickup list too." }
+    ],
+    related: [["car-wash-indore.html", "Car wash and foam wash in Indore"], ["car-ac-repair-indore.html", "Car AC service and gas filling in Indore"], ["pickup-drop.html", "Pickup and drop areas in Indore"]],
+    cta: "Book a car service from Rajendra Nagar" },
+
+  { file: "hyundai-car-service-indore.html", nav: "Hyundai car service", short: "Hyundai service", icon: "service", stock: "engine-check", ids: ["GS-02", "GS-01", "GS-03", "AC-03", "BR-02", "SU-02", "TB-05"], serviceType: "Car servicing", brand: "Hyundai",
+    h1: "Hyundai car service in Indore", eyebrow: "Hyundai · Independent garage",
+    desc: "Hyundai car service and repair in Indore at an independent multi-brand garage: Creta, Venue, i20, Grand i10 Nios, Verna, Exter, Aura and more.",
+    lead: "Service your Creta, Venue, i20, Grand i10 Nios, Verna or Exter at an independent multi-brand garage in Indore. Petrol, diesel, turbo and automatic models are welcome. See the price range first and approve the quote before work starts.",
+    notice: "Car Repair Wala is an independent garage. We are not an authorised Hyundai dealer or service centre. Hyundai is a trademark of its owner and is used here only to describe the cars we service.",
+    sections: [
+      { h: "Hyundai models we service", html: `<p>${esc(brandModels("hyundai").now.join(", "))}.</p><p>Older models too, including ${esc(brandModels("hyundai").old.filter((m) => ["Santro", "Eon", "i10", "Grand i10", "Elite i20", "Xcent", "Accent", "Elantra"].includes(m)).join(", "))}.</p>` },
+      { h: "Hyundai service prices", html: `<p>The ${esc(brandModels("hyundai").byCat.hatchback.slice(0, 3).join(", "))} are priced as hatchbacks: a standard service is ${qr("GS-02", "hatchback")}. The ${esc(brandModels("hyundai").byCat.sedan.join(" and "))} are sedans (${qr("GS-02", "sedan")}), and the ${esc(brandModels("hyundai").byCat.suv.filter((m) => !/Electric|Ioniq|N Line/.test(m)).join(", "))} are SUVs (${qr("GS-02", "suv")}).</p>${priceBlock(["GS-02", "GS-01", "GS-03", "AC-03", "BR-02", "SU-02", "TB-05"])}<p>For your exact model, fuel and parts grade, use the <a href="#estimate">cost calculator</a> below.</p>` },
+      { h: "Petrol, diesel, turbo or automatic: what changes", html: `<ul><li><b>Diesel (CRDi):</b> needs the engine oil grade your manual specifies and a fuel filter change on schedule. Diesel cars used mostly for short city trips can build up soot in the exhaust filter on newer models; a longer highway run now and then helps.</li><li><b>Turbo petrol:</b> use the oil grade in your manual, and let the engine idle briefly after a hard drive before switching off.</li><li><b>Automatics:</b> Hyundai uses different gearbox types across its models (torque-converter, IVT, DCT and AMT), and each needs its own fluid. Jerks or a gearbox warning need a scan before any part is replaced.</li><li><b>Electric (Creta Electric, Ioniq 5, Kona Electric):</b> we handle the 12V battery, brakes, suspension, tyres and AC. High-voltage battery work is not something we do.</li></ul>` },
+      { h: "How often should a Hyundai be serviced?", html: `<p>Hyundai generally recommends periodic maintenance every 10,000 km or 12 months, whichever comes first. Check your owner's manual for your model, fuel and gearbox. Heavy traffic and dusty roads can bring the next service forward.</p>` },
+      { h: "Warranty and parts", html: `<p>If your Hyundai is under warranty, read the warranty terms before servicing outside the dealer network. Tell us your preferred parts grade when you book; every part used is written on your itemised bill.</p>` }
+    ],
+    faqs: [
+      { q: "Are you an authorised Hyundai service centre?", a: "No. We are an independent multi-brand garage. For warranty repairs or manufacturer free services, visit an authorised Hyundai workshop." },
+      { q: "How much does a Hyundai car service cost?", a: `A standard service is ${qr("GS-02", "hatchback")} for a hatchback such as the i20 or Grand i10 Nios, and ${qr("GS-02", "suv")} for an SUV such as the Creta or Venue, with standard parts. The calculator shows the range for your exact model.` },
+      { q: "Do you service Hyundai diesel and automatic cars?", a: "Yes. Choose your fuel in the calculator; automatic gearbox faults are inspected first and then quoted." },
+      { q: "Can you collect my Hyundai from home?", a: `Yes. Pickup and drop is free in our ${AREAS.coveredPins.length} confirmed Indore PIN codes, subject to booking confirmation.` }
+    ],
+    related: [["car-service-indore.html", "Periodic car service in Indore"], ["suspension-steering-repair-indore.html", "Suspension and steering repair in Indore"], ["car-ac-repair-indore.html", "Car AC service and gas filling in Indore"]],
+    cta: "Book your Hyundai service" }
+];
+LANDING_PAGES.forEach((p) => { p.lead = p.lead.trim(); });
+
+function landingPage(p) {
+  const crumbs = [{ "@type": "ListItem", position: 1, name: "Home", item: url("index.html") }, { "@type": "ListItem", position: 2, name: "Services", item: url("services.html") }, { "@type": "ListItem", position: 3, name: p.nav, item: url(p.file) }];
+  const ld = [
+    { "@context": "https://schema.org", "@type": "Service", name: p.h1, serviceType: p.serviceType, provider: { "@type": "AutoRepair", name: B.name, telephone: B.phoneE164 },
+      areaServed: p.area ? { "@type": "Place", name: p.area + ", " + B.city } : { "@type": "City", name: B.city }, description: p.desc, ...(p.brand ? { brand: { "@type": "Brand", name: p.brand } } : {}) },
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: crumbs },
+    faqLd(p.faqs)
+  ];
+  const body = `
+<section class="page-hero page-hero--photo"><div class="wrap">
+  <div class="page-hero-copy">
+  <p class="crumbs"><a href="index.html">Home</a> / <a href="services.html">Services</a> / ${esc(p.nav)}</p>
+  <span class="eyebrow">${esc(p.eyebrow)}</span>
+  <h1>${esc(p.h1)}</h1>
+  <p>${esc(p.lead)}</p>
+  <div class="hero-ctas"><a class="btn" href="#estimate">${ic("receipt")}Estimate my cost</a><a class="btn btn--wa" data-wa="${esc(p.nav)}" href="https://wa.me/${B.whatsapp}">${ic("wa")}WhatsApp us</a><a class="btn btn--ghost" href="tel:${B.phoneE164}" data-tel>${ic("phone")}Call ${esc(B.phoneDisplay)}</a></div>
+  </div>
+  ${photo(p.stock, { cls: "page-hero-photo", eager: true, sizes: "(max-width: 900px) 100vw, 40vw" })}
+</div></section>
+<section class="band band--white"><div class="wrap two-col">
+  <div class="prose">
+    ${p.notice ? `<p class="notice">${esc(p.notice)}</p>` : ""}
+    ${p.sections.map((x, i) => `<h2${i === 0 && !p.notice ? ' style="margin-top:0"' : ""}>${esc(x.h)}</h2>${x.html}`).join("\n    ")}
+    <h2>Related pages</h2><ul data-related-services>${p.related.map(([f, label]) => `<li><a href="${f}">${esc(label)}</a></li>`).join("")}</ul>
+  </div>
+  <aside style="display:grid;gap:18px;align-content:start" aria-label="Book ${esc(p.short)}">
+    ${quickBook(p.ids[0], "Book " + p.short)}
+  </aside>
+</div></section>
+<section class="band" id="estimate"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">Cost calculator</span><h2>Price your ${esc(p.short)}</h2><p>Set your car and parts grade to see labour, parts and time.</p></div>
+  <div class="jobcard" data-estimator data-preset="${p.ids[0]}" style="max-width:760px"><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
+</div></section>
+${faqBlock(p.faqs)}
+${ctaBand(p.cta)}`;
+  return layout({ file: p.file, title: p.h1 + " | " + B.name, desc: p.desc, body, ld, navKey: "services.html" });
 }
 
 function areaChecker(id) {
@@ -511,14 +675,14 @@ function homepage() {
     ["Confirm the final quote", "We inspect the car and share the final quotation."],
     ["Car serviced & returned", "Pay against an itemised bill and drive away."]
   ].map(([h, t]) => `<li><h3>${h}</h3><p>${t}</p></li>`).join("");
-  const svcCards = SERVICE_PAGES.map((p) => `<article class="card${p.stock ? " card--photo" : ""}">${p.stock ? photo(p.stock, { cls: "card-photo", credit: false, sizes: "(max-width: 600px) 100vw, (max-width: 960px) 50vw, 380px" }) : ""}<div class="ico">${ic(p.icon)}</div><h3><a href="${p.file}">${esc(p.nav)}</a></h3><p>${esc(p.lead.split(". ")[0])}.</p>${PT.fromPrice(C, PR, p.ids) ? `<p class="price" data-from-price="${p.ids.join(",")}">From ${PT.fromPrice(C, PR, p.ids)}</p>` : ""}<div class="actions"><a class="btn btn--outline btn--sm" href="${p.file}">Details</a><a class="btn btn--wa btn--sm" data-wa="${esc(p.nav)}" href="https://wa.me/${B.whatsapp}">${ic("wa")}WhatsApp</a></div></article>`).join("");
+  const svcCards = [...SERVICE_PAGES, LANDING_PAGES[0]].map((p) => `<article class="card${p.stock ? " card--photo" : ""}">${p.stock ? photo(p.stock, { cls: "card-photo", credit: false, sizes: "(max-width: 600px) 100vw, (max-width: 960px) 50vw, 380px" }) : ""}<div class="ico">${ic(p.icon)}</div><h3><a href="${p.file}">${esc(p.nav)}</a></h3><p>${esc(p.lead.split(". ")[0])}.</p>${PT.fromPrice(C, PR, p.ids) ? `<p class="price" data-from-price="${p.ids.join(",")}">From ${PT.fromPrice(C, PR, p.ids)}</p>` : ""}<div class="actions"><a class="btn btn--outline btn--sm" href="${p.file}">Details</a><a class="btn btn--wa btn--sm" data-wa="${esc(p.nav)}" href="https://wa.me/${B.whatsapp}">${ic("wa")}WhatsApp</a></div></article>`).join("");
 
   const body = `
 <section class="hero">
   <div class="wrap">
     <div class="hero-copy reveal">
       <span class="eyebrow">Multi-brand garage · ${esc(B.city)}</span>
-      <h1 data-i18n="hero.title">Expert Car Service <span>&amp; Repair in Indore</span></h1>
+      <h1 data-i18n="hero.title">Car Service &amp; Repair <span>Garage in Indore</span></h1>
       <p class="hero-sub" data-i18n="hero.sub">Transparent Estimates. Trusted Mechanics. Convenient Pickup &amp; Drop.</p>
       ${heroPriceTiles()}
       <div class="hero-ctas hero-ctas--desk">
@@ -529,6 +693,7 @@ function homepage() {
       <ul class="hero-facts">
         <li>${ic("check")}All major brands</li><li>${ic("receipt")}Itemised bills</li><li>${ic("shield")}Approval before extra work</li>
       </ul>
+      <p class="pickup-terms">We service Maruti Suzuki, Hyundai, Tata, Mahindra, Honda, Kia, Toyota and other brands. See <a href="maruti-car-service-indore.html">Maruti</a> and <a href="hyundai-car-service-indore.html">Hyundai</a> car service.</p>
       <p class="pickup-terms"><strong style="color:#fff">Free pickup &amp; drop</strong> across our ${AREAS.coveredPins.length} confirmed Indore PIN codes, subject to booking confirmation. <a href="pickup-drop.html">Check your PIN</a>.</p>
     </div>
     <div class="jobcard reveal" id="estimate" data-estimator data-heading-level="2"><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
@@ -567,6 +732,7 @@ ${reviewsSection()}
 <section class="band band--char" id="areas"><div class="wrap area-wrap">
   <div class="section-head" style="margin:0"><span class="eyebrow">Pickup &amp; drop</span><h2 data-i18n="sec.areas">Service areas</h2><p>Free pickup and drop across these ${AREAS.coveredPins.length} Indore city PIN codes, subject to booking confirmation. Outside them, ask us and we'll check.</p>
     <ul class="area-list" data-area-list>${areaList()}</ul>
+    <p class="small" style="color:var(--fog)">Area guides: <a style="color:#fff" href="car-service-vijay-nagar-indore.html">car service in Vijay Nagar</a> and <a style="color:#fff" href="car-service-rajendra-nagar-indore.html">car service in Rajendra Nagar</a>, with distance, covered localities and prices.</p>
   </div>
   ${areaChecker("home-area")}
 </div></section>
@@ -759,6 +925,7 @@ function pickupPage() {
     <li><h3>Car returned</h3><p>We drop the car back with an itemised bill.</p></li>
   </ol>
   <p>Read the full <a href="policies.html">pickup, drop and cancellation policy</a>.</p>
+  <p>Area guides with distance, covered localities and prices: <a href="car-service-vijay-nagar-indore.html">car service in Vijay Nagar</a> and <a href="car-service-rajendra-nagar-indore.html">car service in Rajendra Nagar</a>.</p>
 </div></section>${ctaBand("Book a pickup")}`;
   return layout({ file: "pickup-drop.html", title: "Car Pickup & Drop Service in Indore | Car Repair Wala", desc: "Free car pickup and drop for servicing in listed Indore areas. Check your locality or PIN code before you book.", body, navKey: "pickup-drop.html" });
 }
@@ -902,6 +1069,7 @@ const pages = {
   "estimate.html": estimatePage(), "gallery.html": galleryPage(), "reviews.html": reviewsPage(), "about.html": aboutPage()
 };
 SERVICE_PAGES.forEach((p) => { pages[p.file] = servicePage(p); });
+LANDING_PAGES.forEach((p) => { pages[p.file] = landingPage(p); });
 for (const file of ["accident-repair-indore.html", "emergency-car-repair-indore.html"]) {
   if (!pages[file] && existsSync(join(ROOT, file))) unlinkSync(join(ROOT, file));
 }
@@ -914,7 +1082,7 @@ const today = new Date().toISOString().slice(0, 10);
 const indexable = Object.keys(pages).filter((f) => f !== "404.html");
 if (siteUrl) writeFileSync(join(ROOT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${indexable.map((f) => `  <url><loc>${esc(url(f))}</loc><lastmod>${today}</lastmod><priority>${f === "index.html" ? "1.0" : SERVICE_PAGES.some((p) => p.file === f) ? "0.8" : "0.5"}</priority></url>`).join("\n")}
+${indexable.map((f) => `  <url><loc>${esc(url(f))}</loc><lastmod>${today}</lastmod><priority>${f === "index.html" ? "1.0" : [...SERVICE_PAGES, ...LANDING_PAGES].some((p) => p.file === f) ? "0.8" : "0.5"}</priority></url>`).join("\n")}
 </urlset>
 `);
 if (!siteUrl && existsSync(join(ROOT, "sitemap.xml"))) unlinkSync(join(ROOT, "sitemap.xml"));
