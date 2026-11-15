@@ -644,7 +644,12 @@
       const notice = $("[data-reviews-notice]", el.parentElement);
       if (notice) notice.hidden = !(isSample && list.length);
       if (!list.length) {
-        el.innerHTML = `<div class="review-empty"><h3>Be one of our first reviewers</h3><p>Had your car serviced with us? Tell us how it went. With your permission, we'll publish your review here.</p></div>`;
+        const snap = RV.snapshot;
+        const okSnap = snap && Number.isFinite(snap.rating) && snap.rating >= 0 && snap.rating <= 5 && Number.isInteger(snap.count) && snap.count > 0 && snap.asOf;
+        const gUrl = RV.googleReviewUrl || RV.googleProfileUrl || B.googleBusinessProfileUrl;
+        el.innerHTML = okSnap
+          ? `<div class="review-empty review-empty--google"><div class="review-top">${stars(snap.rating)}<span class="tag tag--ok">Google</span></div><h3>Rated ${esc(snap.rating.toFixed(1))} out of 5 from ${esc(snap.count)} Google reviews</h3><p class="small muted">As shown on our Google Maps listing on ${esc(snap.asOf)}.${gUrl && /^https:\/\//i.test(gUrl) ? ` <a href="${esc(gUrl)}" target="_blank" rel="noopener">Read the reviews on Google</a>.` : ""}</p></div>`
+          : `<div class="review-empty"><h3>Be one of our first reviewers</h3><p>Had your car serviced with us? Tell us how it went. With your permission, we'll publish your review here.</p></div>`;
         return;
       }
       el.innerHTML = list.slice(0, limit).map((r) => `

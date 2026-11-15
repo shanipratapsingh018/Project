@@ -8,7 +8,10 @@
    an actual Car Repair Wala Ask for reviews link; do not invent a Place ID.
 */
 (function(root){
- const REVIEWS={showSamples:false,googleReviewUrl:null,googleProfileUrl:null,snapshot:null,items:[]};
+ // snapshot = the rating and count shown on the Car Repair Wala Google Maps listing on the date in asOf.
+ // Update all three together. Individual Google reviews are added to items only after the owner confirms
+ // each one is from a real customer (isSample:false, approved:true, consent:true, source:"Google").
+ const REVIEWS={showSamples:false,googleReviewUrl:null,googleProfileUrl:null,snapshot:{rating:5.0,count:7,asOf:"15 Nov 2026",businessName:"Car Repair Wala",source:"Google Maps listing"},items:[]};
  if(typeof module!=='undefined'&&module.exports)module.exports=REVIEWS;
  else root.CMI_REVIEWS=REVIEWS;
 })(typeof window!=='undefined'?window:this);
