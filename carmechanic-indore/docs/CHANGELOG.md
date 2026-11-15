@@ -1,3 +1,13 @@
+# v2.8.0 — Search-ranking update: new car wash, area and brand pages
+
+- **Five new pages:** Car wash and foam wash in Indore (`car-wash-indore.html`), Car service in Vijay Nagar (`car-service-vijay-nagar-indore.html`), Car service in Rajendra Nagar (`car-service-rajendra-nagar-indore.html`), Maruti Suzuki car service (`maruti-car-service-indore.html`) and Hyundai car service (`hyundai-car-service-indore.html`). Prices come from the rate card at build time; each page has its own FAQs, price table, calculator and quick booking. They are linked from the footer, the homepage (car wash card, brand line, service-areas note) and the pickup page, and listed in the sitemap.
+- **Sharper titles, descriptions and H1s** for the homepage and the car service, AC, denting, brake/clutch, battery and detailing pages, using the words customers search ("gas filling", "scratch removal", "clutch plate", "battery replacement", "garage").
+- **Homepage names the brands** we service (Maruti Suzuki, Hyundai, Tata, Mahindra, Honda, Kia, Toyota) and links to the Maruti page.
+- **Fixed** lower-case "ac" in three AC page headings.
+- **Business data:** map coordinates from the Google listing pin, a direct Google Maps listing link, the Hindi business name, areas served and the workshop photo.
+- Detailing page now focuses on deep cleaning and polishing and links to the car wash page.
+- **Reviews section** shows the Google rating snapshot (5.0 from 7 reviews, dated 15 Nov 2026) with a link to read them on Google, instead of an empty box. Individual reviews are added only after the owner confirms they are from real customers.
+
 # Admin 2.3.0 — Easier owner workspace on phones, with a Hindi switch
 
 - **Phone layout like an app:** a bottom bar with Home, Bookings (shows how many are new), Job cards, Bills and More (Customers, Payments, Settings, language, website, sign out). The current page is always visible.
