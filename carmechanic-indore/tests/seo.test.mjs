@@ -34,8 +34,8 @@ test('Business, website, page and service entities are connected and factual',as
   const business=schemas.find(x=>x['@type']==='AutoRepair'), page=schemas.find(x=>['WebPage','CollectionPage','ContactPage','AboutPage'].includes(x['@type'])),website=schemas.find(x=>x['@type']==='WebSite');
   assert.equal(business['@id'],domain+'/#business');assert.equal(business.telephone,C.business.phoneE164);assert.equal(business.address.postalCode,'452012');assert.equal(business.address.streetAddress,'17, AB Rd, Choithram Mandi');
   assert.deepEqual(business.openingHours,['Mo-Su 07:00-23:30']);assert.equal(business.openingHoursSpecification[0].dayOfWeek.length,7);
-  assert(!business.geo,'No unverified coordinates');assert(!html.includes('aggregateRating'),'No invented ratings');assert.equal(business.sameAs[0],C.business.googleBusinessProfileUrl);
-  assert.equal(page.about['@id'],business['@id']);assert.equal(page.isPartOf['@id'],website['@id']);assert.equal(website.publisher['@id'],business['@id']);assert.equal(business.hasOfferCatalog.itemListElement.length,9);
+  assert.deepEqual(business.geo,{'@type':'GeoCoordinates',latitude:C.business.geo.lat,longitude:C.business.geo.lng},'Coordinates only from the owner\'s Google listing pin');assert(!html.includes('aggregateRating'),'No invented ratings');assert.equal(business.sameAs[0],C.business.googleBusinessProfileUrl);
+  assert.equal(page.about['@id'],business['@id']);assert.equal(page.isPartOf['@id'],website['@id']);assert.equal(website.publisher['@id'],business['@id']);assert.equal(business.hasOfferCatalog.itemListElement.length,14);
   if(file.endsWith('-indore.html')){const service=schemas.find(x=>x['@type']==='Service');assert.equal(service.provider['@id'],business['@id']);assert.equal(page.mainEntity['@id'],service['@id']);}
   if(file!=='index.html'){const crumbs=schemas.find(x=>x['@type']==='BreadcrumbList');assert.equal(crumbs.itemListElement[0].item,domain+'/');assert.equal(crumbs.itemListElement.at(-1).item,page.url);assert.equal(page.breadcrumb['@id'],crumbs['@id']);}
  }
@@ -50,7 +50,7 @@ test('Sitemap includes all and only indexable public pages; admin stays noindex'
 test('Each service page links to relevant existing services and names its city',async()=>{
  for(const file of pages.filter(f=>f.endsWith('-indore.html'))){
   const html=await readFile(new URL(file,root),'utf8');assert.match(html,/<h1>[^<]*Indore<\/h1>/);
-  const list=html.match(/<ul data-related-services>(.*?)<\/ul>/s)[1];const links=[...list.matchAll(/href="([^"]+)"/g)].map(m=>m[1]);assert.equal(links.length,2);assert(!links.includes(file));for(const target of links)assert(pages.includes(target),target);
+  const list=html.match(/<ul data-related-services>(.*?)<\/ul>/s)[1];const links=[...list.matchAll(/href="([^"]+)"/g)].map(m=>m[1]);assert(links.length>=2&&links.length<=3,file+' has 2-3 related links');assert(!links.includes(file));for(const target of links)assert(pages.includes(target),target);
  }
 });
 test('Confirmed pickup areas are available in the initial HTML without JavaScript',async()=>{

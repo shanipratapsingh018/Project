@@ -215,7 +215,7 @@ try:
         check('Rating: 1/5' in message and 'website: YES' in message,'One-star reviews use the same publication permission flow as other ratings')
         form.locator('button[type=reset]').click()
         check(pg.input_value('#r-name')=='' and pg.locator('[data-review-send]').count()==0 and not pg.locator('[name=consent]').is_checked(),'Clear removes personal feedback and publication consent')
-        check(pg.locator('[data-google-review]').get_attribute('href')=='https://share.google/xKw37sHP3Pm3QmCXr' and pg.locator('[data-google-review]').text_content()=='Car Repair Wala on Google','Google profile button follows the current owner-supplied business link')
+        check(pg.locator('[data-google-review]').get_attribute('href')=='https://maps.google.com/?cid=853408414821901526' and pg.locator('[data-google-review]').text_content()=='Car Repair Wala on Google','Google profile button follows the current owner-supplied business link')
         pg.locator('.menu-btn').click();pg.keyboard.press('Escape')
         check(pg.locator('.menu-btn').get_attribute('aria-expanded')=='false','Escape closes the mobile menu accessibly')
         pg.close()
@@ -231,10 +231,10 @@ try:
         check(pg.locator('[data-workshop-address]').first.text_content()=='17, AB Rd, Choithram Mandi, Indore, Madhya Pradesh 452012','Contact page shows the complete owner-supplied shop address and PIN')
         from urllib.parse import urlsplit,parse_qs
         maps=pg.locator('.side-card [data-map-link]')
-        check(maps.get_attribute('href')=='https://share.google/xKw37sHP3Pm3QmCXr' and 'View workshop on Google' in maps.text_content(),'Contact location button opens the owner-supplied business listing')
+        check(maps.get_attribute('href')=='https://maps.google.com/?cid=853408414821901526' and 'View workshop on Google' in maps.text_content(),'Contact location button opens the owner-supplied business listing')
         ld=json.loads(pg.locator('script[type="application/ld+json"]').first.text_content())
         check('7:00 AM–11:30 PM' in pg.locator('[data-working-hours]').inner_text() and ld['openingHours']==['Mo-Su 07:00-23:30'],'Everyday owner-confirmed hours appear in contact details and structured data')
-        check(ld['address']['streetAddress']=='17, AB Rd, Choithram Mandi' and ld['address']['postalCode']=='452012' and ld['address']['addressRegion']=='Madhya Pradesh' and ld['sameAs']==['https://share.google/xKw37sHP3Pm3QmCXr'] and 'geo' not in ld,'Structured data uses the supplied address, PIN and profile without invented coordinates')
+        check(ld['address']['streetAddress']=='17, AB Rd, Choithram Mandi' and ld['address']['postalCode']=='452012' and ld['address']['addressRegion']=='Madhya Pradesh' and ld['sameAs']==['https://maps.google.com/?cid=853408414821901526'] and ld.get('geo',{}).get('latitude')==22.6813368 and ld['geo'].get('longitude')==75.8544679,'Structured data uses the supplied address, PIN, profile and the listing pin coordinates')
         pg.close()
         for file in ['index.html','about.html']:
             pg=ctx.new_page();pg.goto(base+file);pg.wait_for_load_state('networkidle')

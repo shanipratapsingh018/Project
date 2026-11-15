@@ -336,7 +336,7 @@ with sync_playwright() as p:
     pp.wait_for_timeout(600); pp.evaluate("window.scrollTo(0,0)")
     loaded = pp.eval_on_selector_all("figure.photo img", "els => els.filter(e => e.complete && e.naturalWidth > 0 && !e.closest('figure').hidden).length")
     total = pp.locator("figure.photo img").count()
-    check(total == 9 and loaded == total, f"Photos available → all {total} homepage photos display ({loaded} loaded)")
+    check(total == 10 and loaded == total, f"Photos available → all {total} homepage photos display ({loaded} loaded)")
     check(pp.locator(".hero-art").count() == 0, "Separate homepage image is removed as requested")
     pp.screenshot(path=f"{SHOTS}/photos-home-desktop.png", full_page=False)
     pp.goto(BASE + "car-detailing-indore.html"); pp.wait_for_load_state("networkidle")
