@@ -1,3 +1,7 @@
+# v2.8.1 — Instagram link
+
+- **Instagram:** "Follow us on Instagram" link in the footer of every page and on the contact page, pointing to [@car_repairwala_indore](https://www.instagram.com/car_repairwala_indore/). The profile is also listed in the business structured data (`sameAs`) next to the Google Maps listing.
+
 # v2.8.0 — Search-ranking update: new car wash, area and brand pages
 
 - **Five new pages:** Car wash and foam wash in Indore (`car-wash-indore.html`), Car service in Vijay Nagar (`car-service-vijay-nagar-indore.html`), Car service in Rajendra Nagar (`car-service-rajendra-nagar-indore.html`), Maruti Suzuki car service (`maruti-car-service-indore.html`) and Hyundai car service (`hyundai-car-service-indore.html`). Prices come from the rate card at build time; each page has its own FAQs, price table, calculator and quick booking. They are linked from the footer, the homepage (car wash card, brand line, service-areas note) and the pickup page, and listed in the sitemap.
