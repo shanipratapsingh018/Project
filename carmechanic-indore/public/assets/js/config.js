@@ -30,6 +30,7 @@
       timeSlots: ["Morning (7–12)", "Afternoon (12–4)", "Evening (4–8)", "Night (8–11:30)"],
       siteUrl: "https://carrepairwala.co.in", // primary domain (used for canonical URLs & sitemap)
       googleBusinessProfileUrl: "https://maps.google.com/?cid=853408414821901526", // direct Google Maps listing link (checked 15 Nov 2026; replaces the share.google short link)
+      instagramUrl: "https://www.instagram.com/car_repairwala_indore/", // business Instagram profile (set up 22 Nov 2026)
       googleMapsSearchUrl: "https://www.google.com/maps/search/?api=1&query=17%2C%20AB%20Rd%2C%20Choithram%20Mandi%2C%20Indore%2C%20Madhya%20Pradesh%20452012", // full-address fallback; listing URL above is preferred
       googleAnalyticsId: null,  // e.g. "G-XXXXXXX"
       bookingTimeoutMs: 15000,  // stop waiting after 15s; WhatsApp fallback remains available

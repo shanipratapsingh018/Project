@@ -42,7 +42,7 @@
     "Send on WhatsApp":"व्हाट्सऐप पर भेजें", "Message on WhatsApp":"व्हाट्सऐप पर संदेश भेजें",
     "Morning (7–12)":"सुबह (7–12)", "Evening (4–8)":"शाम (4–8)", "Night (8–11:30)":"रात (8–11:30)",
     "To check a slot for your car,":"अपनी कार के लिए समय जाँचने हेतु", "call or WhatsApp us":"हमें कॉल या व्हाट्सऐप करें", "before visiting.":"आने से पहले।",
-    "Call now":"अभी कॉल करें", "Get directions":"रास्ता देखें", "Open daily":"रोज़ खुला", "Open now":"अभी खुला है", "Closed now":"अभी बंद है",
+    "Call now":"अभी कॉल करें", "Get directions":"रास्ता देखें", "Follow us on Instagram":"Instagram पर फ़ॉलो करें", "Open daily":"रोज़ खुला", "Open now":"अभी खुला है", "Closed now":"अभी बंद है",
     "Help & policies":"मदद और नीतियाँ", "Language":"भाषा",
     "Book a car service":"कार सर्विस बुक करें", "Takes about a minute. We confirm the slot and price with you before any work starts.":"बस एक मिनट लगता है। काम शुरू होने से पहले हम आपसे समय और कीमत पक्की करते हैं।",
     "Book on WhatsApp instead":"इसके बजाय व्हाट्सऐप पर बुक करें", "or fill this short form":"या यह छोटा फ़ॉर्म भरें",
