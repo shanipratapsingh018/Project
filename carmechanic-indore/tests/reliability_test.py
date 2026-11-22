@@ -234,7 +234,7 @@ try:
         check(maps.get_attribute('href')=='https://maps.google.com/?cid=853408414821901526' and 'View workshop on Google' in maps.text_content(),'Contact location button opens the owner-supplied business listing')
         ld=json.loads(pg.locator('script[type="application/ld+json"]').first.text_content())
         check('7:00 AM–11:30 PM' in pg.locator('[data-working-hours]').inner_text() and ld['openingHours']==['Mo-Su 07:00-23:30'],'Everyday owner-confirmed hours appear in contact details and structured data')
-        check(ld['address']['streetAddress']=='17, AB Rd, Choithram Mandi' and ld['address']['postalCode']=='452012' and ld['address']['addressRegion']=='Madhya Pradesh' and ld['sameAs']==['https://maps.google.com/?cid=853408414821901526'] and ld.get('geo',{}).get('latitude')==22.6813368 and ld['geo'].get('longitude')==75.8544679,'Structured data uses the supplied address, PIN, profile and the listing pin coordinates')
+        check(ld['address']['streetAddress']=='17, AB Rd, Choithram Mandi' and ld['address']['postalCode']=='452012' and ld['address']['addressRegion']=='Madhya Pradesh' and ld['sameAs']==['https://maps.google.com/?cid=853408414821901526','https://www.instagram.com/car_repairwala_indore/'] and ld.get('geo',{}).get('latitude')==22.6813368 and ld['geo'].get('longitude')==75.8544679,'Structured data uses the supplied address, PIN, profile and the listing pin coordinates')
         pg.close()
         for file in ['index.html','about.html']:
             pg=ctx.new_page();pg.goto(base+file);pg.wait_for_load_state('networkidle')
