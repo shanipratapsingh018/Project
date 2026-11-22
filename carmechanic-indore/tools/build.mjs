@@ -24,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.8.0";
+const VERSION = "2.8.1";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -106,6 +106,7 @@ const WA_PATH = '<path fill="currentColor" stroke="none" d="M12 2.2A9.8 9.8 0 0 
 const sprite = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 ${Object.entries(P).map(([k, d]) => `<symbol id="i-${k}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</symbol>`).join("\n")}
 <symbol id="i-wa" viewBox="0 0 24 24">${WA_PATH}</symbol>
+<symbol id="i-insta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.2 6.8h.01"/></symbol>
 <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8Z"/></symbol></defs></svg>`;
 const ic = (n, cls = "") => `<svg viewBox="0 0 24 24" ${cls ? `class="${cls}" ` : ""}aria-hidden="true"><use href="#i-${n}"/></svg>`;
 
@@ -206,6 +207,7 @@ ${body}
         <div class="footer-cta"><a class="btn btn--sm" href="tel:${B.phoneE164}" data-tel>${ic("phone")}<span>Call now</span></a><a class="btn btn--sm btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}<span>WhatsApp us</span></a></div>
       </div>
       ${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${footerDirections()}` : ""}
+      ${instaLink("footer-directions")}
       ${B.hours ? `<p class="footer-hours">${footerHours()} <span class="open-status" data-open-status hidden></span></p>` : `<p class="small">Working hours: please call or WhatsApp to confirm.</p>`}
       <p class="footer-lang"><span>Language</span> <button class="lang-toggle" type="button">हिंदी</button></p>
     </div>
@@ -594,6 +596,9 @@ function shortClock(value) {
 function footerHours() {
   return `<span class="hours-line">${B.hours.map((h) => `<span>${/^Mo-Su$/i.test(h.days) ? "Open daily" : esc(h.label || h.days)}</span> · ${shortClock(h.open)} – ${shortClock(h.close)}`).join("<br>")}</span>`;
 }
+function instaLink(cls) {
+  return B.instagramUrl ? `<a class="${cls}" data-instagram href="${esc(B.instagramUrl)}" target="_blank" rel="noopener noreferrer">${ic("insta")}<span>Follow us on Instagram</span></a>` : "";
+}
 function footerDirections() {
   const href = B.googleBusinessProfileUrl || B.googleMapsSearchUrl;
   return href ? `<a class="footer-directions" data-map-link href="${esc(href)}" target="_blank" rel="noopener noreferrer">${ic("pin")}<span>Get directions</span></a>` : "";
@@ -940,7 +945,7 @@ function contactPage() {
     <h2>Working hours</h2>${B.hours ? `<p data-working-hours>${hoursText()}</p>` : `<p class="placeholder">Please call or WhatsApp to confirm today’s hours and appointment availability.</p>`}
     ${B.email ? `<h2>Email</h2><p>${esc(B.email)}</p>` : ""}
   </div>
-  <div class="side-card"><a class="btn btn--block" href="tel:${B.phoneE164}" data-tel>${ic("phone")}Call now</a><a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a><a class="btn btn--outline btn--block" href="booking.html">${ic("calendar")}Booking form</a>${mapLink()}</div>
+  <div class="side-card"><a class="btn btn--block" href="tel:${B.phoneE164}" data-tel>${ic("phone")}Call now</a><a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a><a class="btn btn--outline btn--block" href="booking.html">${ic("calendar")}Booking form</a>${mapLink()}${B.instagramUrl ? `<a class="btn btn--outline btn--block" data-instagram href="${esc(B.instagramUrl)}" target="_blank" rel="noopener noreferrer">${ic("insta")}Instagram</a>` : ""}</div>
 </div></section>`;
   return layout({ file: "contact.html", title: "Contact | Car Repair Wala — Car Mechanic in Indore", desc: "Call or WhatsApp Car Repair Wala for car service, repair quotes and pickup and drop bookings.", body, navKey: "contact.html" });
 }

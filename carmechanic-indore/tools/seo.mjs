@@ -53,8 +53,10 @@ export function createSeo({file,title,description,business:B,siteUrl,services=[]
       return {'@type':'OpeningHoursSpecification',dayOfWeek:keys.slice(start,end+1).map(day=>'https://schema.org/'+WEEK[day]),opens:h.open,closes:h.close};
     });
   }
-  if(B.googleBusinessProfileUrl){business.sameAs=[B.googleBusinessProfileUrl];business.hasMap=B.googleBusinessProfileUrl;}
+  if(B.googleBusinessProfileUrl)business.hasMap=B.googleBusinessProfileUrl;
   else if(B.googleMapsSearchUrl)business.hasMap=B.googleMapsSearchUrl;
+  const sameAs=[B.googleBusinessProfileUrl,B.instagramUrl].filter(Boolean);
+  if(sameAs.length)business.sameAs=sameAs;
   if(B.geo)business.geo={'@type':'GeoCoordinates',latitude:B.geo.lat,longitude:B.geo.lng};
   if(B.email)business.email=B.email;
   const website={'@context':'https://schema.org','@type':'WebSite','@id':websiteId,url:home,name:B.name,alternateName:B.name+' '+B.city,inLanguage:['en-IN','hi-IN'],publisher:{'@id':businessId}};
