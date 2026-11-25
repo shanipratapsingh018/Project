@@ -1,0 +1,219 @@
+{
+  "name": "Car Repair Wala",
+  "url": "https://carrepairwala.co.in/",
+  "dateModified": "2026-11-25",
+  "faqs": [
+    {
+      "question": "Is the price shown by the calculator final?",
+      "answer": "No. The calculator gives an estimated range. Your final quotation is shared after a mechanic inspects the car, and no extra work is done without your approval."
+    },
+    {
+      "question": "Do you repair all car brands?",
+      "answer": "We are a multi-brand garage. Tell us your car's make, model and year on WhatsApp and we will confirm before you book."
+    },
+    {
+      "question": "Is pickup and drop really free?",
+      "answer": "Pickup and drop is free within our confirmed Indore service area, subject to booking confirmation. Enter your PIN code on the Pickup & Drop page to check your area."
+    },
+    {
+      "question": "Can I choose genuine (OEM) parts?",
+      "answer": "Yes. The estimator lets you compare economy, standard and genuine parts. The parts used are written on your itemised bill."
+    },
+    {
+      "question": "What if the mechanic finds another problem?",
+      "answer": "We call or WhatsApp you with the issue and the extra cost first. Work starts only after you approve it."
+    },
+    {
+      "question": "How do I pay?",
+      "answer": "Payment terms are shared with your final quotation. You receive an itemised bill listing labour and parts separately."
+    },
+    {
+      "question": "Which service level should I choose?",
+      "answer": "Basic suits a car serviced recently that needs an oil change. Standard is our default periodic service. Comprehensive adds cabin filter, alignment and balancing and suits cars due a major service."
+    },
+    {
+      "question": "Will servicing at an independent garage affect my warranty?",
+      "answer": "Warranty terms depend on your manufacturer. Check your warranty booklet; we can use genuine parts and record the work on an itemised bill if you need it."
+    },
+    {
+      "question": "How long does a car service take?",
+      "answer": "Most periodic services take 4 to 6 hours. We confirm the expected time when we book your slot."
+    },
+    {
+      "question": "How often should the car AC be serviced?",
+      "answer": "Once a year, ideally before summer, is a good habit. Cars driven daily with the AC on may need it sooner."
+    },
+    {
+      "question": "Does a gas top-up fix a leak?",
+      "answer": "No. A top-up restores cooling for a while, but a leak needs to be found and repaired. We leak-test before topping up."
+    },
+    {
+      "question": "Is compressor replacement included?",
+      "answer": "No. Compressor and major part replacements are quoted separately after inspection."
+    },
+    {
+      "question": "How do I know if my brake pads are worn?",
+      "answer": "Squealing, grinding, longer stopping distances or a brake warning light. We measure pad thickness during inspection and show you."
+    },
+    {
+      "question": "Do you replace discs too?",
+      "answer": "Disc skimming or replacement isn't in the brake estimate. If discs are worn we quote them separately."
+    },
+    {
+      "question": "Can you repair automatic transmissions?",
+      "answer": "Automatic and AMT transmission problems need inspection first. Select transmission repairs in the estimator to request a quote."
+    },
+    {
+      "question": "Is it safe to drive with the check engine light on?",
+      "answer": "If the light is flashing or the temperature is rising, stop and call us. A steady light is less urgent, but get it scanned soon."
+    },
+    {
+      "question": "Does diagnosis include the repair?",
+      "answer": "No. Diagnosis tells you what's wrong. We then send a quote for the repair, and you decide."
+    },
+    {
+      "question": "Do you diagnose all brands?",
+      "answer": "We use OBD scanners that read most brands sold in India. Some luxury models may need dealer-level software; we'll tell you upfront."
+    },
+    {
+      "question": "Will you test the battery before replacing it?",
+      "answer": "Yes. We test battery health and the charging system first so you don't replace a good battery."
+    },
+    {
+      "question": "Which battery brands do you fit?",
+      "answer": "Tell us your preference. The battery brand and warranty from the battery maker are written on your bill."
+    },
+    {
+      "question": "Do you fix EV traction batteries?",
+      "answer": "No. We handle the 12V auxiliary battery and general electricals on EVs."
+    },
+    {
+      "question": "Why is the suspension range so wide?",
+      "answer": "It depends on whether a single link, bushes or full shock absorbers need replacing. We show you the worn parts before quoting."
+    },
+    {
+      "question": "Are new tyres included?",
+      "answer": "No. New tyres are quoted separately by size and brand."
+    },
+    {
+      "question": "How often should I get wheel alignment?",
+      "answer": "Every 5,000 to 10,000 km, after hitting a deep pothole, or after suspension or steering work."
+    },
+    {
+      "question": "How long does denting and painting take?",
+      "answer": "Usually 1 to 2 working days per panel group, depending on drying time and damage. We confirm when you book."
+    },
+    {
+      "question": "Can you help with an insurance claim?",
+      "answer": "Ask us on WhatsApp before booking. We can share an inspection-based repair estimate; claim approval and payout are decided by your insurer."
+    },
+    {
+      "question": "Is paint colour-matched?",
+      "answer": "Yes, paint is matched to your car's colour code. Older faded paint may need blending into neighbouring panels."
+    },
+    {
+      "question": "How long does interior detailing take?",
+      "answer": "Between 1 and 5 hours depending on the package and how much cleaning the car needs."
+    },
+    {
+      "question": "Do you do ceramic coating?",
+      "answer": "Not as part of these packages. Ask on WhatsApp if you need it."
+    },
+    {
+      "question": "What does the pre-purchase inspection cover?",
+      "answer": "Engine, transmission, body and paint, underbody, electricals, OBD scan and a road test, with a written report."
+    },
+    {
+      "question": "Can I drive my car to you after an accident?",
+      "answer": "Only if it is safe: no fluid leaks, warning lights or steering problems. If unsure, call us before moving the car."
+    },
+    {
+      "question": "How long does accident repair take?",
+      "answer": "It depends on the damage and parts availability. We give you a time estimate with the quotation after inspection."
+    },
+    {
+      "question": "Do you replace parts or repair them?",
+      "answer": "Where a panel can be repaired safely we repair it; otherwise we quote a replacement. You approve each item."
+    },
+    {
+      "question": "How much does a car wash cost at Car Repair Wala?",
+      "answer": "An exterior foam wash is ₹300 – ₹500 for a hatchback, ₹350 – ₹600 for a sedan and ₹400 – ₹650 for an SUV. Interior cleaning starts at ₹400 for a hatchback."
+    },
+    {
+      "question": "How long does a foam wash take?",
+      "answer": "About 30 minutes to an hour. Deep interior cleaning takes 3 to 5 hours, so leave the car with us or book pickup."
+    },
+    {
+      "question": "Do I need an appointment for a car wash?",
+      "answer": "No appointment is needed, but call or WhatsApp before you come so we can tell you the waiting time."
+    },
+    {
+      "question": "Is foam wash safe for my car's paint?",
+      "answer": "Yes. The foam loosens dirt before anyone touches the paint, which is gentler than wiping a dusty car."
+    },
+    {
+      "question": "Is pickup free from Vijay Nagar?",
+      "answer": "Yes. PIN 452010 (Vijay Nagar, Nipania, DDU Nagar and Sanwer Link Road) is on our confirmed list, so pickup and drop is free, subject to booking confirmation."
+    },
+    {
+      "question": "Can you collect the car from my office in Vijay Nagar?",
+      "answer": "Yes. Give the office address when you book and we will confirm the pickup time with you."
+    },
+    {
+      "question": "How long will my car be away?",
+      "answer": "A standard service takes about 3 to 4 hours of work, plus travel. We tell you the expected return time when we confirm the booking."
+    },
+    {
+      "question": "Do you cover areas near Vijay Nagar outside PIN 452010?",
+      "answer": "Khajrana, Bicholi Mardana and Kanadia Road (452016) and Nanda Nagar and RSS Nagar (452011) are also on our free pickup list. For other areas, check your PIN on the pickup page or ask us."
+    },
+    {
+      "question": "Are you an authorised Maruti Suzuki service centre?",
+      "answer": "No. We are an independent multi-brand garage. For free services under the manufacturer's scheme or for warranty repairs, visit an authorised Maruti Suzuki workshop."
+    },
+    {
+      "question": "How much does a Maruti car service cost?",
+      "answer": "A basic service for a Maruti hatchback such as a Swift or Wagon R is ₹2,200 – ₹3,000 with standard parts, and a standard service is ₹3,000 – ₹4,000. The calculator gives the range for your exact model."
+    },
+    {
+      "question": "Do you service Maruti CNG cars?",
+      "answer": "Yes. Select CNG as the fuel in the calculator to see the estimate for your car."
+    },
+    {
+      "question": "Can you collect my Maruti from home?",
+      "answer": "Yes. Pickup and drop is free in our 16 confirmed Indore PIN codes, subject to booking confirmation."
+    },
+    {
+      "question": "How far is Car Repair Wala from Rajendra Nagar?",
+      "answer": "About 4.3 to 4.9 km depending on the route, or around 11 to 13 minutes by car at quiet times, as checked on Google Maps."
+    },
+    {
+      "question": "Is pickup free in Rajendra Nagar?",
+      "answer": "Yes. PIN 452012 is on our confirmed list, so pickup and drop is free, subject to booking confirmation."
+    },
+    {
+      "question": "Which jobs can be done in a couple of hours?",
+      "answer": "A foam wash, battery replacement, oil change, brake pad change and AC gas filling are usually quick. We confirm the timing when you book."
+    },
+    {
+      "question": "Do you also cover Sudama Nagar and Bijasan Road?",
+      "answer": "Yes. Sudama Nagar and Lokmanya Nagar (452009) and Bijasan Road (452005) are on our free pickup list too."
+    },
+    {
+      "question": "Are you an authorised Hyundai service centre?",
+      "answer": "No. We are an independent multi-brand garage. For warranty repairs or manufacturer free services, visit an authorised Hyundai workshop."
+    },
+    {
+      "question": "How much does a Hyundai car service cost?",
+      "answer": "A standard service is ₹3,000 – ₹4,000 for a hatchback such as the i20 or Grand i10 Nios, and ₹3,900 – ₹5,200 for an SUV such as the Creta or Venue, with standard parts. The calculator shows the range for your exact model."
+    },
+    {
+      "question": "Do you service Hyundai diesel and automatic cars?",
+      "answer": "Yes. Choose your fuel in the calculator; automatic gearbox faults are inspected first and then quoted."
+    },
+    {
+      "question": "Can you collect my Hyundai from home?",
+      "answer": "Yes. Pickup and drop is free in our 16 confirmed Indore PIN codes, subject to booking confirmation."
+    }
+  ]
+}
