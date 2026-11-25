@@ -1,0 +1,25 @@
+VIDEO STUDIO - WINDOWS PAR KAISE KHOLEIN
+
+1. ZIP par right-click karke "Extract All" karein.
+   App ko ZIP ke andar se na chalayein.
+
+2. Nikale hue folder mein START_VIDEO_STUDIO.cmd par double-click karein.
+   Windows file extensions chhupa sakta hai, isliye naam sirf
+   START_VIDEO_STUDIO bhi dikh sakta hai.
+
+3. Agar Node.js installed nahi hai, official Node.js 24 installer ka
+   download khulega. Use install karke START_VIDEO_STUDIO dobara kholein.
+
+Pehli baar dependencies download aur build honge. Thoda samay lag sakta hai.
+App ready hone par browser automatically khulega. Terminal window khuli rakhein.
+
+Agar browser apne aap na khule, isi computer par yeh address kholein:
+http://localhost:3000/video-studio
+
+Pehle apna dashboard account banayein. Phir Keys page par apne video provider
+ki key enter karein. API key chat, screenshot ya public files mein na bhejein.
+Video generation ke liye provider ka video access aur usable quota zaroori hai.
+Free usage, quality aur availability provider par depend karti hai.
+
+Yeh local installation hai. Cloud/Codex ki Environment setting ki zaroorat nahi.
+Zyada jaankari ke liye VIDEO_STUDIO_SETUP.md kholein.

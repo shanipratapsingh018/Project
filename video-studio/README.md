@@ -1,5 +1,9 @@
 # FreeLLMAPI Video Studio
 
+[Browse the complete implemented source](source/) · [Setup guide](source/VIDEO_STUDIO_SETUP.md)
+
+The complete source is saved here so the assistant can install and run it in its workspace. You do not need to install it on your computer for assistant-operated use. Real generation still requires an authorised video provider with usable quota.
+
 [Download the Windows setup package](https://github.com/shanipratapsingh018/Project/raw/refs/heads/video-studio-downloads/video-studio/video-studio-windows.zip)
 
 1. Download the ZIP and choose **Extract All** in Windows.

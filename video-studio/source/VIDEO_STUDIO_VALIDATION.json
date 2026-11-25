@@ -1,0 +1,38 @@
+{
+  "feature": "Realistic Video Studio",
+  "upstream_revision": "7c9a38050814585958f690a96e13f5500459b0a7",
+  "validation_date_ist": "2026-11-25",
+  "build": "passed: server, CLI and client; client rebuilt after final interface changes",
+  "client_suite": "passed: 527 tests across 71 files and i18n validation for 60 locales",
+  "server_checks": "passed: 15 new video-studio cases plus 3 existing media-dashboard cases",
+  "browser_checks": "passed: 18 checks covering unavailable configuration, prompt construction, raw MP4 playback/download, quota/error recovery, cancellation and no overflow at 320/390/768/1024/1366px",
+  "lint": "passed: new server route, studio page, prompt utilities and modified Video page",
+  "browser_fixture": "Fictional provider data and an ffmpeg test-pattern MP4; isolated in-memory database; no real video-provider calls",
+  "running_app": {
+    "port": 3000,
+    "owner_account_needs_setup": true,
+    "provider_keys_configured": false
+  },
+  "live_ai_video_generated": false,
+  "remaining_configuration": [
+    "Cloud HTTP preview on port 3000 for a hosted review link",
+    "Network access to the catalog and the selected video provider",
+    "Owner provider account with video access and usable credits/quota"
+  ],
+  "catalog_connectivity": "Cloud proxy rejected CONNECT with 403; no catalog API response obtained",
+  "website_integration": "Separate installation; no changes made to the existing garage website",
+  "desktop_launcher": {
+    "files": [
+      "START_VIDEO_STUDIO.cmd",
+      "START_HERE_WINDOWS.txt",
+      "scripts/launch-video-studio.mjs"
+    ],
+    "syntax": "passed: Node launcher and server launcher",
+    "setup_smoke": "passed on Linux: install locked dependencies, build server/CLI/client, start production app, health check",
+    "browser_open_smoke": "passed with fake Linux opener: exactly one browser opening after server readiness, with actual local port and video-studio path",
+    "windows_execution": "CMD launcher reviewed; no Windows runner available in this Cloud environment",
+    "prerequisite": "Official Node.js 24.22.3 x64 MSI URL returned HTTP 200",
+    "privacy": "Existing .env/database preserved; ZIP excludes runtime configuration, database and dependency cache",
+    "cloud_preview_required_for_local_install": false
+  }
+}
