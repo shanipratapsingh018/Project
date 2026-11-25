@@ -7,7 +7,7 @@ test('Static server: pages, HEAD, nested 404, private paths and malformed URLs',
  const server=createServer();server.listen(0,'127.0.0.1');await once(server,'listening');
  const base=`http://127.0.0.1:${server.address().port}`;
  try {
-  const home=await fetch(base+'/'); assert.equal(home.status,200);assert.match(await home.text(),/Book Your Car Service/);
+  const home=await fetch(base+'/'); assert.equal(home.status,200);assert.match(await home.text(),/Book now/);
   assert.equal(home.headers.get('x-content-type-options'),'nosniff');
   const head=await fetch(base+'/assets/js/app.js',{method:'HEAD'});assert.equal(head.status,200);assert.equal(await head.text(),'');assert.match(head.headers.get('content-type'),/javascript/);
   const missing=await fetch(base+'/unknown/deep/page');assert.equal(missing.status,404);assert.match(await missing.text(),/<base href="\/">/);

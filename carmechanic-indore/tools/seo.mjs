@@ -26,7 +26,7 @@ const COPY = {
   '404.html': ['Page Not Found | Car Repair Wala', 'This page could not be found. Visit the Car Repair Wala home page for services, estimates and contact information.', 'Page not found']
 };
 const WEEK = {Mo:'Monday',Tu:'Tuesday',We:'Wednesday',Th:'Thursday',Fr:'Friday',Sa:'Saturday',Su:'Sunday'};
-export function createSeo({file,title,description,business:B,siteUrl,services=[],ld=[],serviceCount}) {
+export function createSeo({file,title,description,business:B,siteUrl,services=[],ld=[],serviceCount,updated=''}) {
   const copy = COPY[file];
   const meta = {title:copy?.[0] || title, description:copy?.[1] || description, name:copy?.[2] || title.split(/\s[|—]\s/)[0]};
   if(file==='services.html' && Number.isSafeInteger(serviceCount)) meta.description=meta.description.replace('69',String(serviceCount));
@@ -59,12 +59,16 @@ export function createSeo({file,title,description,business:B,siteUrl,services=[]
   if(sameAs.length)business.sameAs=sameAs;
   if(B.geo)business.geo={'@type':'GeoCoordinates',latitude:B.geo.lat,longitude:B.geo.lng};
   if(B.email)business.email=B.email;
+  const owner=B.ownerName?{'@context':'https://schema.org','@type':'Person','@id':home+'#owner',name:B.ownerName,jobTitle:'Owner',worksFor:{'@id':businessId}}:null;
+  if(owner)business.employee={'@id':owner['@id']};
   const website={'@context':'https://schema.org','@type':'WebSite','@id':websiteId,url:home,name:B.name,alternateName:B.name+' '+B.city,inLanguage:['en-IN','hi-IN'],publisher:{'@id':businessId}};
   const pageType=file==='contact.html'?'ContactPage':file==='about.html'?'AboutPage':['services.html','gallery.html','reviews.html'].includes(file)?'CollectionPage':'WebPage';
   const isService=services.some(p=>p.file===file);
   const page={'@context':'https://schema.org','@type':pageType,'@id':canonical+'#webpage',url:canonical,name:meta.title,description:meta.description,inLanguage:'en-IN',isPartOf:{'@id':websiteId},about:{'@id':businessId},publisher:{'@id':businessId},primaryImageOfPage:{'@id':logo['@id']},mainEntity:{'@id':isService?canonical+'#service':businessId}};
+  if(updated)page.dateModified=updated;
+  if(owner)page.author={'@id':owner['@id']};
   const extras=ld.filter(item=>item['@type']!=='BreadcrumbList').map(item=>item['@type']==='Service'?{...item,'@id':canonical+'#service',url:canonical,provider:{'@id':businessId}}:item);
-  const schemas=[business,website,logo,page,...extras];
+  const schemas=[business,website,logo,page,...(owner?[owner]:[]),...extras];
   if(file!=='index.html'){
     const crumbs=[{name:'Home',item:home},...(isService?[{name:'Services',item:absolute('services.html')}]:[]),{name:meta.name,item:canonical}];
     const id=canonical+'#breadcrumb';page.breadcrumb={'@id':id};

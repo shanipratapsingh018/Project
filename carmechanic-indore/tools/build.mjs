@@ -3,7 +3,7 @@
 // Prices, areas, reviews and contact numbers are read at runtime from config.js, so changing
 // those does NOT need a rebuild. Re-run this after editing page copy, FAQs, business name or siteUrl.
 import { createRequire } from "module";
-import { writeFileSync, readFileSync, existsSync, unlinkSync } from "fs";
+import { writeFileSync, readFileSync, existsSync, unlinkSync, mkdirSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { runInNewContext } from "node:vm";
@@ -24,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.8.1";
+const VERSION = "2.8.2";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -35,6 +35,12 @@ if (candidateUrl && !/example\.(com|org|net)/i.test(candidateUrl)) {
   siteUrl = parsed.href.replace(/\/$/, "");
 }
 const url = (file) => siteUrl ? siteUrl + "/" + (file === "index.html" ? "" : file) : "";
+// One build date (India time) for sitemap lastmod, page dateModified, the visible "Page updated" line and the RSS feed.
+const BUILD_DATE = process.env.BUILD_DATE || new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
+if (!/^\d{4}-\d{2}-\d{2}$/.test(BUILD_DATE)) throw new Error("BUILD_DATE must be YYYY-MM-DD");
+const BUILD_LABEL = new Date(BUILD_DATE + "T00:00:00Z").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+// Share previews lead with the brand: "Car Repair Wala | Car AC Service, Repair & Gas Filling Indore".
+const shareTitle = (t) => { const tag = " | " + B.name, rest = t.replace(tag, ""); return rest.includes(B.name) ? t : B.name + " | " + rest; };
 
 /* ------------------------------ Stock photos (tools/photos.json) ------------------------------ */
 // Each <img> tries the local copy (npm run photos), then Unsplash's CDN, then the fallback
@@ -119,7 +125,7 @@ const NAV = [
   ["index.html", "Home", "nav.home", "home"],
   ["services.html", "Services & Prices", "nav.services", "wrench"],
   ["estimate.html", "Cost Calculator", "nav.calc", "receipt"],
-  ["gallery.html", "Service Gallery", "nav.gallery", "image"],
+  ["gallery.html", "Gallery", "nav.gallery", "image"],
   ["reviews.html", "Reviews", "nav.reviews", "star"],
   ["about.html", "About Us", "nav.about", "info"],
   ["contact.html", "Contact", "nav.contact", "phone"]
@@ -138,7 +144,7 @@ function faqLd(faqs) {
 }
 function layout({ file, title, desc, body, ld = [], navKey = null }) {
   body = body.replace('<p class="crumbs">', BACK_HOME + '<p class="crumbs">');
-  const seo = createSeo({file,title,description:desc,business:B,siteUrl,services:[...SERVICE_PAGES, ...LANDING_PAGES],ld,serviceCount:C.services.length});
+  const seo = createSeo({file,title,description:desc,business:B,siteUrl,services:[...SERVICE_PAGES, ...LANDING_PAGES],ld,serviceCount:C.services.length,updated:siteUrl && file !== "404.html" ? BUILD_DATE : ""});
   title = seo.title; desc = seo.description;
   const lds = seo.schemas.map((x) => `<script type="application/ld+json">${jsonLd(x)}</script>`).join("\n");
   return `<!doctype html>
@@ -151,8 +157,10 @@ function layout({ file, title, desc, body, ld = [], navKey = null }) {
 ${seo.canonical ? `<link rel="canonical" href="${esc(seo.canonical)}">` : ""}
 <meta name="robots" content="${seo.robots}">
 <meta name="theme-color" content="#141619">
+${B.ownerName ? `<meta name="author" content="${esc(B.ownerName)}">` : ""}
+${siteUrl ? `<link rel="alternate" type="application/rss+xml" title="${esc(B.name)} updates" href="${esc(siteUrl)}/feed.xml">` : ""}
 <meta property="og:type" content="website">
-<meta property="og:title" content="${esc(title)}">
+<meta property="og:title" content="${esc(shareTitle(title))}">
 <meta property="og:description" content="${esc(desc)}">
 ${seo.canonical ? `<meta property="og:url" content="${esc(seo.canonical)}">` : ""}
 <meta property="og:site_name" content="${esc(B.name)}">
@@ -164,7 +172,7 @@ ${seo.image ? `<meta property="og:image" content="${esc(seo.image.url)}">
 <meta property="og:image:height" content="${seo.image.height}">
 <meta property="og:image:alt" content="${esc(seo.image.caption)}">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="${esc(title)}">
+<meta name="twitter:title" content="${esc(shareTitle(title))}">
 <meta name="twitter:description" content="${esc(desc)}">
 <meta name="twitter:image" content="${esc(seo.image.url)}">
 <meta name="twitter:image:alt" content="${esc(seo.image.caption)}">` : ""}
@@ -212,8 +220,9 @@ ${body}
       <p class="footer-lang"><span>Language</span> <button class="lang-toggle" type="button">हिंदी</button></p>
     </div>
     <div><h2 class="footer-title">Services</h2><ul>${[...SERVICE_PAGES, ...LANDING_PAGES].map((p) => `<li><a href="${p.file}">${esc(p.nav)}</a></li>`).join("")}</ul></div>
-    <div><h2 class="footer-title">Customers</h2><ul><li><a href="index.html">Home</a></li><li><a href="estimate.html">Cost calculator</a></li><li><a href="booking.html">Book a service</a></li><li><a href="gallery.html">Service Gallery</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="about.html">About us</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div><h2 class="footer-title">Customers</h2><ul><li><a href="index.html">Home</a></li><li><a href="estimate.html">Cost calculator</a></li><li><a href="booking.html">Book online</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="reviews.html">Reviews</a></li><li><a href="./about.html">About us</a></li><li><a href="contact.html">Contact</a></li></ul></div>
     <div><h2 class="footer-title">Help &amp; policies</h2><ul><li><a href="index.html#faq">FAQs</a></li><li><a href="pickup-drop.html">Pickup &amp; drop areas</a></li><li><a href="terms.html">Terms & conditions</a></li><li><a href="privacy.html">Privacy policy</a></li><li><a href="policies.html">Cancellation, pickup & billing</a></li><li><a href="admin/index.html">Owner login</a></li></ul></div>
+    ${B.ownerName || siteUrl ? `<p class="fine footer-owner">${B.ownerName ? `<span>Owner: ${esc(B.ownerName)}</span>` : ""}${B.ownerName && siteUrl ? " · " : ""}${siteUrl ? `<span>Page updated</span> <time datetime="${BUILD_DATE}">${BUILD_LABEL}</time>` : ""}</p>` : ""}
     <p class="fine">© <span data-year>${new Date().getFullYear()}</span> ${esc(B.name)}. Independent multi-brand garage; not affiliated with any car manufacturer. Brand names are used only to identify vehicles we service.</p>
   </div>
 </footer>
@@ -221,7 +230,7 @@ ${body}
 <nav class="mbar" aria-label="Quick actions">
   <a href="tel:${B.phoneE164}" data-tel>${ic("phone")}<span data-i18n="cta.call">Call Now</span></a>
   <a class="wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}<span>WhatsApp</span></a>
-  <a class="book" href="booking.html">${ic("calendar")}<span data-i18n="nav.book">Book Service</span></a>
+  <a class="book" href="booking.html">${ic("calendar")}<span data-i18n="nav.book">Book now</span></a>
 </nav>
 <script defer src="assets/js/rate-card.js?v=${VERSION}"></script>
 <script defer src="assets/js/config.js?v=${VERSION}"></script>
@@ -249,7 +258,7 @@ const faqBlock = (faqs, id = "faq") => `<section class="band" id="${id}"><div cl
 </div></section>`;
 const ctaBand = (title = "Ready to get your car checked?") => `<section class="cta-band"><div class="wrap">
   <h2>${esc(title)}</h2>
-  <div class="hero-ctas"><a class="btn" href="booking.html">${ic("calendar")}<span data-i18n="cta.book">Book Your Car Service</span></a><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}<span data-i18n="cta.wa">Chat on WhatsApp</span></a></div>
+  <div class="hero-ctas"><a class="btn" href="booking.html">${ic("calendar")}<span data-i18n="cta.book">Book now</span></a><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}<span data-i18n="cta.wa">Chat on WhatsApp</span></a></div>
 </div></section>`;
 
 /* --------------------------- Service pages --------------------------- */
@@ -646,7 +655,7 @@ function reviewsSection(full = false) {
 /* ------------------------------ Homepage ------------------------------ */
 function workshopSlider() {
   return `<section class="service-carousel" data-workshop-slider role="region" aria-roledescription="carousel" aria-label="Car service photos">
-    <div class="service-carousel-heading"><span class="eyebrow">Service spotlight</span><p>Explore our car care services</p></div>
+    <div class="service-carousel-heading"><span class="eyebrow">Spotlight</span><p>Explore our car care services</p></div>
     <div class="service-slides" id="workshop-slides" data-slide-track tabindex="0" aria-label="Service photos; swipe or use arrow keys">${WORKSHOP_PHOTOS.map((p, i) => `<figure class="service-slide" data-slide aria-roledescription="slide" aria-label="${i+1} of ${WORKSHOP_PHOTOS.length}: ${esc(p.title)}"><img src="assets/img/workshop/${p.id}-800.webp" srcset="assets/img/workshop/${p.id}-800.webp 800w, assets/img/workshop/${p.id}-1600.webp 1600w" sizes="(max-width: 1200px) calc(100vw - 32px), 1140px" alt="${esc(p.alt)}" width="${p.width}" height="${p.height}" loading="lazy" decoding="async"><figcaption>${esc(p.title)}</figcaption></figure>`).join("")}</div>
     <div class="service-slider-controls" data-slider-controls hidden><button type="button" data-slide-prev aria-label="Previous service photo" aria-controls="workshop-slides">${ic("arrow")} Previous</button><span data-slide-count aria-live="polite" aria-atomic="true">1 / ${WORKSHOP_PHOTOS.length}</span><button type="button" data-slide-next aria-label="Next service photo" aria-controls="workshop-slides">Next ${ic("arrow")}</button></div>
     <noscript><p class="service-swipe-hint">Swipe across the photos to explore services.</p></noscript>
@@ -661,7 +670,7 @@ function homepage() {
       <h3>${esc(k.title)}</h3>
       <p>${esc(k.blurb)}</p>
       <p class="price" data-pkg="${k.id}"><small>Hatchback · indicative</small>${(() => { const q = PR.quickRange(C, k.services[0], "hatchback"); return q.status === "priced" ? PR.formatRange(q.range) : "Quote after inspection"; })()}</p>
-      <div class="actions package-actions"><a class="btn btn--sm" href="#estimate" data-pkg-btn="${k.id}">Get estimate</a><a class="btn btn--wa btn--sm" data-wa="${esc(k.title)}" href="https://wa.me/${B.whatsapp}">${ic("wa")}WhatsApp</a><a class="btn btn--outline btn--sm" href="tel:${B.phoneE164}" data-tel data-call-now>${ic("phone")}Call Now</a></div>
+      <div class="actions package-actions"><a class="btn btn--sm" href="#estimate" data-pkg-btn="${k.id}">Get estimate</a><a class="btn btn--wa btn--sm" data-wa="${esc(k.title)}" href="https://wa.me/${B.whatsapp}" aria-label="Enquire about ${esc(k.title)} on WhatsApp">${ic("wa")}Enquire</a><a class="btn btn--outline btn--sm" href="tel:${B.phoneE164}" data-tel data-call-now>${ic("phone")}Call Now</a></div>
     </article>`;
   }).join("");
   const why = [
@@ -674,13 +683,13 @@ function homepage() {
   ].map(([i, h, t]) => `<div>${ic(i)}<h3>${h}</h3><p>${t}</p></div>`).join("");
   const how = [
     ["Select your car", "Manufacturer, model, year and fuel type."],
-    ["Choose your service", "Pick one or more jobs; overlapping work is counted once."],
+    ["Choose your jobs", "Pick one or more jobs; overlapping work is counted once."],
     ["Get a price range", "See labour, parts, time and what's included."],
     ["Book on WhatsApp or online", "Your details are filled in for you."],
     ["Confirm the final quote", "We inspect the car and share the final quotation."],
     ["Car serviced & returned", "Pay against an itemised bill and drive away."]
   ].map(([h, t]) => `<li><h3>${h}</h3><p>${t}</p></li>`).join("");
-  const svcCards = [...SERVICE_PAGES, LANDING_PAGES[0]].map((p) => `<article class="card${p.stock ? " card--photo" : ""}">${p.stock ? photo(p.stock, { cls: "card-photo", credit: false, sizes: "(max-width: 600px) 100vw, (max-width: 960px) 50vw, 380px" }) : ""}<div class="ico">${ic(p.icon)}</div><h3><a href="${p.file}">${esc(p.nav)}</a></h3><p>${esc(p.lead.split(". ")[0])}.</p>${PT.fromPrice(C, PR, p.ids) ? `<p class="price" data-from-price="${p.ids.join(",")}">From ${PT.fromPrice(C, PR, p.ids)}</p>` : ""}<div class="actions"><a class="btn btn--outline btn--sm" href="${p.file}">Details</a><a class="btn btn--wa btn--sm" data-wa="${esc(p.nav)}" href="https://wa.me/${B.whatsapp}">${ic("wa")}WhatsApp</a></div></article>`).join("");
+  const svcCards = [...SERVICE_PAGES, LANDING_PAGES[0]].map((p) => `<article class="card${p.stock ? " card--photo" : ""}">${p.stock ? photo(p.stock, { cls: "card-photo", credit: false, sizes: "(max-width: 600px) 100vw, (max-width: 960px) 50vw, 380px" }) : ""}<div class="ico">${ic(p.icon)}</div><h3><a href="${p.file}">${esc(p.nav)}</a></h3><p>${esc(p.lead.split(". ")[0])}.</p>${PT.fromPrice(C, PR, p.ids) ? `<p class="price" data-from-price="${p.ids.join(",")}">From ${PT.fromPrice(C, PR, p.ids)}</p>` : ""}<div class="actions"><a class="btn btn--outline btn--sm" href="${p.file}">Details</a><a class="btn btn--wa btn--sm" data-wa="${esc(p.nav)}" href="https://wa.me/${B.whatsapp}" aria-label="Enquire about ${esc(p.nav)} on WhatsApp">${ic("wa")}Enquire</a></div></article>`).join("");
 
   const body = `
 <section class="hero">
@@ -691,14 +700,14 @@ function homepage() {
       <p class="hero-sub" data-i18n="hero.sub">Transparent Estimates. Trusted Mechanics. Convenient Pickup &amp; Drop.</p>
       ${heroPriceTiles()}
       <div class="hero-ctas hero-ctas--desk">
-        <a class="btn" href="#estimate">${ic("receipt")}<span data-i18n="cta.calc">Calculate Service Cost</span></a>
-        <a class="btn btn--ghost" href="booking.html">${ic("calendar")}<span data-i18n="cta.book">Book Your Car Service</span></a>
+        <a class="btn" href="#estimate">${ic("receipt")}<span data-i18n="cta.calc">Calculate Your Cost</span></a>
+        <a class="btn btn--ghost" href="booking.html">${ic("calendar")}<span data-i18n="cta.book">Book now</span></a>
       </div>
       <div class="hero-ctas hero-ctas--desk"><a class="btn btn--wa" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}<span data-i18n="cta.wa">Chat on WhatsApp</span></a><a class="btn btn--ghost" href="tel:${B.phoneE164}" data-tel data-call-now>${ic("phone")}Call Now</a></div>
       <ul class="hero-facts">
         <li>${ic("check")}All major brands</li><li>${ic("receipt")}Itemised bills</li><li>${ic("shield")}Approval before extra work</li>
       </ul>
-      <p class="pickup-terms">We service Maruti Suzuki, Hyundai, Tata, Mahindra, Honda, Kia, Toyota and other brands. See <a href="maruti-car-service-indore.html">Maruti</a> and <a href="hyundai-car-service-indore.html">Hyundai</a> car service.</p>
+      <p class="pickup-terms">We work on Maruti Suzuki, Hyundai, Tata, Mahindra, Honda, Kia, Toyota and other brands. See <a href="maruti-car-service-indore.html">Maruti</a> and <a href="hyundai-car-service-indore.html">Hyundai</a> car service.</p>
       <p class="pickup-terms"><strong style="color:#fff">Free pickup &amp; drop</strong> across our ${AREAS.coveredPins.length} confirmed Indore PIN codes, subject to booking confirmation. <a href="pickup-drop.html">Check your PIN</a>.</p>
     </div>
     <div class="jobcard reveal" id="estimate" data-estimator data-heading-level="2"><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
@@ -707,14 +716,14 @@ function homepage() {
 </section>
 
 <section class="band" id="packages"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">Packages</span><h2 data-i18n="sec.packages">Popular service packages</h2><p>Price ranges below are for a petrol hatchback with standard parts. The calculator adjusts them for your car. <a href="services.html">See the full price list</a>.</p></div>
+  <div class="section-head"><span class="eyebrow">Packages</span><h2 data-i18n="sec.packages">Popular packages</h2><p>Price ranges below are for a petrol hatchback with standard parts. The calculator adjusts them for your car. <a href="services.html">See the full price list</a>.</p></div>
   <div class="cards">${pk}</div>
 </div></section>
 
 <section class="band band--white" id="before-after"><div class="wrap">
-  <div class="section-head"><span class="eyebrow">Service Gallery</span><h2 data-i18n="sec.gallery">${esc(GALLERY.title)}</h2><p>${esc(GALLERY.subtitle)}</p></div>
+  <div class="section-head"><span class="eyebrow">Our work</span><h2 data-i18n="sec.gallery">${esc(GALLERY.title)}</h2><p>${esc(GALLERY.subtitle)}</p></div>
   <div class="ba-grid" data-gallery data-featured data-limit="4"></div>
-  <p style="margin-top:24px"><a class="btn btn--outline" href="gallery.html">${ic("image")}Explore the service gallery</a></p>
+  <p style="margin-top:24px"><a class="btn btn--outline" href="gallery.html">${ic("image")}Explore the gallery</a></p>
 </div></section>
 
 <section class="band band--dark"><div class="wrap">
@@ -735,7 +744,7 @@ function homepage() {
 ${reviewsSection()}
 
 <section class="band band--char" id="areas"><div class="wrap area-wrap">
-  <div class="section-head" style="margin:0"><span class="eyebrow">Pickup &amp; drop</span><h2 data-i18n="sec.areas">Service areas</h2><p>Free pickup and drop across these ${AREAS.coveredPins.length} Indore city PIN codes, subject to booking confirmation. Outside them, ask us and we'll check.</p>
+  <div class="section-head" style="margin:0"><span class="eyebrow">Pickup &amp; drop</span><h2 data-i18n="sec.areas">Areas we cover</h2><p>Free pickup and drop across these ${AREAS.coveredPins.length} Indore city PIN codes, subject to booking confirmation. Outside them, ask us and we'll check.</p>
     <ul class="area-list" data-area-list>${areaList()}</ul>
     <p class="small" style="color:var(--fog)">Area guides: <a style="color:#fff" href="car-service-vijay-nagar-indore.html">car service in Vijay Nagar</a> and <a style="color:#fff" href="car-service-rajendra-nagar-indore.html">car service in Rajendra Nagar</a>, with distance, covered localities and prices.</p>
   </div>
@@ -1040,6 +1049,7 @@ function aboutPage() {
 <section class="page-hero"><div class="wrap"><p class="crumbs"><a href="index.html">Home</a> / About us</p><span class="eyebrow">About us</span><h1>About Car Repair Wala</h1><p>A local multi-brand garage in ${esc(B.city)} for servicing, maintenance and repairs, built around clear estimates and your approval at every step.</p></div></section>
 <section class="band band--white"><div class="wrap two-col">
   <div class="prose">
+    ${B.ownerName ? `<p>Car Repair Wala is owned by <strong>${esc(B.ownerName)}</strong>.</p>` : ""}
     <h2 style="margin-top:0">How we work</h2>
     <p>Car repairs are stressful when you don't know what you're paying for. We show you an estimated range before you book, inspect the car, and send a quotation you approve before any work starts.</p>
     <p>If we find something else during the job, we call or WhatsApp you with the reason and cost first. Your final bill lists labour and every part separately.</p>
@@ -1059,7 +1069,7 @@ function aboutPage() {
       <div>${ic("shield")}<h3>Your approval</h3><p>No extra work without your OK.</p></div>
       <div>${ic("truck")}<h3>Pickup &amp; drop</h3><p>Free across our confirmed Indore PIN codes, subject to booking confirmation.</p></div>
     </div>
-    <a class="btn btn--block" href="booking.html">${ic("calendar")}Book a service</a>
+    <a class="btn btn--block" href="booking.html">${ic("calendar")}Book online</a>
     <a class="btn btn--wa btn--block" data-wa="general" href="https://wa.me/${B.whatsapp}">${ic("wa")}Chat on WhatsApp</a>
     <a class="btn btn--outline btn--block" href="reviews.html#write-review">${ic("star")}Write a website review</a>
   </div>
@@ -1083,7 +1093,7 @@ for (const [f, html] of Object.entries(pages)) writeFileSync(join(ROOT, f), html
 // into private invoice settings without loading pricing or duplicating data.
 writeFileSync(join(ROOT, "assets/js/workshop-details.js"), `/* Generated by tools/build.mjs from config.js; public business details only. */\nwindow.GW_WORKSHOP = Object.freeze(${JSON.stringify({ name: B.name, invoiceFooter: `Thank you for choosing ${B.name}.`, addressText: addressText(), googleProfileUrl: B.googleBusinessProfileUrl })});\n`);
 
-const today = new Date().toISOString().slice(0, 10);
+const today = BUILD_DATE;
 const indexable = Object.keys(pages).filter((f) => f !== "404.html");
 if (siteUrl) writeFileSync(join(ROOT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -1092,5 +1102,100 @@ ${indexable.map((f) => `  <url><loc>${esc(url(f))}</loc><lastmod>${today}</lastm
 `);
 if (!siteUrl && existsSync(join(ROOT, "sitemap.xml"))) unlinkSync(join(ROOT, "sitemap.xml"));
 writeFileSync(join(ROOT, "robots.txt"), siteUrl ? `User-agent: *\nAllow: /\nDisallow: /Project/admin/\nDisallow: /admin/\n\nSitemap: ${siteUrl}/sitemap.xml\n` : "User-agent: *\nDisallow: /\n");
+
+/* ------------------------------ AI discovery files ------------------------------ */
+// llms.txt, /.well-known/ai.txt, /ai/*.json and feed.xml, generated from the same config as the pages
+// so AI search tools read the same facts customers see. Only written for a real HTTPS domain.
+const AI_FILES = ["llms.txt", ".well-known/ai.txt", "ai/summary.json", "ai/faq.json", "ai/service.json", "feed.xml"];
+if (siteUrl) {
+  const pageMeta = (file) => createSeo({ file, title: "", description: "", business: B, siteUrl, services: [...SERVICE_PAGES, ...LANDING_PAGES], serviceCount: C.services.length });
+  const md = (file, label) => { const m = pageMeta(file); return `- [${label || m.name}](${url(file)}): ${m.description}`; };
+  const svcPages = [...SERVICE_PAGES, ...LANDING_PAGES];
+  const address = B.address ? addressText() : `${B.city}, ${B.state}`;
+  const hours = B.hours ? hoursText() : "Please call to confirm";
+  const allFaqs = [...C.faqs, ...SERVICE_PAGES.flatMap((p) => p.faqs || []), ...LANDING_PAGES.flatMap((p) => p.faqs || [])]
+    .filter((f, i, a) => a.findIndex((x) => x.q === f.q) === i);
+  const summaryText = `${B.name} is an independent multi-brand car garage in ${B.city}, ${B.state} (India) for car servicing, AC repair, brakes and clutch, battery and electrical work, diagnostics, denting and painting, detailing and car wash. Estimates are shown before booking, extra work is done only with the customer's approval, and pickup and drop is free in confirmed ${B.city} PIN codes.`;
+  const llms = `# ${B.name}
+
+> ${summaryText}
+
+- Owner: ${B.ownerName || "—"}
+- Address: ${address}
+- Phone and WhatsApp: ${B.phoneDisplay}
+- Opening hours: ${hours}
+- Areas served: ${[B.city, ...(B.areasServed || [])].join(", ")}
+- Google Maps: ${B.googleBusinessProfileUrl || B.googleMapsSearchUrl || ""}
+${B.instagramUrl ? `- Instagram: ${B.instagramUrl}\n` : ""}- Not affiliated with any car manufacturer; brand names identify the cars we work on.
+
+## Main pages
+
+${md("index.html", "Home")}
+${md("services.html", "Services and prices")}
+${md("estimate.html", "Cost calculator")}
+${md("booking.html", "Book online")}
+${md("pickup-drop.html", "Free pickup and drop areas")}
+${md("contact.html", "Contact and directions")}
+${md("about.html", "About us")}
+${md("reviews.html", "Customer reviews")}
+${md("gallery.html", "Gallery")}
+
+## Services
+
+${svcPages.map((p) => md(p.file, p.h1)).join("\n")}
+
+## Common questions
+
+${C.faqs.map((f) => `- **${f.q}** ${f.a}`).join("\n")}
+
+## Optional
+
+${md("terms.html", "Terms and conditions")}
+${md("privacy.html", "Privacy policy")}
+${md("policies.html", "Cancellation, warranty and payment policies")}
+`;
+  const write = (rel, text) => { const out = join(ROOT, rel); mkdirSync(dirname(out), { recursive: true }); writeFileSync(out, text); };
+  write("llms.txt", llms);
+  write(".well-known/ai.txt", `# ${B.name} — AI crawler policy (${siteUrl})
+# AI assistants and search engines may read and cite all public pages.
+# Please quote prices as indicative estimates; the final price is confirmed after inspection.
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+Contact: tel:${B.phoneE164}
+Summary: ${siteUrl}/llms.txt
+Sitemap: ${siteUrl}/sitemap.xml
+`);
+  const json = (v) => JSON.stringify(v, null, 2) + "\n";
+  write("ai/summary.json", json({
+    name: B.name, description: summaryText, url: siteUrl + "/", type: "AutoRepair", owner: B.ownerName || null,
+    telephone: B.phoneE164, whatsapp: "https://wa.me/" + B.whatsapp, address, city: B.city, region: B.state, country: B.country,
+    openingHours: hours, areasServed: [B.city, ...(B.areasServed || [])], languages: ["en-IN", "hi-IN"],
+    sameAs: [B.googleBusinessProfileUrl, B.instagramUrl].filter(Boolean), llms: siteUrl + "/llms.txt", dateModified: BUILD_DATE
+  }));
+  write("ai/faq.json", json({ name: B.name, url: siteUrl + "/", dateModified: BUILD_DATE, faqs: allFaqs.map((f) => ({ question: f.q, answer: f.a })) }));
+  write("ai/service.json", json({
+    name: B.name, url: siteUrl + "/", provider: "AutoRepair", areaServed: [B.city, ...(B.areasServed || [])], priceList: url("services.html"),
+    booking: url("booking.html"), contact: { telephone: B.phoneE164, whatsapp: "https://wa.me/" + B.whatsapp },
+    capabilities: svcPages.map((p) => ({ name: p.h1, url: url(p.file), description: pageMeta(p.file).description })), dateModified: BUILD_DATE
+  }));
+  const rssDate = new Date(BUILD_DATE + "T00:00:00+05:30").toUTCString();
+  write("feed.xml", `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>${esc(B.name)} — car service and repair in ${esc(B.city)}</title>
+  <link>${esc(siteUrl)}/</link>
+  <atom:link href="${esc(siteUrl)}/feed.xml" rel="self" type="application/rss+xml"/>
+  <description>${esc(summaryText)}</description>
+  <language>en-IN</language>
+  <lastBuildDate>${rssDate}</lastBuildDate>
+${["index.html", "services.html", ...svcPages.map((p) => p.file), "pickup-drop.html", "about.html"].map((f) => { const m = pageMeta(f); return `  <item><title>${esc(m.title)}</title><link>${esc(url(f))}</link><guid isPermaLink="true">${esc(url(f))}</guid><pubDate>${rssDate}</pubDate><description>${esc(m.description)}</description></item>`; }).join("\n")}
+</channel>
+</rss>
+`);
+} else {
+  for (const rel of AI_FILES) if (existsSync(join(ROOT, rel))) unlinkSync(join(ROOT, rel));
+}
 if (!siteUrl) console.log("Preview build: indexing disabled until SITE_URL or business.siteUrl is set to your HTTPS domain.");
-console.log("Built " + Object.keys(pages).length + " pages + " + (siteUrl ? "sitemap.xml + " : "") + "robots.txt into public/");
+console.log("Built " + Object.keys(pages).length + " pages + " + (siteUrl ? "sitemap.xml + " + AI_FILES.join(" + ") + " + " : "") + "robots.txt into public/");

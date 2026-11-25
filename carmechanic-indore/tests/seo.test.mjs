@@ -65,3 +65,21 @@ test('Preview builds omit public entities and social URLs; JSON-LD cannot close 
  const args={file:'index.html',title:'Title',description:'Description',business:C.business,siteUrl:''};const preview=createSeo(args);assert.equal(preview.canonical,'');assert.equal(preview.image,null);assert.deepEqual(preview.schemas,[]);assert.match(preview.robots,/noindex/);
  const value={name:'</script><script>alert(1)</script>'};const encoded=jsonLd(value);assert(!encoded.includes('<'));assert.deepEqual(JSON.parse(encoded),value);
 });
+test('AI discovery files, owner, page dates and RSS are generated from config',async()=>{
+ const B=C.business,read=f=>readFile(new URL(f,root),'utf8');
+ const llms=await read('llms.txt');assert.match(llms,/^# Car Repair Wala\n\n> /);assert(llms.includes(B.phoneDisplay));assert(llms.includes('Owner: '+B.ownerName));assert(llms.includes('## Optional'));
+ for(const m of llms.matchAll(/\]\((https:[^)]+)\)/g)){const f=m[1].replace(domain+'/','')||'index.html';assert(pages.includes(f),'llms link '+f)}
+ const summary=JSON.parse(await read('ai/summary.json'));assert.equal(summary.name,B.name);assert(summary.description.length>=20);assert.equal(summary.telephone,B.phoneE164);
+ const faq=JSON.parse(await read('ai/faq.json'));assert(faq.faqs.length>=6);for(const f of faq.faqs)assert(f.question.length>=10&&f.answer.length>=20);
+ const service=JSON.parse(await read('ai/service.json'));assert(service.capabilities.length>=10);
+ assert.match(await read('.well-known/ai.txt'),/Allow: \//);
+ const feed=await read('feed.xml');assert.match(feed,/<rss version="2.0"/);assert(feed.includes(domain+'/car-service-indore.html'));
+ for(const file of pages.filter(f=>f!=='404.html')){
+  const html=await read(file);assert.equal(meta(html,'author'),B.ownerName,file);assert(html.includes('type="application/rss+xml"'),file+' feed link');
+  const date=html.match(/<time datetime="(\d{4}-\d{2}-\d{2})">/);assert(date,file+' visible date');
+  const lds=[...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].map(m=>JSON.parse(m[1]));
+  const page=lds.find(x=>x['@id']?.endsWith('#webpage'));assert.equal(page.dateModified,date[1],file);assert.equal(page.author['@id'],domain+'/#owner');
+  assert(lds.some(x=>x['@type']==='Person'&&x.name===B.ownerName&&x.jobTitle==='Owner'),file+' owner');
+  assert(meta(html,'og:title').startsWith(B.name+' | ')||/^(About|Contact) Car Repair Wala \|/.test(meta(html,'og:title')),file+' og:title leads with brand');assert.equal(meta(html,'og:title').split(B.name).length,2,file+' brand once');
+ }
+});
