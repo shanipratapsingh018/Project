@@ -1,3 +1,13 @@
+# v2.8.2 — AI search readiness (GEO)
+
+- **AI files generated from config.js on every build:** `llms.txt` (business facts, every page with a one-line summary, common questions), `/.well-known/ai.txt`, `/ai/summary.json`, `/ai/faq.json` (53 questions from all pages), `/ai/service.json` (all service pages) and an RSS feed `feed.xml`, linked from every page's `<head>`. Preview builds without a domain remove them.
+- **Owner:** Amit Singh is named in the footer of every page, on the About page, as `meta name="author"` and as a `Person` (jobTitle Owner) in the structured data, set as the author of each page.
+- **Page dates:** one build date (India time) is used for the sitemap `lastmod`, each page's `dateModified` and a visible "Page updated" line in the footer. Set `BUILD_DATE=YYYY-MM-DD` to override.
+- **Share titles lead with the brand** ("Car Repair Wala | …") in `og:title` and `twitter:title`; browser titles are unchanged.
+- **Less repeated wording on the homepage** ("service" and "WhatsApp" were above 2.5% of the words): nav and footer say "Gallery", buttons say "Book now", "Calculate Your Cost", "Book online" and "Enquire" (WhatsApp icon kept, with an accessible label), headings say "Popular packages" and "Areas we cover", and the FAQ asks "Do you repair all car brands?". Hindi labels added for the new text.
+- The footer About link is written as `./about.html` so audit tools recognise it.
+- GEO audit (geo-optimizer-skill 4.20): homepage 75 → 94/100.
+
 # v2.8.1 — Instagram link
 
 - **Instagram:** "Follow us on Instagram" link in the footer of every page and on the contact page, pointing to [@car_repairwala_indore](https://www.instagram.com/car_repairwala_indore/). The profile is also listed in the business structured data (`sameAs`) next to the Google Maps listing.
