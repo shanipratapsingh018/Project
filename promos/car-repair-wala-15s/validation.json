@@ -22,7 +22,7 @@
     "desktop_1366": "playback, all four scene seeks, exact download bytes, no overflow",
     "visual_review": "all four scene frames checked; brand, website, address and number readable"
   },
-  "watch_url": "https://carrepairwala.co.in/promo/car-repair-wala/",
+  "watch_url": null,
   "images": [
     {
       "file": "car-servicing-1600.webp",
@@ -40,5 +40,7 @@
       "file": "workshop-bays-1600.webp",
       "source": "owner website, AI-generated illustration"
     }
-  ]
+  ],
+  "publication": "GitHub artifact only; website publication withdrawn at owner request",
+  "github_url": "https://github.com/shanipratapsingh018/Project/blob/video-studio-downloads/promos/car-repair-wala-15s/car-repair-wala-promo-15s.mp4"
 }

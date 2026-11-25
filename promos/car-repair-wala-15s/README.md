@@ -1,6 +1,8 @@
 # Car Repair Wala · 15-second promo
 
-[Watch the promo](https://carrepairwala.co.in/promo/car-repair-wala/) · [MP4](car-repair-wala-promo-15s.mp4)
+[Open / download the saved MP4](car-repair-wala-promo-15s.mp4)
+
+Stored as a GitHub artifact only. Website publication was withdrawn at the owner's request. Do not publish this promo on the business website without a new explicit request.
 
 15 seconds · 1080 × 1920 · H.264 + AAC · approximately 4.1 MB.
 
