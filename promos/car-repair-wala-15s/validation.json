@@ -1,0 +1,44 @@
+{
+  "brand": "Car Repair Wala",
+  "created_date_ist": "2026-11-26",
+  "duration_seconds": 15,
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "video_codec": "H.264",
+  "audio_codec": "AAC stereo",
+  "bytes": 4344957,
+  "sha256": "ff4706de266b01a421213b89bbb888a199fed76872852ca97974c18c126573e7",
+  "type": "Image-based promo: slow camera moves and dissolves over the owner's existing AI-generated workshop illustrations; no video-generation API used",
+  "soundtrack": "Original procedural instrumental created by build_promo.py; no third-party song or voiceover",
+  "phone": "8965957978",
+  "website": "https://carrepairwala.co.in",
+  "address": "17, AB Road, Choithram Mandi, Indore",
+  "business_details_source_commit": "7136f6468d02357cc53a6d7ec78e38557d606d79",
+  "checks": {
+    "full_decode": "passed",
+    "audio_peak_dbfs": -5.9,
+    "mobile_390": "playback, all four scene seeks, exact download bytes, no overflow",
+    "desktop_1366": "playback, all four scene seeks, exact download bytes, no overflow",
+    "visual_review": "all four scene frames checked; brand, website, address and number readable"
+  },
+  "watch_url": "https://carrepairwala.co.in/promo/car-repair-wala/",
+  "images": [
+    {
+      "file": "car-servicing-1600.webp",
+      "source": "owner website, AI-generated illustration"
+    },
+    {
+      "file": "brake-pad-repair-1600.webp",
+      "source": "owner website, AI-generated illustration"
+    },
+    {
+      "file": "ac-service-1600.webp",
+      "source": "owner website, AI-generated illustration"
+    },
+    {
+      "file": "workshop-bays-1600.webp",
+      "source": "owner website, AI-generated illustration"
+    }
+  ]
+}
