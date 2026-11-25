@@ -1,0 +1,33 @@
+{
+  "name": "Car Repair Wala",
+  "description": "Car Repair Wala is an independent multi-brand car garage in Indore, Madhya Pradesh (India) for car servicing, AC repair, brakes and clutch, battery and electrical work, diagnostics, denting and painting, detailing and car wash. Estimates are shown before booking, extra work is done only with the customer's approval, and pickup and drop is free in confirmed Indore PIN codes.",
+  "url": "https://carrepairwala.co.in/",
+  "type": "AutoRepair",
+  "owner": "Amit Singh",
+  "telephone": "+918965957978",
+  "whatsapp": "https://wa.me/918965957978",
+  "address": "17, AB Rd, Choithram Mandi, Indore, Madhya Pradesh 452012",
+  "city": "Indore",
+  "region": "Madhya Pradesh",
+  "country": "IN",
+  "openingHours": "Every day (Monday–Sunday): 7:00 AM–11:30 PM (IST)",
+  "areasServed": [
+    "Indore",
+    "Vijay Nagar",
+    "Rajendra Nagar",
+    "Sudama Nagar",
+    "Khajrana",
+    "Tilak Nagar",
+    "Bijasan Road"
+  ],
+  "languages": [
+    "en-IN",
+    "hi-IN"
+  ],
+  "sameAs": [
+    "https://maps.google.com/?cid=853408414821901526",
+    "https://www.instagram.com/car_repairwala_indore/"
+  ],
+  "llms": "https://carrepairwala.co.in/llms.txt",
+  "dateModified": "2026-11-25"
+}

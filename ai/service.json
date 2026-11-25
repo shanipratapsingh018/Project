@@ -1,0 +1,93 @@
+{
+  "name": "Car Repair Wala",
+  "url": "https://carrepairwala.co.in/",
+  "provider": "AutoRepair",
+  "areaServed": [
+    "Indore",
+    "Vijay Nagar",
+    "Rajendra Nagar",
+    "Sudama Nagar",
+    "Khajrana",
+    "Tilak Nagar",
+    "Bijasan Road"
+  ],
+  "priceList": "https://carrepairwala.co.in/services.html",
+  "booking": "https://carrepairwala.co.in/booking.html",
+  "contact": {
+    "telephone": "+918965957978",
+    "whatsapp": "https://wa.me/918965957978"
+  },
+  "capabilities": [
+    {
+      "name": "Periodic car service in Indore",
+      "url": "https://carrepairwala.co.in/car-service-indore.html",
+      "description": "Basic, standard and comprehensive car service in Indore for Maruti, Hyundai, Tata, Mahindra and more. Hatchback basic service from ₹2,200. Free pickup."
+    },
+    {
+      "name": "Car AC service, repair and gas filling in Indore",
+      "url": "https://carrepairwala.co.in/car-ac-repair-indore.html",
+      "description": "Car AC gas filling, AC service and cooling repairs in Indore. Leak test before gas refill, gas filling from ₹900 for hatchbacks. Free pickup and drop."
+    },
+    {
+      "name": "Car brake repair and clutch plate replacement",
+      "url": "https://carrepairwala.co.in/brake-clutch-repair-indore.html",
+      "description": "Car brake repair, brake pad change and clutch plate replacement in Indore. Front brake pads from ₹1,400 for hatchbacks. See the worn part first."
+    },
+    {
+      "name": "Engine diagnostics in Indore",
+      "url": "https://carrepairwala.co.in/engine-diagnostics-indore.html",
+      "description": "Check-engine light, OBD scanning and engine fault diagnosis at Car Repair Wala in Indore. Get the cause explained before approving repairs."
+    },
+    {
+      "name": "Car battery replacement and electrical repair",
+      "url": "https://carrepairwala.co.in/car-battery-electrical-indore.html",
+      "description": "Car battery replacement in Indore with a battery test first. New battery with fitting from ₹3,400 for hatchbacks, plus wiring and lighting repairs."
+    },
+    {
+      "name": "Suspension and steering repair",
+      "url": "https://carrepairwala.co.in/suspension-steering-repair-indore.html",
+      "description": "Suspension checks, shock absorbers, steering repairs and wheel alignment at Car Repair Wala in Indore. Final costs are confirmed after inspection."
+    },
+    {
+      "name": "Car denting, painting and scratch removal",
+      "url": "https://carrepairwala.co.in/denting-painting-indore.html",
+      "description": "Car dent repair, scratch removal and colour-matched panel painting in Indore. Dent and paint from ₹2,000 per panel for hatchbacks. Approve the quote first."
+    },
+    {
+      "name": "Car detailing and interior cleaning",
+      "url": "https://carrepairwala.co.in/car-detailing-indore.html",
+      "description": "Car interior deep cleaning, rubbing and polishing in Indore. Seat and roof shampoo, odour treatment and machine polish. Pre-purchase car inspection too."
+    },
+    {
+      "name": "Accident repair in Indore",
+      "url": "https://carrepairwala.co.in/accident-repair-indore.html",
+      "description": "Request an accident-damage inspection at Car Repair Wala in Indore. Body, paint and glass repairs are quoted after checking the vehicle."
+    },
+    {
+      "name": "Car wash and foam wash in Indore",
+      "url": "https://carrepairwala.co.in/car-wash-indore.html",
+      "description": "Car foam wash in Indore from ₹300 for hatchbacks, with interior vacuum, deep cleaning and polishing add-ons. AB Road, Choithram Mandi. Open 7 AM–11:30 PM."
+    },
+    {
+      "name": "Car service in Vijay Nagar, Indore",
+      "url": "https://carrepairwala.co.in/car-service-vijay-nagar-indore.html",
+      "description": "Car service and repair for Vijay Nagar, Nipania and DDU Nagar with free pickup and drop to our AB Road workshop. See prices online, approve before work."
+    },
+    {
+      "name": "Maruti Suzuki car service in Indore",
+      "url": "https://carrepairwala.co.in/maruti-car-service-indore.html",
+      "description": "Maruti Suzuki car service in Indore at an independent garage. Swift, Baleno, Dzire, Ertiga, Brezza and more. Basic service from ₹2,200. Free pickup."
+    },
+    {
+      "name": "Car service in Rajendra Nagar, Indore",
+      "url": "https://carrepairwala.co.in/car-service-rajendra-nagar-indore.html",
+      "description": "Car service and repair about 5 km from Rajendra Nagar at 17, AB Road, Choithram Mandi, Indore. Free pickup and drop for PIN 452012. Open till 11:30 PM."
+    },
+    {
+      "name": "Hyundai car service in Indore",
+      "url": "https://carrepairwala.co.in/hyundai-car-service-indore.html",
+      "description": "Hyundai car service in Indore at an independent garage. Creta, Venue, i20, Grand i10 Nios, Verna and Exter. Petrol, diesel and automatic. Free pickup."
+    }
+  ],
+  "dateModified": "2026-11-25"
+}

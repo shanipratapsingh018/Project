@@ -1,0 +1,10 @@
+# Car Repair Wala — AI crawler policy (https://carrepairwala.co.in)
+# AI assistants and search engines may read and cite all public pages.
+# Please quote prices as indicative estimates; the final price is confirmed after inspection.
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+Contact: tel:+918965957978
+Summary: https://carrepairwala.co.in/llms.txt
+Sitemap: https://carrepairwala.co.in/sitemap.xml

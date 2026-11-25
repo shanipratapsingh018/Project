@@ -314,6 +314,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--s
 .site-footer a { color: #dfe3e8; text-decoration: none; }
 .site-footer a:hover { color: var(--signal); }
 .site-footer .fine { grid-column: 1 / -1; border-top: 1px solid var(--steel); padding-top: 20px; font-size: .85rem; }
+.site-footer .fine.footer-owner + .fine { border-top: 0; padding-top: 0; margin-top: -8px; }
 .phone-line { font: 600 1.05rem var(--f-mono); color: #fff; user-select: all; }
 
 /* Floating WhatsApp + mobile bar */

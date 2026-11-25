@@ -24,6 +24,7 @@
       address: { street: "17, AB Rd", locality: "Choithram Mandi", pincode: "452012" }, // full workshop address and PIN supplied by the owner
       geo: { lat: 22.6813368, lng: 75.8544679 }, // pin from the owner's Google Maps listing (15 Nov 2026) — owner to confirm it sits on the workshop
       nameHi: "कार रिपेयर वाला", // Hindi name shown on the Google listing
+      ownerName: "Amit Singh", // garage owner, named on the site and in business data (owner-supplied, 25 Nov 2026)
       areasServed: ["Vijay Nagar", "Rajendra Nagar", "Sudama Nagar", "Khajrana", "Tilak Nagar", "Bijasan Road"], // all inside coveredPins in service-areas.js
       hours: [{ days: "Mo-Su", label: "Every day (Monday–Sunday)", open: "07:00", close: "23:30" }], // owner-confirmed, India time
       // Preferred-time choices on every form; keep them inside the opening hours above.
@@ -141,7 +142,7 @@
 
     faqs: [
       { q: "Is the price shown by the calculator final?", a: "No. The calculator gives an estimated range. Your final quotation is shared after a mechanic inspects the car, and no extra work is done without your approval." },
-      { q: "Do you service all car brands?", a: "We are a multi-brand garage. Tell us your car's make, model and year on WhatsApp and we will confirm before you book." },
+      { q: "Do you repair all car brands?", a: "We are a multi-brand garage. Tell us your car's make, model and year on WhatsApp and we will confirm before you book." },
       { q: "Is pickup and drop really free?", a: "Pickup and drop is free within our confirmed Indore service area, subject to booking confirmation. Enter your PIN code on the Pickup & Drop page to check your area." },
       { q: "Can I choose genuine (OEM) parts?", a: "Yes. The estimator lets you compare economy, standard and genuine parts. The parts used are written on your itemised bill." },
       { q: "What if the mechanic finds another problem?", a: "We call or WhatsApp you with the issue and the extra cost first. Work starts only after you approve it." },
