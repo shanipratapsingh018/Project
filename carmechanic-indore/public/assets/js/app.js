@@ -221,7 +221,7 @@
     const tiles = EST_TILES.filter(([id]) => svcById[id]);
 
     root.innerHTML = `
-      <div class="jobcard-head"><span><b>Get a price in 30 seconds</b></span><span>${C.pricing.isDemo ? '<span class="tag tag--demo">Demo prices</span>' : `Prices updated <time datetime="${esc(RATE_V)}">${esc(rateDate())}</time>`}</span></div>
+      <div class="jobcard-head"><span><b>Get a price in 30 seconds</b></span><span>${C.pricing.isDemo ? '<span class="tag tag--demo">Demo prices</span>' : ''}</span></div>
       <div class="est-stepline"><span>Free · no sign-up</span></div>
       <form class="jobcard-body" novalidate>
         <section data-step="1">

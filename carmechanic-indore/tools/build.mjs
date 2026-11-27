@@ -24,7 +24,7 @@ const B = C.business;
 const backendContext = { window: {} };
 runInNewContext(readFileSync(join(ROOT, "assets/js/backend-config.js"), "utf8"), backendContext, { timeout: 1000 });
 const ONLINE_BOOKING = Boolean(B.bookingEndpoint || backendContext.window.GW_BACKEND?.bookingEnabled);
-const VERSION = "2.8.2";
+const VERSION = "2.8.3";
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const svc = Object.fromEntries(C.services.map((s) => [s.id, s]));
 const candidateUrl = process.env.SITE_URL || B.siteUrl;
@@ -707,8 +707,7 @@ function homepage() {
       <ul class="hero-facts">
         <li>${ic("check")}All major brands</li><li>${ic("receipt")}Itemised bills</li><li>${ic("shield")}Approval before extra work</li>
       </ul>
-      <p class="pickup-terms">We work on Maruti Suzuki, Hyundai, Tata, Mahindra, Honda, Kia, Toyota and other brands. See <a href="maruti-car-service-indore.html">Maruti</a> and <a href="hyundai-car-service-indore.html">Hyundai</a> car service.</p>
-      <p class="pickup-terms"><strong style="color:#fff">Free pickup &amp; drop</strong> across our ${AREAS.coveredPins.length} confirmed Indore PIN codes, subject to booking confirmation. <a href="pickup-drop.html">Check your PIN</a>.</p>
+      <p class="pickup-terms"><strong style="color:#fff">Free pickup &amp; drop</strong> · <a href="pickup-drop.html">Check your PIN</a></p>
     </div>
     <div class="jobcard reveal" id="estimate" data-estimator data-heading-level="2"><noscript><p style="padding:20px">The cost estimator needs JavaScript. Message us on WhatsApp for a quote.</p></noscript></div>
     ${workshopSlider()}
@@ -755,7 +754,6 @@ ${faqBlock(C.faqs)}
 
 <section class="band band--white" id="contact"><div class="wrap two-col">
   <div class="prose"><span class="eyebrow">Contact</span><h2 style="margin-top:0">Car repair workshop in ${esc(B.address?.locality || B.city)}, ${esc(B.city)}</h2>
-    <p>Visit ${esc(B.name)} for car servicing, AC checks, brake repairs and engine diagnostics. <a href="services.html">Compare our services and indicative prices</a> or <a href="contact.html">find workshop contact details and directions</a>. We confirm the final quotation after inspection.</p>
     <p>Call or WhatsApp <span class="phone-line" style="color:var(--ink)" data-phone>${esc(B.phoneDisplay)}</span></p>
     ${B.address ? `<p data-workshop-address>${esc(addressText())}</p>${mapLink()}` : `<p class="muted">Workshop address will be shown here once confirmed. Ask on WhatsApp for directions.</p>`}
     ${B.hours ? `<p data-working-hours>${hoursText()}</p>` : `<p class="muted">Working hours: please call or WhatsApp to confirm.</p>`}

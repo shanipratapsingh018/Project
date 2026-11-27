@@ -1,3 +1,9 @@
+# v2.8.3 — Cleaner homepage on mobile
+
+- Hero: removed the brands sentence; the pickup line is now just "Free pickup & drop · Check your PIN" (the PIN list stays on the pickup page).
+- Contact section: removed the "Visit Car Repair Wala for car servicing…" paragraph.
+- Price calculator: removed the "Prices updated" date from the card header (demo builds still show the "Demo prices" tag).
+
 # v2.8.2 — AI search readiness (GEO)
 
 - **AI files generated from config.js on every build:** `llms.txt` (business facts, every page with a one-line summary, common questions), `/.well-known/ai.txt`, `/ai/summary.json`, `/ai/faq.json` (53 questions from all pages), `/ai/service.json` (all service pages) and an RSS feed `feed.xml`, linked from every page's `<head>`. Preview builds without a domain remove them.
